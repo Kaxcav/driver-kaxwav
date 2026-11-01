@@ -103,7 +103,8 @@ def probe(mode, buffer, seconds, rundir, tag, stim=None, stim_at=0, taps=False, 
         A.write_i16(sp, stim)
         cmd += ["--stim", str(sp), "--stim-at", str(stim_at)]
     if taps:
-        cmd += ["--tap-capture", str(rundir / f"{tag}.tapcap.f32"), "--tap-loopback", str(rundir / f"{tag}.taploop.f32")]
+        cmd += ["--tap-capture", str(rundir / f"{tag}.tapcap.f32"), "--tap-loopback", str(rundir / f"{tag}.taploop.f32"),
+                "--tap-raw", "1" if taps == "raw" else "0"]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=REPO, errors="replace")
     last = None
     if poll_telemetry:
@@ -122,6 +123,13 @@ def probe(mode, buffer, seconds, rundir, tag, stim=None, stim_at=0, taps=False, 
         j["_telemetry"] = um2_ipc.summarize_telemetry(last)
     (rundir / f"{tag}.probe.json").write_text(json.dumps(j, indent=1, default=str), encoding="utf-8")
     return j
+
+
+def endpoint_capture_level():
+    """Capture endpoint volume as raw_capture_test reports it (protocol: must be 0.0 dB)."""
+    rc, out, _ = sh([str(RAWCAP), "1", "x", "info"], timeout=60)
+    m = re.search(r"atual\s+(-?[\d.]+) dB \(scalar ([\d.]+)\)", out)
+    return {"db": float(m.group(1)), "scalar": float(m.group(2))} if m else {"raw": out.strip()[-200:]}
 
 
 def rec_channel(j, ch):
@@ -226,21 +234,25 @@ def step_m7(args, rundir, cond):
     if args.m7_reuse and saved.exists():  # reanalyse the capture already taken in this run
         j = json.loads(saved.read_text(encoding="utf-8"))
     else:
-        j = probe(1, 256, 4.5, rundir, "m7_SharedFlex_256", stim=stim, stim_at=at, taps=True)
+        j = probe(1, 256, 4.5, rundir, "m7_SharedFlex_256", stim=stim, stim_at=at, taps="raw" if args.m7_tap_raw else True)
     res = {"mode_requested": "SharedFlex", "mode_active": j.get("mode_active"), "buffer": 256,
+           "tap_capture_raw": bool(args.m7_tap_raw),
            "stimulus": "ruido pseudo-aleatorio -20 dBFS, 3 s, int16, nas duas saidas",
            "taps": {"capture": j.get("tap_capture"), "loopback": j.get("tap_loopback")}}
     # output path: int16 the host wrote vs what the engine got (WASAPI loopback of the UM2 render endpoint)
     lp = Path(rundir / "m7_SharedFlex_256.taploop.f32")
     tl = j.get("tap_loopback") or {}
     if lp.exists() and tl.get("channels"):
-        loop = A.load_f32(lp, tl["channels"])[:, 0]
+        loop = A.load_f32(lp, tl["channels"])
+        loop = loop if loop.ndim == 1 else loop[:, 0]
         res["output_null"] = A.null_test(stim, loop, scale=32768.0)
     # input path: what the engine delivered (shared capture tap) vs what the DAW received (ASIO in 1)
     cp = Path(rundir / "m7_SharedFlex_256.tapcap.f32")
     tc = j.get("tap_capture") or {}
     if cp.exists() and tc.get("channels"):
         caps = A.load_f32(cp, tc["channels"])
+        if caps.ndim == 1:  # RAW capture of a mono device format
+            caps = caps[:, None]
         asio = A.load_i16(j["_rec"], 2)
         res["input_null"] = {}
         for c in range(min(2, caps.shape[1])):
@@ -382,6 +394,8 @@ def main():
     ap.add_argument("--run-id", help="default: <data>-<commit>")
     ap.add_argument("--m1-sessions", type=int, default=20)
     ap.add_argument("--m2-seconds", type=int, default=60)
+    ap.add_argument("--m7-tap-raw", type=int, default=1,
+                    help="M7: tap de captura com AUDCLNT_STREAMOPTIONS_RAW (1, igual ao driver desde o passo 3) ou padrao (0)")
     ap.add_argument("--m7-reuse", action="store_true", help="reanalisa a captura M7 ja feita nesta corrida")
     ap.add_argument("--m2-reuse", action="store_true", help="reanalisa m2_apo.wav/m2_raw.wav ja capturados nesta corrida")
     ap.add_argument("--m5-seconds", type=int, default=60)
@@ -433,6 +447,9 @@ def main():
             print(f"passo desconhecido ignorado: {bad}")
         for s in [x for x in steps if x in STEP_FUNCS]:
             print(f"== {s.upper()} ==")
+            ep_before = endpoint_capture_level()
+            if ep_before.get("db") not in (None, 0.0):
+                print(f"  AVISO: volume do endpoint de captura = {ep_before.get('db')} dB (protocolo pede 0,0 dB)")
             t0 = time.time()
             try:
                 r = STEP_FUNCS[s](args, rundir, cond)
@@ -440,6 +457,8 @@ def main():
                 r = {"error": f"{type(e).__name__}: {e}"}
             r["_step_seconds"] = round(time.time() - t0, 1)
             r["_dsp_state"] = um2_ipc.read_shared_state()
+            r["_endpoint_capture_before"] = ep_before
+            r["_endpoint_capture_after"] = endpoint_capture_level()
             r["_conditions"] = dict(cond)
             r["_measured_at"] = dt.datetime.now().isoformat(timespec="seconds")
             (rundir / f"{s}.json").write_text(json.dumps(r, indent=1, ensure_ascii=False, default=str), encoding="utf-8")

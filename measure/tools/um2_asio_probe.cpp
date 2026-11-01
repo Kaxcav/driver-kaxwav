@@ -11,7 +11,7 @@
 // (what the driver handed to the engine).
 //
 // Usage: um2_asio_probe --dll D --mode 0|1 --buffer N --seconds S [--rec rec.i16] [--stim stim.i16
-//        --stim-at SAMPLE] [--tap-capture cap.f32] [--tap-loopback loop.f32]
+//        --stim-at SAMPLE] [--tap-capture cap.f32] [--tap-loopback loop.f32] [--tap-raw 0|1]
 #include <windows.h>
 #include <cstdio>
 #include <cstdint>
@@ -112,6 +112,8 @@ struct Tap {
     UINT64 discontinuities = 0;
 };
 
+bool g_tapRaw = false;  // --tap-raw 1: capture tap opened with AUDCLNT_STREAMOPTIONS_RAW (same as the driver)
+
 void TapThread(EDataFlow flow, bool loopback, Tap* tap) {
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     ComPtr<IMMDeviceEnumerator> en;
@@ -123,6 +125,16 @@ void TapThread(EDataFlow flow, bool loopback, Tap* tap) {
                                   reinterpret_cast<void**>(en.GetAddressOf()));
     if (SUCCEEDED(hr)) { dev = um2::FindEndpoint(en.Get(), flow); if (!dev) hr = HRESULT_FROM_WIN32(ERROR_NOT_FOUND); }
     if (SUCCEEDED(hr)) hr = dev->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(ac.GetAddressOf()));
+    if (SUCCEEDED(hr) && g_tapRaw && !loopback) {
+        ComPtr<IAudioClient2> ac2;
+        if (SUCCEEDED(ac.As(&ac2))) {
+            AudioClientProperties props{};
+            props.cbSize = sizeof(props);
+            props.eCategory = AudioCategory_Other;
+            props.Options = AUDCLNT_STREAMOPTIONS_RAW;
+            hr = ac2->SetClientProperties(&props);
+        }
+    }
     if (SUCCEEDED(hr)) hr = ac->GetMixFormat(&mf);
     if (SUCCEEDED(hr)) hr = ac->Initialize(AUDCLNT_SHAREMODE_SHARED, loopback ? AUDCLNT_STREAMFLAGS_LOOPBACK : 0, 1000000, 0, mf, nullptr);
     if (SUCCEEDED(hr)) hr = ac->GetService(__uuidof(IAudioCaptureClient), reinterpret_cast<void**>(cc.GetAddressOf()));
@@ -216,6 +228,7 @@ int main(int argc, char** argv) {
         else if (a == "--stim-at") g.stimAt = _atoi64(argv[i + 1]);
         else if (a == "--tap-capture") tapCapPath = argv[i + 1];
         else if (a == "--tap-loopback") tapLoopPath = argv[i + 1];
+        else if (a == "--tap-raw") g_tapRaw = atoi(argv[i + 1]) != 0;
     }
     QueryPerformanceFrequency(&g.qpcFreq);
     if (!stimPath.empty()) {

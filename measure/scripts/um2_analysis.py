@@ -289,5 +289,6 @@ def null_test(digital_ref_i16, captured_f32_mono, scale=32768.0, max_search=9600
             "residual_dbfs": round(dbfs(resid / scale), 2), "best_fit_gain_db": round(20 * np.log10(abs(g) + 1e-20), 4),
             "identical_samples_percent": round(100.0 * float(np.mean(resid == 0)), 3),
             "bit_perfect": bool(np.all(resid == 0)),
-            "conclusive": bool(act.mean() > 0.5),
-            **({} if act.mean() > 0.5 else {"reason": "referencia quase toda zero: sem sinal para comparar"})}
+            "conclusive": bool(act.mean() > 0.5 and np.sqrt(np.mean(b ** 2)) > 1.0),
+            **({} if act.mean() > 0.5 and np.sqrt(np.mean(b ** 2)) > 1.0 else
+               {"reason": "referencia ou captura quase toda zero (< 1 LSB RMS): sem sinal para comparar"})}
