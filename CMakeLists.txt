@@ -79,3 +79,7 @@ target_link_libraries(raw_capture_test PRIVATE ole32)
 add_executable(um2_asio_probe measure/tools/um2_asio_probe.cpp)
 target_include_directories(um2_asio_probe PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/measure/tools" "${ASIO_SDK_DIR}")
 target_link_libraries(um2_asio_probe PRIVATE ole32)
+
+# Diagnostico: quem muda o volume do endpoint de captura da UM2 (so leitura)
+add_executable(volume_watch tools/volume_watch.cpp)
+target_link_libraries(volume_watch PRIVATE ole32)
