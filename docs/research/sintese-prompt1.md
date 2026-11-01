@@ -13,7 +13,7 @@
 | 4 | Arquitetura recomendada: host ASIO em userland sobre WASAPI Exclusive + RAW + event-driven. | É o que já existe. O esforço vai para fan-out e DSP, não para transporte. |
 | 5 | `AUDCLNT_STREAMOPTIONS_RAW` é a via suportada para matar APO. `IPolicyConfig` é não documentado (explica o 0x800706C5); property store é frágil e reverte em update. | Para de brigar com registro. RAW na inicialização do stream. |
 | 6 | ~~Process Loopback substitui o VB-CABLE.~~ **CORRIGIDO:** Process Loopback *captura a saída* de um processo. O Discord precisa de um *microfone* — não aceita processo como entrada. Os dois dossiês erram isso. | Discord continua precisando de cabo virtual; a correção barata é pôr CABLE Input/Output em **48 kHz** (hoje 192 kHz) e matar o resampling em cascata. Captura por processo serve ao OBS. Ver ADR 0003. |
-| 7 | Gain staging: escalar do endpoint travado em **exatamente 1.0**; todo ganho no knob analógico XENYX, picos em ~-12 a -6 dBFS. | Muda o estado atual (slider em 19% = -15,7 dB joga bits fora). |
+| 7 | Gain staging: nível do endpoint em **0,0 dB** (ganho linear 1.0 — *não* `SetMasterVolumeLevelScalar(1.0)`, que é slider em 100%; ver ADR 0005); todo ganho no knob analógico XENYX, picos em ~-12 a -6 dBFS. | Muda o estado atual (slider em 19% = -15,7 dB joga bits fora). |
 | 8 | DSP pesado **nunca** na thread ASIO. Fan-out SPSC lock-free; DSP só na thread secundária. | Confirma a lição do rollback de hoje. |
 | 9 | Drift: nunca inserir/descartar sample. ASRC contínuo com r8brain-free-src (MIT) + controlador PI sobre nível de buffer. | Só no ramo da bridge. Caminho da DAW intocado. |
 | 10 | Supressão: DeepFilterNet > RNNoise > subtração espectral STFT caseira. Expander RMS *antes*, não gate hard. | A tentativa STFT de hoje estava no algoritmo errado **e** no lugar errado. |
@@ -71,13 +71,13 @@ Resolver C1–C6 e produzir `fatos-verificados-um2.md`: cada fato com fonte prim
 ### Fase 1 — Harness de medição ANTES de mudar o driver
 Hoje a gente reverteu por não ter como provar melhora ou piora. Todo critério de aceite dos dois dossiês é mensurável, e não temos o instrumento. Então o instrumento vem primeiro:
 - RTL com loopback físico (saída L → entrada), repetível, com desvio padrão.
-- Piso de ruído em PSD + dBFS, com o endpoint em 1.0 e sem APO.
+- Piso de ruído em PSD + dBFS, com o endpoint em 0,0 dB e sem APO.
 - Contador de deadline miss / underrun dentro do próprio host (QPC, p50/p99/max).
 - Sweep senoidal → THD+N e resposta de banda (detecta o degrau de 7 kHz do Voice Clarity).
 - Script único que roda tudo e cospe um relatório comparável entre builds.
 
 ### Fase 2 — Os três ganhos baratos (nessa ordem, medindo entre cada um)
-1. **Escalar do endpoint em exatamente 1.0** + ganho no XENYX para picos ~-9 dBFS. (Hoje está em 19% = jogando ~2,6 bits fora.)
+1. **Nível do endpoint em 0,0 dB** + ganho no XENYX para picos ~-9 dBFS. (Hoje está em 19% = jogando ~2,6 bits fora.)
 2. **RAW + expander RMS como primeiro estágio** — é a resposta certa para o problema de hoje. O erro não foi ligar o RAW; foi ligar o RAW e deixar o OTT do FL levantar o piso sem nada antes dele.
 3. **VB-CABLE em 48 kHz** (não em 192 kHz) — mata o resampling em cascata. Process Loopback não substitui o cabo para o Discord (ver item 6 corrigido); serve só ao OBS.
 

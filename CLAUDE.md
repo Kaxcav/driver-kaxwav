@@ -22,19 +22,29 @@ Host ASIO em **userland** sobre **WASAPI Exclusive + RAW + event-driven**.
 ## INVARIANTES — violar qualquer uma destas é bug, não escolha de estilo
 
 1. **Nada de custo variável no callback de áudio.** Zero alocação (`new`, `malloc`,
-   `std::vector::push_back`), zero lock (`std::mutex`), zero log, zero I/O, zero exceção,
-   zero FFT, zero inferência de ML. O callback copia para ring buffer e retorna.
+   `std::vector::push_back`), zero lock (`std::mutex`, `EnterCriticalSection`), zero log,
+   zero I/O, zero exceção, zero FFT, zero inferência de ML. O callback copia para ring
+   buffer e retorna. Exceção única e obrigatória: a thread de áudio **espera o evento do
+   WASAPI** (`WaitForSingleObject`/`WaitForMultipleObjects` no evento de buffer + evento de
+   parada) — esse é o loop event-driven. Proibido é esperar qualquer coisa que outra thread
+   segura. Checklist que mande "zerar WaitForSingleObject" no caminho crítico está errado.
 2. **DSP pesado só na thread secundária.** Expander, ASRC, supressão neural: todos no
    consumidor do fan-out, nunca no caminho da DAW. Tentativa de STFT na thread ASIO já
    foi revertida uma vez.
 3. **Fan-out é SPSC lock-free** (`std::atomic`, índices separados, `alignas(64)` contra
    false sharing). Produtor escreve cego; consumidor absorve o drift via ASRC.
-4. **Escalar do endpoint de captura = exatamente 1.0.** Nunca aplicar ganho digital
-   pós-ADC em 16 bits (eleva o piso irrecuperavelmente); nunca atenuar (joga bits fora).
-   Ganho vem do knob analógico. Se o código escrever volume de endpoint, só pode escrever 1.0.
+4. **Nível do endpoint de captura = 0,0 dB (ganho linear 1.0).** Escrever com
+   `IAudioEndpointVolume::SetMasterVolumeLevel(0.0f, nullptr)`, depois de conferir com
+   `GetVolumeRange` que 0 dB está dentro da faixa.
+   **NUNCA `SetMasterVolumeLevelScalar(1.0f)`**: o "scalar" dessa API é a *posição do
+   slider* (curva audio-tapered, 1.0 = máximo da faixa), não ganho unitário. Nesta máquina
+   1.0 = slider em 100% = ganho digital máximo — exatamente o bug do chiado (86% já dava
+   ≈ +13 dB; 0 dB fica em ~54%). Nunca aplicar ganho digital pós-ADC em 16 bits (eleva o
+   piso irrecuperavelmente); nunca atenuar (joga bits fora). Ganho vem do knob analógico.
 5. **Thread de áudio via MMCSS.** `AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex)`
    + `AvSetMmThreadPriority(h, AVRT_PRIORITY_CRITICAL)`. Nunca `THREAD_PRIORITY_TIME_CRITICAL`
-   cru. Nunca `timeBeginPeriod` como muleta de estabilidade.
+   cru — nem como "fallback" se o MMCSS falhar: se `AvSetMmThreadCharacteristicsW` retornar
+   NULL, registre o erro e reporte, não mascare. Nunca `timeBeginPeriod` como muleta.
 6. **APO se desliga com `AUDCLNT_STREAMOPTIONS_RAW` na inicialização do stream.** Não via
    `IPolicyConfig` (não documentado, falha com `0x800706C5` nesta máquina) e não por
    registro (reverte em update de driver).
@@ -44,16 +54,28 @@ Host ASIO em **userland** sobre **WASAPI Exclusive + RAW + event-driven**.
    Resampling em cascata é degradação silenciosa.
 9. **Medir antes e depois, uma mudança por vez.** Nada entra sem número. "Soou melhor"
    não é evidência — foi exatamente assim que a sessão anterior terminou em rollback.
-10. **Nunca comitar o ASIO SDK.** Licença proprietária Steinberg, sem redistribuição.
-    Fica em `third_party/asio-sdk/` (gitignorado). Idem DLLs compiladas e `.etl`/`.wav`.
+10. **Nunca comitar o ASIO SDK.** O SDK em uso (2.3.3, 2019) é só proprietário; o 2.3.4+ é
+    dual GPLv3/proprietário, mas o produto é comercial e fechado. Fica fora do repo
+    (`ASIO_SDK_DIR` aponta para `C:\driver xd\asiosdk`). Idem DLLs, `.etl`, `.wav`.
+11. **O segredo de licença nunca entra no Git.** O array HMAC vive em `src/UM2LicenseSecret.h`
+    (gitignorado); só o `.example.h` é versionado. O gerador de chaves
+    (`generate_license.py`, `Gerar_Chave_Cliente_UM2.bat`) é ferramenta do vendedor e não vive
+    neste repo. `donate_config.json` (chave PIX) idem. O CI barra os três.
+
+## Repo e migração
+- Repo **privado**, escopo só UM2/UMC22. Código de origem: `C:\driver xd\behringer-um2`.
+- A importação segue `MIGRATION.md` à risca (3 commits, passos 🔒 antes do primeiro push).
+- **Bug ativo:** `panel_backend.py:1675` (`POST /api/auto-gain`) chama
+  `ensure_microphone_gain(0.86)` → slider em 86% → chiado. Corrigir no commit 3 da migração.
 
 ## Perguntas ABERTAS — não assuma resposta
-Estão em `docs/FATOS-VERIFICADOS.md` como C1–C6. Enquanto abertas, **não escreva código que
-dependa delas** e não cite número de dossiê como se fosse fato. Resumo:
-- **C1** Modo de clock do ADC: assíncrono ou síncrono? Define se o ASRC com PI é obrigatório.
-- **C2** Orçamento de RTL e group delay dos filtros. Define o critério de aceite (≤5 ms vs ≤12 ms).
+Estão em `docs/FATOS-VERIFICADOS.md`. C1, C4 e C7 e a parte do chip de C2 já foram fechados
+com datasheet/documentação oficial — use esses valores. Enquanto um item estiver aberto,
+**não escreva código que dependa dele** e não cite número de dossiê como se fosse fato. Abertos:
+- **C2** RTL total (o chip contribui 0,66 ms; o resto só medindo). Define o critério de aceite.
 - **C3** `ASIOSTInt16LSB` vs `ASIOSTInt32LSB`.
-- **C4** Latência algorítmica real do DeepFilterNet (10 ms ou 40 ms?).
+- **C8** Entrada (assíncrona, cristal da UM2) e saída (adaptativa, ritmo do host) derivam entre
+  si em sessão duplex longa. Pode exigir correção também no caminho da DAW.
 - **C5** Qual API abre o stream. **`IAudioClient3::InitializeSharedAudioStream` é shared mode
   por definição** — não existe combiná-la com exclusive. Exclusive é `IAudioClient::Initialize`
   + `AUDCLNT_SHAREMODE_EXCLUSIVE` + `AUDCLNT_STREAMFLAGS_EVENTCALLBACK`.
@@ -61,10 +83,15 @@ dependa delas** e não cite número de dossiê como se fosse fato. Resumo:
   usa `IAudioClock2::GetDevicePosition`. Os dossiês erram isso; não copie.
 
 ## Os dossiês em `docs/research/` são FONTE, não verdade
-Foram gerados por pesquisa automatizada e contêm API inexistente (C5, C6) e números
-inconsistentes entre si (C2). Use-os para localizar fontes primárias — datasheet do PCM2902,
+Foram gerados por pesquisa automatizada e contêm API inexistente (C5, C6), números
+inconsistentes entre si (C2) e código com bugs (errata E1–E17 em `sintese-prompt2.md`:
+overflow de QPC→ns em ~30 min, `PropVariantClear` em memória de pilha, `ASE_NoClock` errado…). Use-os para localizar fontes primárias — datasheet do PCM2902,
 Microsoft Learn, repo do DeepFilterNet — nunca como citação final. Fato só entra em
 `FATOS-VERIFICADOS.md` com fonte primária ou medição nesta máquina.
+
+## Skill
+Para receitas de API corrigidas (exclusive com retry, RAW, volume 0 dB, QPC→ns, contrato ASIO,
+process loopback) e protocolo de medição, use a skill **engenharia-driver-audio-windows**.
 
 ## Fluxo de trabalho obrigatório
 1. Rodar o harness (`measure/`) e guardar o baseline.
@@ -74,10 +101,11 @@ Microsoft Learn, repo do DeepFilterNet — nunca como citação final. Fato só 
 5. Ganho confirmado → commit com os números no corpo da mensagem.
 
 ## Build
-- MSVC x64, Release. Sistema de build: o do código existente (ver `MIGRATION.md`).
-- ASIO SDK: baixar da Steinberg e extrair em `third_party/asio-sdk/`.
+- MSVC x64, Release, CMake (o `CMakeLists.txt` do projeto atual, na raiz).
 - Alvos: `BehringerUM2ASIODriver.dll` (COM/ASIO), `BehringerUM2Bridge.dll`,
-  `BehringerUM2Panel.exe`, `test_um2_host.exe`.
+  `BehringerUM2Panel.exe` (PyInstaller, `panel/BehringerUM2Panel.spec`), `test_um2_host.exe`.
+- `cmake -S . -B build -A x64 -DASIO_SDK_DIR="C:/driver xd/asiosdk/asiosdk_2.3.3_2019-06-14/common"`
+- Requer `src/UM2LicenseSecret.h` local (copiar do cofre; formato em `.example.h`).
 - Registro COM do ASIO em `HKLM\SOFTWARE\ASIO` (ou HKCU para dev).
 
 ## Estilo

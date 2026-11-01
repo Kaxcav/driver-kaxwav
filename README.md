@@ -15,12 +15,7 @@ kernel-mode: [`docs/decisions/0001`](docs/decisions/0001-nao-escrever-driver-ker
 ## Estrutura
 | Pasta | Conteúdo |
 |---|---|
-| `src/asio/` | Objeto COM e implementação `IASIO` |
-| `src/core/` | Cliente WASAPI, ring buffer SPSC, relógio/posição |
-| `src/dsp/` | Expander, ASRC (r8brain), adaptadores de supressão |
-| `src/bridge/` | Fan-out e Process Loopback para apps de comunicação |
-| `src/ipc/` | Protocolo host ↔ painel |
-| `src/common/` | Log fora do caminho crítico, telemetria, QPC, erros |
+| `src/` | Driver ASIO, bridge, DSP, IPC, licença — plano na importação, módulos depois (`src/README.md`) |
 | `panel/` | Painel de controle (backend Python + web) |
 | `measure/` | Harness de medição: RTL, piso, THD+N, glitches |
 | `tests/` | `test_um2_host` e testes unitários |
@@ -31,9 +26,9 @@ kernel-mode: [`docs/decisions/0001`](docs/decisions/0001-nao-escrever-driver-ker
 
 ## Build
 1. Visual Studio 2022 (MSVC x64), Release.
-2. Baixar o **ASIO SDK** da Steinberg e extrair em `third_party/asio-sdk/`
-   (ver `third_party/README.md`). Ele é proprietário e não pode ser redistribuído.
-3. O sistema de build é o do código existente, trazido na migração (`MIGRATION.md`).
+2. ASIO SDK local, fora do repo: `-DASIO_SDK_DIR=".../asiosdk/.../common"` (ver `third_party/README.md`).
+3. `src/UM2LicenseSecret.h` local (formato em `src/UM2LicenseSecret.example.h`).
+4. `cmake -S . -B build -A x64 && cmake --build build --config Release`
 
 ## Estado
 Ver [`docs/ROADMAP.md`](docs/ROADMAP.md). Perguntas técnicas ainda abertas estão em

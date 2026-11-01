@@ -55,3 +55,24 @@ panel/web/dist/
 .env.local
 .DS_Store
 Thumbs.db
+
+# --- Segredos e dados pessoais (repo privado, mas mesmo assim fora do git) ---
+# Segredo HMAC das licenças PRO: só o .example.h é versionado
+src/UM2LicenseSecret.h
+# Gerador de chaves é ferramenta do vendedor — vive fora deste repo
+tools/generate_license.py
+Gerar_Chave_Cliente_UM2.bat
+license.key
+*.license
+# Config de doação contém chave PIX: versionar só o .example.json
+panel/donate_config.json
+
+# --- Artefatos do painel (PyInstaller) ---
+panel/build/
+panel/dist/
+panel/*.exe
+panel/*.dll
+
+# --- Logs e medições brutas do projeto antigo ---
+driver_um2.log
+tools/measurements/*.wav

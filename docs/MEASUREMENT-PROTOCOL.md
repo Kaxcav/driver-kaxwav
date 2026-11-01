@@ -4,7 +4,7 @@ Toda mudança é medida contra o baseline anterior. Uma mudança por vez.
 
 ## Condições fixas
 - 48 kHz, buffer 64 / 128 / 256.
-- Escalar do endpoint de captura = 1.0. Aprimoramentos do Windows desligados.
+- Nível do endpoint de captura = 0,0 dB (`GetMasterVolumeLevel`, não posição do slider). Aprimoramentos desligados.
 - Mesmo cabo de loopback, mesma posição de GAIN (anotar), mesmo nível de saída.
 - 5 min de aquecimento antes de medir. Mínimo 5 repetições por métrica.
 
