@@ -26,6 +26,7 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
 | **Drift entrada × saída (M6, fecha C8 nesta máquina)** | Entrada **−10,870 ppm**, saída **−10,872 ppm** vs QPC; diferencial **+0,002 ppm**; **0,0 amostra** acumulada em 1 h; 0 descontinuidades. Janelas de 5 min: cada stream entre −10,70 e −11,02 ppm, diferencial dentro de ±0,08 ppm | Medição local: `um2_drift`, WASAPI exclusive event-driven, captura+render simultâneos, 48 kHz/16-bit/2 ch, período 10 ms, `IAudioClock::GetPosition` contra QPC a cada 1 s (`measure/baselines/2026-11-01-f982fe7.json`, M6) | 2026-11-01 |
 | **Período mínimo exclusive (`usbaudio.sys`, UM2)** | **3,0 ms** (`min_100ns = 30000`) em captura e render; padrão 10 ms. A 48 kHz o menor buffer exclusive é **144 frames** | Medição local: `IAudioClient::GetDevicePeriod` (`um2_drift`, M6) | 2026-11-01 |
 | **Thread de áudio sob carga — ExclusivePro perde callbacks com ou sem TIME_CRITICAL** | ExclusivePro @256, 12 processos em busy-loop. A/B intercalado 4×4, 30 s cada: **com** TIME_CRITICAL 5.994–6.006 callbacks/min, **sem** 5.998–6.004 (esperado 11.250); maior intervalo 10,4–11,5 ms nos dois. Uma corrida isolada anterior com TIME_CRITICAL deu 11.253/min (`49173c6`) e **não se reproduziu**. Ociosa: 11.250/min. SharedFlex sob carga: ≥ 0,999 do esperado | Medição local (`measure/baselines/2026-11-01-ab-time-critical.json`, `2026-11-01-s2-carga.json`, `2026-11-01-p4*.json`) | 2026-11-01 |
+| **Prioridade real da thread de áudio (invariante 5)** | Amostrada por `NtQueryInformationThread` sob carga, EP@256, 2 corridas por variante: **só MMCSS = 24**, **MMCSS + `AvSetMmThreadPriority(CRITICAL)` = 26**, **MMCSS + `SetThreadPriority(TIME_CRITICAL)` = 15**: o TIME_CRITICAL **substitui** o reforço do MMCSS. As 2 threads do `audiokse.dll` no mesmo processo ficam em 25 nas três. Callbacks/min iguais nas três (~6.000 sob carga) | Medição local (`measure/baselines/2026-11-01-prio-variantes.json`; A/B 4×4 `2026-11-01-ab-avrt-critical.json`) | 2026-11-01 |
 | **Configuração MMCSS desta máquina** (só leitura, nada alterado) | `SystemProfile`: `SystemResponsiveness` = **20**, `NetworkThrottlingIndex` = 0xFFFFFFFF. `Tasks\Pro Audio`: `Scheduling Category` = **High**, `Priority` = **1**, `Clock Rate` = **10000** (1 ms), `GPU Priority` = 8, `SFIO Priority` = Normal, `Background Only` = False, `Affinity` = 0 | `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile` (leitura local) | 2026-11-01 |
 | **Semântica de `SetMasterVolumeLevelScalar`** | Valor normalizado *audio-tapered* 0.0–1.0, **1.0 = máximo da faixa**. Não é ganho linear | Microsoft Learn, `IAudioEndpointVolume::SetMasterVolumeLevelScalar` | 2026-10-31 |
 | **Licença do ASIO SDK** (C7) | **Dual: GPLv3 ou proprietária Steinberg**, desde out/2025 | Comunicado Steinberg 2025-10-29; heise | 2026-10-31 |
@@ -52,9 +53,9 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
     Os de **render** caem para um a cada **10,0 ms** @256 (5.998/min) e **8,0 ms** @144 (7.450/min).
     Os dois eventos são atendidos pela mesma thread, no mesmo `WaitForMultipleObjects`.
   - A thread acorda na hora: do *ready* ao *run* (CSwitch/ReadyThread) dá p50 3,7 µs, p99 6,6 µs sob
-    carga, contra 4,9/9,8 µs ociosa. Prioridade na troca de contexto = 15 nas duas, que é o valor
-    do `THREAD_PRIORITY_TIME_CRITICAL` numa classe normal. **A conferir:** o piso pode estar
-    *substituindo* o boost do MMCSS em vez de somar a ele. Falta um trace sem o piso para comparar.
+    carga, contra 4,9/9,8 µs ociosa. Prioridade na troca de contexto = 15 nas duas: o
+    `TIME_CRITICAL` estava substituindo o reforço do MMCSS (confirmado na linha "Prioridade real";
+    removido). Com 24/26 a fome do render continua igual, então a prioridade da nossa thread não é a causa.
   - No render sob carga, o padding na hora do evento é **0** (o device já consumiu tudo). Ociosa, ainda
     há 1 buffer na fila. O loop só despacha o `bufferSwitch` no evento de render, então o relógio ASIO
     cai para 53%/37% e o FIFO de captura descarta 1,33 M/1,77 M amostras por minuto. Não houve
@@ -70,6 +71,7 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
     olhar DPC/ISR e as conclusões de IRP no mesmo trace.
   - A hipótese anterior (throttle do MMCSS via `SystemResponsiveness` = 20) foi descartada. Registro do
     sistema não alterado.
+- **`pdcOffsetSamples` (painel) não tem como estar calibrado antes do M1.** Um offset manual muda a latência de entrada informada ao host (`getLatencies` → alinhamento da gravação) sem medição que o sustente. Em 01/11 o painel novo aplicou −256 vindo do `um2_config.json` (não ajustado de propósito); voltou para 0 no painel, no `um2_config.json` e no registro (`PdcOffsetSamples`). Só mexer nisso com o RTL do M1 medido.
 - **Consequência para o caminho da DAW:** com diferencial de 0,002 ppm, o FIFO de captura não
   precisa de ASRC nem de sample-slip por drift nesta máquina.
 - **C2 → o chip contribui 0,66 ms.** O dossiê v2 (1,2 ms por estágio) estava errado. O resto
@@ -141,7 +143,7 @@ Evidência de execução: `driver_um2.log` da suíte 8/8 de 31/10 e `um2_drift` 
 | Errata | Situação no código |
 |---|---|
 | E5 (QPC→ns estoura `uint64`) | **Não ocorre.** A conversão é em `double` (1771): sem overflow; perde resolução de 1 ns só depois de 2^53 ns ≈ 104 dias de uptime |
-| E2 / invariante 5 (TIME_CRITICAL) | **Exceção por decisão do usuário (2026-11-01), evidência contestada pelo A/B** (ver "Thread de áudio sob carga"). Pendência do MMCSS falho **fechada em 01/11**: o `TIME_CRITICAL` só é aplicado se `AvSetMmThreadCharacteristicsW` der certo; se falhar, o driver registra `GetLastError()` e segue sem piso (A/B 4×4 sob carga sem diferença: `measure/baselines/2026-11-01-ab-mmcss-gate.json`). Continua faltando `AvSetMmThreadPriority(AVRT_PRIORITY_CRITICAL)`, que a invariante pede. Leitura original: **Ocorre, pior que na errata:** `AvSetMmThreadCharacteristicsW(L"Pro Audio")` e, em seguida, `SetThreadPriority(THREAD_PRIORITY_TIME_CRITICAL)` incondicional (1507–1508); retorno do MMCSS não é checado e não há `AvSetMmThreadPriority` |
+| E2 / invariante 5 (TIME_CRITICAL) | **Fechado em 01/11:** `SetThreadPriority(TIME_CRITICAL)` removido; a thread usa MMCSS "Pro Audio" + `AvSetMmThreadPriority(AVRT_PRIORITY_CRITICAL)` (26). Falha do MMCSS é registrada e não há fallback de prioridade crua. A exceção aberta no mesmo dia foi encerrada: o piso rebaixava a thread de 24-26 para 15 |
 | E6 (`getLatencies` arbitrário) | Parcial: modelo por modo (86–110), não calibrado por RTL medido |
 | Invariante 6 (RAW) | Captura shared sem RAW (1180–1186, 1032–1036) |
 | Invariante 1 (custo variável no callback) | `processOneAsioBlock` roda o DSP do canal inteiro (HPF, gate, preamp, de-esser, compressor, cab sim, master) e grava telemetria do painel na mesma thread — dentro do mesmo bloco cronometrado pelo M5 |

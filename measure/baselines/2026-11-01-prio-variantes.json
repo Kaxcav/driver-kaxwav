@@ -1,0 +1,236 @@
+{
+ "run_id": "2026-11-01-prio-variantes",
+ "date": "2026-11-01T20:03:12",
+ "commit": "91dc1d3",
+ "variants": {
+  "V1": {
+   "dll": "build\\ab\\V1_mmcss.dll",
+   "md5": "79D316F612BD20B60A8BE8017FE1EC43"
+  },
+  "V2": {
+   "dll": "build\\ab\\V2_mmcss_avrtcrit.dll",
+   "md5": "A5B128E7081E41CD444ABE2E25568D15"
+  },
+  "V3": {
+   "dll": "build\\ab\\V3_mmcss_tc.dll",
+   "md5": "DEE610756CC7A8FC36CD153F3C8CB4E0"
+  }
+ },
+ "load": "12 busy-loops",
+ "mode": "ExclusivePro",
+ "buffer": 256,
+ "note": "prioridade atual/base amostrada por NtQueryInformationThread a cada 0,5 s",
+ "runs": [
+  {
+   "variant": "V1",
+   "rep": 1,
+   "audio_tid": 32344,
+   "log": "[20:01:07.269] MMCSS \"Pro Audio\" OK (taskIndex=1859, tid=32344) variante=V1_mmcss",
+   "audio_thread": {
+    "tid": 32344,
+    "start": "ucrtbase.dll+0x2CD00",
+    "samples": 35,
+    "current_base": {
+     "24/16": 34,
+     "8/0": 1
+    }
+   },
+   "other_high_threads": [
+    {
+     "tid": 36736,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 35,
+     "current_base": {
+      "25/17": 35
+     }
+    },
+    {
+     "tid": 692,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 35,
+     "current_base": {
+      "25/17": 35
+     }
+    }
+   ],
+   "callbacks": 1999,
+   "seconds": 20,
+   "callbacks_per_min": 5997.0
+  },
+  {
+   "variant": "V2",
+   "rep": 1,
+   "audio_tid": 31484,
+   "log": "[20:01:28.151] MMCSS \"Pro Audio\" OK (taskIndex=1863, tid=31484) variante=V2_mmcss_avrtcrit",
+   "audio_thread": {
+    "tid": 31484,
+    "start": "ucrtbase.dll+0x2CD00",
+    "samples": 34,
+    "current_base": {
+     "26/18": 34
+    }
+   },
+   "other_high_threads": [
+    {
+     "tid": 32024,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 34,
+     "current_base": {
+      "25/17": 34
+     }
+    },
+    {
+     "tid": 33352,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 34,
+     "current_base": {
+      "25/17": 34
+     }
+    }
+   ],
+   "callbacks": 2001,
+   "seconds": 20,
+   "callbacks_per_min": 6003.0
+  },
+  {
+   "variant": "V3",
+   "rep": 1,
+   "audio_tid": 36924,
+   "log": "[20:01:49.367] MMCSS \"Pro Audio\" OK (taskIndex=1872, tid=36924) variante=V3_mmcss_tc",
+   "audio_thread": {
+    "tid": 36924,
+    "start": "ucrtbase.dll+0x2CD00",
+    "samples": 35,
+    "current_base": {
+     "15/16": 35
+    }
+   },
+   "other_high_threads": [
+    {
+     "tid": 27812,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 35,
+     "current_base": {
+      "25/17": 35
+     }
+    },
+    {
+     "tid": 32012,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 35,
+     "current_base": {
+      "25/17": 35
+     }
+    }
+   ],
+   "callbacks": 2002,
+   "seconds": 20,
+   "callbacks_per_min": 6006.0
+  },
+  {
+   "variant": "V1",
+   "rep": 2,
+   "audio_tid": 33008,
+   "log": "[20:02:10.187] MMCSS \"Pro Audio\" OK (taskIndex=1876, tid=33008) variante=V1_mmcss",
+   "audio_thread": {
+    "tid": 33008,
+    "start": "ucrtbase.dll+0x2CD00",
+    "samples": 34,
+    "current_base": {
+     "24/16": 34
+    }
+   },
+   "other_high_threads": [
+    {
+     "tid": 29400,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 34,
+     "current_base": {
+      "25/17": 34
+     }
+    },
+    {
+     "tid": 30024,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 34,
+     "current_base": {
+      "25/17": 34
+     }
+    }
+   ],
+   "callbacks": 2003,
+   "seconds": 20,
+   "callbacks_per_min": 6009.0
+  },
+  {
+   "variant": "V2",
+   "rep": 2,
+   "audio_tid": 31020,
+   "log": "[20:02:30.743] MMCSS \"Pro Audio\" OK (taskIndex=1881, tid=31020) variante=V2_mmcss_avrtcrit",
+   "audio_thread": {
+    "tid": 31020,
+    "start": "ucrtbase.dll+0x2CD00",
+    "samples": 34,
+    "current_base": {
+     "26/18": 34
+    }
+   },
+   "other_high_threads": [
+    {
+     "tid": 2888,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 34,
+     "current_base": {
+      "25/17": 34
+     }
+    },
+    {
+     "tid": 35696,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 34,
+     "current_base": {
+      "25/17": 34
+     }
+    }
+   ],
+   "callbacks": 2001,
+   "seconds": 20,
+   "callbacks_per_min": 6003.0
+  },
+  {
+   "variant": "V3",
+   "rep": 2,
+   "audio_tid": 27792,
+   "log": "[20:02:51.658] MMCSS \"Pro Audio\" OK (taskIndex=1886, tid=27792) variante=V3_mmcss_tc",
+   "audio_thread": {
+    "tid": 27792,
+    "start": "ucrtbase.dll+0x2CD00",
+    "samples": 33,
+    "current_base": {
+     "15/16": 33
+    }
+   },
+   "other_high_threads": [
+    {
+     "tid": 14128,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 34,
+     "current_base": {
+      "25/17": 34
+     }
+    },
+    {
+     "tid": 37468,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 34,
+     "current_base": {
+      "25/17": 34
+     }
+    }
+   ],
+   "callbacks": 2001,
+   "seconds": 20,
+   "callbacks_per_min": 6003.0
+  }
+ ]
+}

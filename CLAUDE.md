@@ -44,16 +44,13 @@ Host ASIO em **userland** sobre **WASAPI Exclusive + RAW + event-driven**.
    1.0 = slider em 100% = ganho digital máximo — exatamente o bug do chiado (86% já dava
    ≈ +13 dB; 0 dB fica em ~54%). Nunca aplicar ganho digital pós-ADC em 16 bits (eleva o
    piso irrecuperavelmente); nunca atenuar (joga bits fora). Ganho vem do knob analógico.
-5. **Thread de áudio via MMCSS.** `AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex)` é
-   **obrigatório**; se retornar NULL, registre o erro e reporte, não mascare. Nunca `timeBeginPeriod`
-   como muleta.
-   **Exceção (2026-11-01, decisão do usuário, EVIDÊNCIA CONTESTADA):** `SetThreadPriority(
-   THREAD_PRIORITY_TIME_CRITICAL)` fica no código **só depois de o MMCSS ter sido registrado, como
-   piso** — nunca no lugar dele nem como fallback de falha. A justificativa original (commit
-   `49173c6`: 11.253 vs 6.000 callbacks/min sob carga) **não se reproduziu**: no A/B intercalado 4×4
-   (`measure/baselines/2026-11-01-ab-time-critical.json`) com e sem o TIME_CRITICAL o ExclusivePro
-   @256 sob carga deu ~6.000/min nos dois. Ou seja, hoje não há medição a favor nem contra o piso; e o
-   ExclusivePro sob carga perde ~47% dos callbacks de qualquer jeito (investigação aberta).
+5. **Thread de áudio via MMCSS.** `AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex)` +
+   `AvSetMmThreadPriority(h, AVRT_PRIORITY_CRITICAL)`, e nada mais. Se o MMCSS retornar NULL, registre o
+   erro e reporte, não mascare. **Nunca `SetThreadPriority(THREAD_PRIORITY_TIME_CRITICAL)`**, nem como
+   "piso" depois do MMCSS: medido em 01/11/2026, ele **substitui** o reforço do MMCSS e deixa a
+   thread em 15 (só MMCSS: 24; MMCSS + CRITICAL: 26 —
+   `measure/baselines/2026-11-01-prio-variantes.json`). A exceção aberta em 01/11 está **encerrada**.
+   Nunca `timeBeginPeriod` como muleta.
 6. **APO se desliga com `AUDCLNT_STREAMOPTIONS_RAW` na inicialização do stream.** Não via
    `IPolicyConfig` (não documentado, falha com `0x800706C5` nesta máquina) e não por
    registro (reverte em update de driver).

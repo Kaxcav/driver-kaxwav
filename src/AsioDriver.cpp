@@ -1614,12 +1614,14 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
     DWORD taskIndex = 0;
     HANDLE hMmcss = AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex);
     if (hMmcss) {
-        // Invariant 5 exception (CLAUDE.md, contested evidence): TIME_CRITICAL only as a floor AFTER MMCSS.
-        SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
-        LogAsio("MMCSS \"Pro Audio\" OK (taskIndex=%lu) + piso THREAD_PRIORITY_TIME_CRITICAL", taskIndex);
+        // Invariant 5: MMCSS + AvSetMmThreadPriority(CRITICAL), nothing else. A SetThreadPriority(TIME_CRITICAL)
+        // here REPLACES the MMCSS boost: measured 15 instead of 24 (MMCSS only) / 26 (CRITICAL) on 2026-11-01.
+        if (!AvSetMmThreadPriority(hMmcss, AVRT_PRIORITY_CRITICAL))
+            LogAsio("AVISO: AvSetMmThreadPriority(CRITICAL) falhou (%lu) - segue na prioridade padrao do MMCSS", GetLastError());
+        LogAsio("MMCSS \"Pro Audio\" OK (taskIndex=%lu, tid=%lu) + AvSetMmThreadPriority(CRITICAL)", taskIndex, GetCurrentThreadId());
     } else {
         // No raw-priority fallback: report and run at the default priority.
-        LogAsio("ERRO: AvSetMmThreadCharacteristicsW(\"Pro Audio\") falhou (%lu) - thread de audio SEM MMCSS e SEM piso",
+        LogAsio("ERRO: AvSetMmThreadCharacteristicsW(\"Pro Audio\") falhou (%lu) - thread de audio SEM MMCSS (prioridade padrao)",
                 GetLastError());
     }
 
