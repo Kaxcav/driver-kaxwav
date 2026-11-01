@@ -6,7 +6,8 @@ param(
     [string]$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path,
     [string]$Cases = 'load:256',
     [int]$Seconds = 60,
-    [string]$RunId = ("{0}-wpr-ep" -f (Get-Date -Format 'yyyy-MM-dd'))
+    [string]$RunId = ("{0}-wpr-ep" -f (Get-Date -Format 'yyyy-MM-dd')),
+    [string]$Dll = ''
 )
 $ErrorActionPreference = 'Stop'
 $out = Join-Path $RepoRoot "measure\out\$RunId"
@@ -25,8 +26,9 @@ Invoke-Native 'wpr.exe' @('-cancel') | Out-Null   # a stale session would block 
 $r = Invoke-Native 'wpr.exe' @('-start', $profile, '-filemode')
 Say "wpr -start ($($r.code)): $($r.out)"
 if ($r.code -ne 0) { throw "wpr -start falhou" }
-$py = Invoke-Native 'python' @((Join-Path $RepoRoot 'measure\scripts\diag_exclusive.py'), '--cases', $Cases,
-                               '--seconds', "$Seconds", '--run-id', $RunId)
+$pyArgs = @((Join-Path $RepoRoot 'measure\scripts\diag_exclusive.py'), '--cases', $Cases, '--seconds', "$Seconds", '--run-id', $RunId)
+if ($Dll) { $pyArgs += @('--dll', $Dll) }
+$py = Invoke-Native 'python' $pyArgs
 Say "diag_exclusive: $($py.out)"
 $etl = Join-Path $out 'um2_sched.etl'
 $r = Invoke-Native 'wpr.exe' @('-stop', $etl)
