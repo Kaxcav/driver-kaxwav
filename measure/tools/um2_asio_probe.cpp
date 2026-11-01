@@ -215,6 +215,7 @@ void SetDriverRegistry(int mode, long buffer) {
 int main(int argc, char** argv) {
     std::string dll, recPath, stimPath, tapCapPath, tapLoopPath;
     int mode = 1;
+    bool useCom = false;  // --com 1: load through COM registration (InprocServer32) like a real host
     long buffer = 256;
     double seconds = 2.0;
     for (int i = 1; i + 1 < argc; i += 2) {
@@ -229,6 +230,7 @@ int main(int argc, char** argv) {
         else if (a == "--tap-capture") tapCapPath = argv[i + 1];
         else if (a == "--tap-loopback") tapLoopPath = argv[i + 1];
         else if (a == "--tap-raw") g_tapRaw = atoi(argv[i + 1]) != 0;
+        else if (a == "--com") useCom = atoi(argv[i + 1]) != 0;
     }
     QueryPerformanceFrequency(&g.qpcFreq);
     if (!stimPath.empty()) {
@@ -241,19 +243,34 @@ int main(int argc, char** argv) {
 
     CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     SetDriverRegistry(mode, buffer);
-    std::wstring wdll(dll.begin(), dll.end());
-    HMODULE h = LoadLibraryW(wdll.c_str());
-    if (!h) { printf("{\"ok\":false,\"error\":\"LoadLibrary %lu\"}\n", GetLastError()); return 1; }
-    using GetCO = HRESULT(STDAPICALLTYPE*)(REFCLSID, REFIID, LPVOID*);
-    auto getCO = reinterpret_cast<GetCO>(GetProcAddress(h, "DllGetClassObject"));
-    IClassFactory* cf = nullptr;
+    HMODULE h = nullptr;
     IASIO* asio = nullptr;
-    if (!getCO || FAILED(getCO(CLSID_UM2, IID_IClassFactory, reinterpret_cast<void**>(&cf))) ||
-        FAILED(cf->CreateInstance(nullptr, IID_IASIO_, reinterpret_cast<void**>(&asio)))) {
-        printf("{\"ok\":false,\"error\":\"CreateInstance\"}\n");
-        return 1;
+    if (useCom) {
+        // Exactly what FL Studio / the ASIO SDK host does: CoCreateInstance with the CLSID as the IID,
+        // so the DLL comes from InprocServer32 (the installed one), not from a path.
+        HRESULT hr = CoCreateInstance(CLSID_UM2, nullptr, CLSCTX_INPROC_SERVER, CLSID_UM2, reinterpret_cast<void**>(&asio));
+        if (FAILED(hr) || !asio) { printf("{\"ok\":false,\"error\":\"CoCreateInstance 0x%08lX\"}\n", static_cast<unsigned long>(hr)); return 1; }
+    } else {
+        std::wstring wdll(dll.begin(), dll.end());
+        h = LoadLibraryW(wdll.c_str());
+        if (!h) { printf("{\"ok\":false,\"error\":\"LoadLibrary %lu\"}\n", GetLastError()); return 1; }
+        using GetCO = HRESULT(STDAPICALLTYPE*)(REFCLSID, REFIID, LPVOID*);
+        auto getCO = reinterpret_cast<GetCO>(GetProcAddress(h, "DllGetClassObject"));
+        IClassFactory* cf = nullptr;
+        if (!getCO || FAILED(getCO(CLSID_UM2, IID_IClassFactory, reinterpret_cast<void**>(&cf))) ||
+            FAILED(cf->CreateInstance(nullptr, IID_IASIO_, reinterpret_cast<void**>(&asio)))) {
+            printf("{\"ok\":false,\"error\":\"CreateInstance\"}\n");
+            return 1;
+        }
+        cf->Release();
     }
-    cf->Release();
+    std::string loadedPath;
+    if (HMODULE hm = GetModuleHandleW(L"BehringerUM2ASIODriver.dll")) {
+        wchar_t p[MAX_PATH] = {};
+        GetModuleFileNameW(hm, p, MAX_PATH);
+        loadedPath = um2::Narrow(p);
+    }
+    const long driverVersion = asio->getDriverVersion();
     if (!asio->init(nullptr)) { printf("{\"ok\":false,\"error\":\"init\"}\n"); return 1; }
 
     long minS = 0, maxS = 0, prefS = 0, gran = 0;
@@ -298,7 +315,7 @@ int main(int argc, char** argv) {
     if (thLoop.joinable()) thLoop.join();
     asio->disposeBuffers();
     asio->Release();
-    FreeLibrary(h);
+    if (h) FreeLibrary(h);
     CoUninitialize();
 
     const long long blocks = g.blocks.load();
@@ -313,7 +330,9 @@ int main(int argc, char** argv) {
         size_t p = l.find("Mode=");
         if (l.find("completado") != std::string::npos && p != std::string::npos) mode_active = l.substr(p + 5, l.find(',', p) - (p + 5));
     }
-    printf("{\"ok\":%s,\"create_buffers\":%ld,\"start\":%ld,\"mode_requested\":%d,\"mode_active\":\"%s\",\"buffer\":%ld,"
+    printf("{\"load\":\"%s\",\"loaded_path\":\"%s\",\"driver_version\":%ld,", useCom ? "com" : "path",
+           um2::JsonEscape(loadedPath).c_str(), driverVersion);
+    printf("\"ok\":%s,\"create_buffers\":%ld,\"start\":%ld,\"mode_requested\":%d,\"mode_active\":\"%s\",\"buffer\":%ld,"
            "\"sample_rate\":%.1f,\"buffer_size_range\":[%ld,%ld,%ld,%ld],\"input_latency\":%ld,\"output_latency\":%ld,"
            "\"sample_type\":%ld,\"blocks\":%lld,\"elapsed_s\":%.6f,\"rec_frames\":%lld,\"stim_at\":%lld,\"stim_len\":%zu,"
            "\"reset_requests\":%ld,\"time_info\":{\"count\":%lld,\"first_pos\":%lld,\"last_pos\":%lld,\"non_monotonic\":%lld,"

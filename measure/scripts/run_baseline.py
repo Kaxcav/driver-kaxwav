@@ -39,6 +39,19 @@ REG = r"Software\BehringerUM2\ASIO"
 ALL_STEPS = ["m8", "m2", "m5", "m7", "m1", "m3", "m6"]
 MODES = {1: "SharedFlex", 0: "ExclusivePro"}
 BUFFERS = [64, 128, 256]
+USE_COM = False  # --com: the probe loads the driver via CoCreateInstance (InprocServer32), not by path
+CLSID_UM2 = "{77DBBCCD-91C6-4856-A900-FC8D007D161C}"
+
+
+def com_registered_dll():
+    """InprocServer32 of the driver CLSID as COM resolves it (HKCU wins over HKLM)."""
+    for root in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
+        try:
+            with winreg.OpenKey(root, rf"Software\Classes\CLSID\{CLSID_UM2}\InprocServer32") as k:
+                return winreg.QueryValueEx(k, "")[0]
+        except OSError:
+            continue
+    return None
 
 CONDITION_PROMPTS = {
     "gain_ch1": "Posicao do knob GAIN do canal 1 (ex.: 'minimo', '9h', '12h')",
@@ -72,7 +85,7 @@ def reg_read():
     out = {}
     try:
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, REG) as k:
-            for name in ("DriverMode", "BufferSize"):
+            for name in ("DriverMode", "BufferSize", "DiagCounters"):
                 try:
                     out[name] = winreg.QueryValueEx(k, name)[0]
                 except FileNotFoundError:
@@ -113,6 +126,8 @@ def probe(mode, buffer, seconds, rundir, tag, stim=None, stim_at=0, taps=False, 
     rec = rundir / f"{tag}.i16"
     cmd = [str(PROBE), "--dll", str(DLL), "--mode", str(mode), "--buffer", str(buffer),
            "--seconds", str(seconds), "--rec", str(rec)]
+    if USE_COM:  # load through InprocServer32 (the installed DLL), like FL Studio
+        cmd += ["--com", "1"]
     if stim is not None:
         sp = rundir / f"{tag}.stim.i16"
         A.write_i16(sp, stim)
@@ -122,11 +137,15 @@ def probe(mode, buffer, seconds, rundir, tag, stim=None, stim_at=0, taps=False, 
                 "--tap-raw", "1" if taps == "raw" else "0"]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=REPO, errors="replace")
     last = None
+    last_diag = None
     if poll_telemetry:
         while p.poll() is None:
             t = um2_ipc.read_telemetry()
             if t is not None and t.ownerPid == p.pid:
                 last = t
+            d = um2_ipc.read_diag()  # only present with DiagCounters=1
+            if d is not None and d.ownerPid == p.pid:
+                last_diag = d
             time.sleep(0.5)
     out, err = p.communicate(timeout=seconds + 60)
     try:
@@ -136,6 +155,8 @@ def probe(mode, buffer, seconds, rundir, tag, stim=None, stim_at=0, taps=False, 
     j["_rec"] = str(rec)
     if poll_telemetry:
         j["_telemetry"] = um2_ipc.summarize_telemetry(last)
+        if last_diag is not None:
+            j["_diag"] = um2_ipc.summarize_diag(last_diag)
     (rundir / f"{tag}.probe.json").write_text(json.dumps(j, indent=1, default=str), encoding="utf-8")
     return j
 
@@ -241,7 +262,7 @@ def step_m5(args, rundir, cond):
 
 def _m5_runs(args, rundir, cond, secs, runs):
     for mode in [int(m) for m in args.m5_modes.split(",")]:
-        for buf in BUFFERS:
+        for buf in ([int(b) for b in args.m5_buffers.split(",")] if args.m5_buffers else BUFFERS):
             before = (um2_ipc.read_shared_state(["xruns"]) or {}).get("xruns")
             j = probe(mode, buf, secs, rundir, f"m5_{MODES[mode]}_{buf}", poll_telemetry=True)
             after = (um2_ipc.read_shared_state(["xruns"]) or {}).get("xruns")
@@ -250,7 +271,8 @@ def _m5_runs(args, rundir, cond, secs, runs):
                  "callbacks": j.get("blocks"), "expected_callbacks": round(secs * 48000 / buf),
                  "telemetry": j.get("_telemetry"),
                  "shared_state_xruns_delta": (after - before) if None not in (before, after) else None,
-                 "time_info": j.get("time_info"), "driver_log": j.get("driver_log")}
+                 "time_info": j.get("time_info"), "driver_log": j.get("driver_log"),
+                 "load": j.get("load"), "loaded_path": j.get("loaded_path"), "driver_version": j.get("driver_version")}
             r["punctuality"] = punctuality(r, j)
             # the same recording doubles as ASIO-path noise spectrum (7 kHz step detector)
             try:
@@ -446,9 +468,22 @@ def main():
     ap.add_argument("--m5-seconds", type=int, default=60)
     ap.add_argument("--cpu-load", type=int, default=0, help="M5: N processos em busy-loop durante a medicao")
     ap.add_argument("--m5-modes", default="1,0", help="M5: modos (1=SharedFlex, 0=ExclusivePro)")
+    ap.add_argument("--m5-buffers", help="M5: buffers separados por virgula (default 64,128,256)")
+    ap.add_argument("--dll", help="DLL do driver carregada por caminho (default build/Release)")
+    ap.add_argument("--com", action="store_true",
+                    help="carrega o driver pelo COM (InprocServer32 = DLL instalada), como o FL Studio")
     ap.add_argument("--drift-seconds", type=int, default=3600)
     ap.add_argument("--drift-csv", help="importa uma corrida de um2_drift ja feita em vez de rodar de novo")
     args = ap.parse_args()
+    global DLL, USE_COM
+    USE_COM = args.com
+    if args.dll:
+        DLL = Path(args.dll).resolve()
+    if USE_COM:
+        reg = com_registered_dll()
+        if not reg or not Path(reg).exists():
+            sys.exit(f"--com: InprocServer32 de {CLSID_UM2} ausente ou invalido ({reg})")
+        DLL = Path(reg)  # recorded in the header; the probe itself resolves it through COM
 
     for exe in (DLL, PROBE, DRIFT, RAWCAP):
         if not exe.exists():
@@ -472,7 +507,8 @@ def main():
     header = {
         "schema": 1, "run_id": run_id, "date": dt.datetime.now().isoformat(timespec="seconds"),
         "commit": commit, "describe": git("describe", "--tags", "--always", "--dirty"),
-        "driver_dll": {"path": str(DLL), "md5": md5(DLL), "bytes": DLL.stat().st_size},
+        "driver_dll": {"path": str(DLL), "md5": md5(DLL), "bytes": DLL.stat().st_size,
+                       "load": "com (InprocServer32)" if USE_COM else "path"},
         "machine": {"os": platform.platform(), "cpu": platform.processor()},
         "conditions": cond, "registry_before_run": reg_before,
         "dsp_state_shared_memory": um2_ipc.read_shared_state(),

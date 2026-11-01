@@ -136,3 +136,105 @@ def summarize_telemetry(t):
         "recent_daw_callback_us_max": round(max(daw), 1) if daw else None,
         "recent_gap_us_p99": round(sorted(gaps)[int(0.99 * (len(gaps) - 1))], 1) if gaps else None,
     }
+
+
+# ---------------- engine-loop diagnostics (src/UM2Diag.h, off unless DiagCounters=1) ----------------
+DIAG_RING = 4096
+DIAG_TBINS = 128
+DIAG_TBIN_US = 250
+DIAG_PBINS = 17
+DIAG_MAGIC = 0x47444D55
+WAKE_FLAGS = {1: "render", 2: "capture", 4: "timeout", 8: "ren_write", 16: "cap_disc"}
+
+
+class DiagWake(ctypes.Structure):
+    _fields_ = [("qpc", ctypes.c_int64), ("flags", ctypes.c_uint16), ("capPending", ctypes.c_uint16),
+                ("renPadding", ctypes.c_uint16), ("blocks", ctypes.c_uint16)]
+
+
+_U64 = ctypes.c_uint64
+_I64 = ctypes.c_int64
+_U32 = ctypes.c_uint32
+
+
+class Diag(ctypes.Structure):  # mirror of src/UM2Diag.h (#pragma pack(8) == natural alignment here)
+    _fields_ = (
+        [(n, _U32) for n in ("magic", "version", "ownerPid", "mode", "bufferSize", "renderPeriodFrames",
+                             "capturePeriodFrames", "audioThreadId")]
+        + [("qpcFrequency", _I64)]
+        + [(n, _U64) for n in ("wakes", "waitTimeouts", "wakeRenderOnly", "wakeCaptureOnly", "wakeBoth", "reserved2",
+                               "renderServiced", "captureServiced", "capPacketsMain", "capPacketsOpportunistic",
+                               "capEmptyOnEvent", "capGetBufferFail", "capFramesIn", "capDropFrames",
+                               "capUnderflowFrames", "capUnderflowBlocks", "capDiscontinuity", "capSilentFlag")]
+        + [("lastCapHr", _U32), ("lastRenHr", _U32)]
+        + [(n, _U64) for n in ("renWrites", "renGetBufferFail", "renSkipNoData", "renPaddingFail", "bufferSwitches")]
+        + [(n, _I64) for n in ("maxWakeIntervalTicks", "maxRenderIntervalTicks", "maxCapAgeTicks",
+                               "lastWakeQpc", "lastRenderQpc")]
+        + [("blocksPerWakeHist", _U32 * 8), ("capPendingHist", _U32 * DIAG_PBINS),
+           ("renPaddingHist", _U32 * DIAG_PBINS), ("wakeIntervalHist", _U32 * DIAG_TBINS),
+           ("renderIntervalHist", _U32 * DIAG_TBINS), ("capAgeHist", _U32 * DIAG_TBINS),
+           ("writeIndex", _U64), ("ring", DiagWake * DIAG_RING)]
+    )
+
+
+assert ctypes.sizeof(Diag) == 67520, "src/UM2Diag.h layout changed"
+
+
+def read_diag():
+    with _Mapped("Local\\BehringerUM2Diag", ctypes.sizeof(Diag)) as p:
+        if not p:
+            return None
+        snap = Diag()
+        ctypes.memmove(ctypes.byref(snap), p, ctypes.sizeof(Diag))
+        return snap if snap.magic == DIAG_MAGIC else None
+
+
+def _tpct(hist, q):
+    total = sum(hist)
+    if not total:
+        return None
+    acc = 0
+    for i, c in enumerate(hist):
+        acc += c
+        if acc >= q * total:
+            return (i + 1) * DIAG_TBIN_US  # upper edge, us
+    return None
+
+
+def _nonzero(hist, unit):
+    return {f"{i * unit}": c for i, c in enumerate(hist) if c}
+
+
+def summarize_diag(d):
+    """Counters + histograms of the engine loop, plus the cadence pattern of the most recent wakes."""
+    if d is None or d.wakes == 0:
+        return None
+    f = float(d.qpcFrequency)
+    us = lambda t: round(t / f * 1e6, 1)  # noqa: E731
+    out = {k: getattr(d, k) for k in (
+        "ownerPid", "audioThreadId", "mode", "bufferSize", "renderPeriodFrames", "capturePeriodFrames", "wakes", "waitTimeouts",
+        "wakeRenderOnly", "wakeCaptureOnly", "wakeBoth", "renderServiced", "captureServiced", "capPacketsMain",
+        "capPacketsOpportunistic", "capEmptyOnEvent", "capGetBufferFail", "capFramesIn", "capDropFrames",
+        "capUnderflowFrames", "capUnderflowBlocks", "capDiscontinuity", "capSilentFlag", "renWrites",
+        "renGetBufferFail", "renSkipNoData", "renPaddingFail", "bufferSwitches")}
+    out["lastCapHr"] = f"0x{d.lastCapHr:08X}"
+    out["lastRenHr"] = f"0x{d.lastRenHr:08X}"
+    out["max_wake_interval_us"] = us(d.maxWakeIntervalTicks)
+    out["max_render_interval_us"] = us(d.maxRenderIntervalTicks)
+    out["max_capture_packet_age_us"] = us(d.maxCapAgeTicks)
+    out["blocks_per_wake_hist"] = list(d.blocksPerWakeHist)
+    out["cap_pending_hist_quarter_periods"] = _nonzero(d.capPendingHist, 1)
+    out["ren_padding_hist_quarter_periods"] = _nonzero(d.renPaddingHist, 1)
+    for name in ("wakeIntervalHist", "renderIntervalHist", "capAgeHist"):
+        h = list(getattr(d, name))
+        out[name] = {"bin_us": DIAG_TBIN_US, "p50_us": _tpct(h, 0.5), "p99_us": _tpct(h, 0.99),
+                     "nonzero": _nonzero(h, DIAG_TBIN_US)}
+    n = min(int(d.writeIndex), DIAG_RING)
+    start = int(d.writeIndex) - n
+    w = [d.ring[(start + i) % DIAG_RING] for i in range(n)]
+    w.sort(key=lambda e: e.qpc)
+    out["recent_wakes"] = n
+    out["recent_tail"] = [{"t_us": us(e.qpc - w[0].qpc), "flags": [v for k, v in WAKE_FLAGS.items() if e.flags & k],
+                           "cap_pending": e.capPending, "ren_padding": e.renPadding, "blocks": e.blocks}
+                          for e in w[-48:]] if w else []
+    return out
