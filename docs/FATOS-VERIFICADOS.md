@@ -22,6 +22,7 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
 | APO de captura padrão | Voice Clarity: corte ~7 kHz + supressão | Medição local | 2026-10-31 |
 | `IPolicyConfig` para religar aprimoramentos | Falha com `0x800706C5` | Execução local | 2026-10-31 |
 | Volume de endpoint em 86% | ≈ +13 dB digital; causa principal do chiado percebido | Medição local | 2026-10-31 |
+| **Faixa do volume do endpoint de captura** | **−96 a +30 dB, passo 1,5 dB; 0 dB = slider 0,537** | Medição local: `GetVolumeRange`, `GetMasterVolumeLevel` e `GetMasterVolumeLevelScalar` via COM, nos endpoints de captura que o painel reconhece pelo nome, com o `usbaudio.sys` atual. **Não vem de documentação** | 2026-10-31 |
 | **Semântica de `SetMasterVolumeLevelScalar`** | Valor normalizado *audio-tapered* 0.0–1.0, **1.0 = máximo da faixa**. Não é ganho linear | Microsoft Learn, `IAudioEndpointVolume::SetMasterVolumeLevelScalar` | 2026-10-31 |
 | **Licença do ASIO SDK** (C7) | **Dual: GPLv3 ou proprietária Steinberg**, desde out/2025 | Comunicado Steinberg 2025-10-29; heise | 2026-10-31 |
 | Process Loopback — versão mínima | Windows 10 build 20348 | Microsoft Learn, `AUDIOCLIENT_PROCESS_LOOPBACK_PARAMS` | 2026-10-31 |
@@ -39,6 +40,9 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
 - **C2 → o chip contribui 0,66 ms.** O dossiê v2 (1,2 ms por estágio) estava errado. O resto
   do RTL é USB (1 ms por sentido) + buffering do `usbaudio.sys` + buffer do host —
   isso só se fecha medindo.
+- **Faixa do endpoint → `SetMasterVolumeLevelScalar(1.0)` = +30 dB de ganho digital** depois do ADC
+  (o máximo da faixa), pior que os +13 dB dos 86%. A faixa é do driver de classe e pode mudar com
+  atualização dele: por isso o código confere `GetVolumeRange` a cada execução em vez de usar número fixo.
 - **C4 → DeepFilterNet custa 40 ms.** Serve para o Discord; nunca para monitoramento.
 - **C7 → o SDK só poderia ir para o repo num projeto GPLv3.** O produto é comercial e fechado
   (licença PRO), então vale o termo proprietário: o SDK fica fora do repo.
