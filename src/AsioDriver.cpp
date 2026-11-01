@@ -115,6 +115,7 @@ BehringerUM2AsioDriver::~BehringerUM2AsioDriver() {
     disposeBuffers();
     m_processLoopback.Shutdown();
     ReleaseEndpoints();
+    CloseTelemetry();
     CloseSharedMemory();
     CoUninitialize();
 }
@@ -327,6 +328,51 @@ void BehringerUM2AsioDriver::CloseSharedMemory() {
     if (m_hSharedMem) {
         CloseHandle(m_hSharedMem);
         m_hSharedMem = nullptr;
+    }
+}
+
+// M5: called from start() before the audio thread exists (never from the audio thread).
+void BehringerUM2AsioDriver::OpenTelemetry() {
+    if (!m_pTelemetry) {
+        m_hTelemetry = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0,
+                                          static_cast<DWORD>(sizeof(UM2Telemetry)), UM2_TELEMETRY_NAME);
+        if (!m_hTelemetry) {
+            LogAsio("Telemetria M5 indisponivel: CreateFileMappingW falhou (%lu)", GetLastError());
+            return;
+        }
+        m_pTelemetry = static_cast<UM2Telemetry*>(MapViewOfFile(m_hTelemetry, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(UM2Telemetry)));
+        if (!m_pTelemetry) {
+            LogAsio("Telemetria M5 indisponivel: MapViewOfFile falhou (%lu)", GetLastError());
+            CloseHandle(m_hTelemetry);
+            m_hTelemetry = nullptr;
+            return;
+        }
+    }
+    const uint32_t nextSession = (m_pTelemetry->magic == UM2_TELEMETRY_MAGIC) ? m_pTelemetry->sessionId + 1 : 1;
+    std::memset(m_pTelemetry, 0, sizeof(UM2Telemetry));
+    m_pTelemetry->version = UM2_TELEMETRY_VERSION;
+    m_pTelemetry->ownerPid = GetCurrentProcessId();
+    m_pTelemetry->sessionId = nextSession;
+    m_pTelemetry->qpcFrequency = m_qpcFreq.QuadPart;
+    m_pTelemetry->sampleRate = static_cast<uint32_t>(m_sampleRate);
+    m_pTelemetry->bufferSize = static_cast<uint32_t>(m_bufferSize);
+    m_pTelemetry->budgetTicks = (m_sampleRate > 0.0)
+        ? static_cast<int64_t>(static_cast<double>(m_qpcFreq.QuadPart) * m_bufferSize / m_sampleRate)
+        : 0;
+    m_pTelemetry->histBinNs = UM2_TIMING_BIN_NS;
+    m_pTelemetry->histBins = UM2_TIMING_HIST_BINS;
+    std::atomic_thread_fence(std::memory_order_release);
+    m_pTelemetry->magic = UM2_TELEMETRY_MAGIC;
+}
+
+void BehringerUM2AsioDriver::CloseTelemetry() {
+    if (m_pTelemetry) {
+        UnmapViewOfFile(m_pTelemetry);
+        m_pTelemetry = nullptr;
+    }
+    if (m_hTelemetry) {
+        CloseHandle(m_hTelemetry);
+        m_hTelemetry = nullptr;
     }
 }
 
@@ -1412,6 +1458,7 @@ ASIOError BehringerUM2AsioDriver::start() {
     }
 
     InitCableEndpoint();
+    OpenTelemetry();
     m_audioThread = std::thread(&BehringerUM2AsioDriver::AudioThreadLoop, this);
     m_active = true;
     LogAsio("start() executado com SUCESSO");
@@ -1821,6 +1868,9 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
 
         LARGE_INTEGER qpcEnd{};
         QueryPerformanceCounter(&qpcEnd);
+        if (m_pTelemetry) {
+            UM2RecordBlockTiming(m_pTelemetry, qpcStart.QuadPart, qpcBeforeDaw.QuadPart, qpcAfterDaw.QuadPart, qpcEnd.QuadPart);
+        }
 
         // Telemetria de Picos, GR, Clip, Tuner, CPU % & Osciloscópio Otimizado para Cache
         if (m_pSharedState) {

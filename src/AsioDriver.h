@@ -15,6 +15,7 @@
 #include "UM2License.h"
 #include "UM2Dsp.h"
 #include "UM2Loopback.h"
+#include "UM2Telemetry.h"
 
 #pragma comment(lib, "avrt.lib")
 #pragma comment(lib, "ole32.lib")
@@ -131,6 +132,12 @@ private:
     // Behringer UM2 Shared Memory IPC
     HANDLE m_hSharedMem{ nullptr };
     struct UM2SharedState* m_pSharedState{ nullptr };
+
+    // M5 telemetry (separate shared section, see UM2Telemetry.h)
+    HANDLE m_hTelemetry{ nullptr };
+    UM2Telemetry* m_pTelemetry{ nullptr };
+    void OpenTelemetry();
+    void CloseTelemetry();
     void InitSharedMemory();
     void CloseSharedMemory();
 
