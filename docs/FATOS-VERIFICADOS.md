@@ -23,6 +23,8 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
 | `IPolicyConfig` para religar aprimoramentos | Falha com `0x800706C5` | Execução local | 2026-10-31 |
 | Volume de endpoint em 86% | ≈ +13 dB digital; causa principal do chiado percebido | Medição local | 2026-10-31 |
 | **Faixa do volume do endpoint de captura** | **−96 a +30 dB, passo 1,5 dB; 0 dB = slider 0,537** | Medição local: `GetVolumeRange`, `GetMasterVolumeLevel` e `GetMasterVolumeLevelScalar` via COM, nos endpoints de captura que o painel reconhece pelo nome, com o `usbaudio.sys` atual. **Não vem de documentação** | 2026-10-31 |
+| **Drift entrada × saída (M6, fecha C8 nesta máquina)** | Entrada **−10,870 ppm**, saída **−10,872 ppm** vs QPC; diferencial **+0,002 ppm**; **0,0 amostra** acumulada em 1 h; 0 descontinuidades. Janelas de 5 min: cada stream entre −10,70 e −11,02 ppm, diferencial dentro de ±0,08 ppm | Medição local: `um2_drift`, WASAPI exclusive event-driven, captura+render simultâneos, 48 kHz/16-bit/2 ch, período 10 ms, `IAudioClock::GetPosition` contra QPC a cada 1 s (`measure/baselines/2026-11-01-f982fe7.json`, M6) | 2026-11-01 |
+| **Período mínimo exclusive (`usbaudio.sys`, UM2)** | **3,0 ms** (`min_100ns = 30000`) em captura e render; padrão 10 ms. A 48 kHz o menor buffer exclusive é **144 frames** | Medição local: `IAudioClient::GetDevicePeriod` (`um2_drift`, M6) | 2026-11-01 |
 | **Semântica de `SetMasterVolumeLevelScalar`** | Valor normalizado *audio-tapered* 0.0–1.0, **1.0 = máximo da faixa**. Não é ganho linear | Microsoft Learn, `IAudioEndpointVolume::SetMasterVolumeLevelScalar` | 2026-10-31 |
 | **Licença do ASIO SDK** (C7) | **Dual: GPLv3 ou proprietária Steinberg**, desde out/2025 | Comunicado Steinberg 2025-10-29; heise | 2026-10-31 |
 | Process Loopback — versão mínima | Windows 10 build 20348 | Microsoft Learn, `AUDIOCLIENT_PROCESS_LOOPBACK_PARAMS` | 2026-10-31 |
@@ -33,10 +35,15 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
 
 ## Consequências do que foi verificado
 
-- **C1 → o ADC é master do próprio clock.** A captura chega no ritmo do cristal da UM2, não
-  do host. Qualquer consumidor em outro domínio de clock (cabo virtual, Discord) precisa de
-  ASRC contínuo. O ASRC com controlador PI **é obrigatório** no ramo da bridge.
-- **C1 → entrada e saída rodam em clocks diferentes (ver C8).**
+- **C1 × M6 — o datasheet diz "record asynchronous", mas a medição não mostra dois domínios.**
+  Entrada e saída andam juntas a 0,002 ppm por 1 h (C8 fechado nesta máquina, abaixo). Explicação
+  provável: o PCM2902 deriva os clocks do ADC e do DAC do mesmo relógio travado no frame USB (SpAct),
+  e o "asynchronous" só descreve o tipo de endpoint. **NÃO VERIFICADO** — hipótese, não fato.
+- **Consequência para a bridge:** a UM2 inteira está ~11 ppm abaixo do QPC. Qualquer consumidor em
+  outro domínio de clock (cabo virtual, Discord) continua precisando de **ASRC contínuo com
+  controlador PI**, dimensionado para ~11 ppm de offset com faixa de **±50 ppm**.
+- **Consequência para o caminho da DAW:** com diferencial de 0,002 ppm, o FIFO de captura não
+  precisa de ASRC nem de sample-slip por drift nesta máquina.
 - **C2 → o chip contribui 0,66 ms.** O dossiê v2 (1,2 ms por estágio) estava errado. O resto
   do RTL é USB (1 ms por sentido) + buffering do `usbaudio.sys` + buffer do host —
   isso só se fecha medindo.
@@ -113,6 +120,14 @@ Evidência de execução: `driver_um2.log` da suíte 8/8 de 31/10 e `um2_drift` 
 | E3/E4 (process loopback) | `PropVariantClear` no blob: não ocorre (`UM2Loopback.h` 255–270). Timeout da ativação é tratado (`Wait(1500)`). O handler declara `IAgileObject` mas o `QueryInterface` não o expõe |
 | Caminho não bit-perfect | `Quantize16` aplica soft-clip e dither TPDF em toda amostra não nula e escala por 32767 (`UM2Dsp.h` 33–46); o preamp "CLEAN" (modo 0) ainda passa por 3 filtros e ganho de 1,12 (`UM2Dsp.h` 453–458). O M7 mede o resíduo |
 
+## Fechado por medição
+
+### C8 — Drift entre entrada e saída do mesmo device — **FECHADO nesta máquina (2026-11-01)**
+- M6 por 1 h: diferencial **+0,002 ppm**, **0 amostra** acumulada (linha "Drift entrada × saída" acima).
+- Contradiz a expectativa tirada do "record asynchronous" do datasheet (ver C1 × M6). Se trocar de
+  host USB, de máquina ou de unidade UM2, medir de novo: o resultado vale para esta combinação.
+- O caminho da DAW não precisa de ASRC por drift entre entrada e saída.
+
 ## ABERTO — não escrever código que dependa destes itens
 
 ### C2 (resto) — RTL total
@@ -136,13 +151,3 @@ Evidência de execução: `driver_um2.log` da suíte 8/8 de 31/10 e `um2_drift` 
 - Caminho userland: `IAudioCaptureClient::GetBuffer` (timestamp QPC) / `IAudioClock2::GetDevicePosition`.
 - **Como fechar:** registrar a decisão no código.
 - **Estado do código documentado** acima: hoje não há leitura de posição do device; `samplePosition` é contador de blocos.
-
-### C8 — Drift entre entrada e saída do mesmo device *(novo, prioridade alta)*
-- Consequência direta de C1: a captura segue o cristal da UM2; o playback (Adaptive) segue o
-  ritmo dos pacotes do host. Em sessão duplex longa, a entrada e a saída **derivam entre si**.
-- O host ASIO entrega à DAW entrada e saída em passo travado. Se o código atual amarra os dois
-  ao evento de um só stream, o outro acumula ou esvazia devagar. A suíte de teste atual
-  (8/8) é curta demais para mostrar isso.
-- **Como fechar:** M6 estendido — contar samples de captura e de render contra QPC por 1 h
-  em duplex, registrar ppm de cada um e do diferencial; observar o nível dos buffers do host.
-- **Bloqueia:** desenho do caminho da DAW (pode exigir ASRC ou sample-slip controlado também ali).

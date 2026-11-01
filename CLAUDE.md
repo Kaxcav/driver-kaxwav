@@ -10,6 +10,9 @@ perdeu uma sessão inteira em rollback por violar as invariantes abaixo.
 - Piso de ruído medido em modo RAW: **-88,5 dBFS**, PSD ≈ -133 dB/Hz. Coerente com o
   SNR de 89 dB do ADC. Isso é o hardware no seu limite, não um defeito a corrigir.
 - Preamp XENYX no canal 1 (XLR), canal 2 instrumento Hi-Z.
+- Período mínimo exclusive do `usbaudio.sys` = **3,0 ms** → menor buffer ExclusivePro = **144** a 48 kHz.
+- Clock (medido, M6): entrada e saída andam juntas (0,002 ppm/1 h), ~11 ppm abaixo do QPC. O caminho
+  da DAW não precisa de ASRC; a bridge (outro domínio) precisa de ASRC com PI, faixa ±50 ppm.
 
 ## Decisão de arquitetura (ADR 0001/0002 — fechada)
 Host ASIO em **userland** sobre **WASAPI Exclusive + RAW + event-driven**.
@@ -32,7 +35,7 @@ Host ASIO em **userland** sobre **WASAPI Exclusive + RAW + event-driven**.
    consumidor do fan-out, nunca no caminho da DAW. Tentativa de STFT na thread ASIO já
    foi revertida uma vez.
 3. **Fan-out é SPSC lock-free** (`std::atomic`, índices separados, `alignas(64)` contra
-   false sharing). Produtor escreve cego; consumidor absorve o drift via ASRC.
+   false sharing). Produtor escreve cego; o consumidor da bridge absorve o drift (~11 ppm) via ASRC.
 4. **Nível do endpoint de captura = 0,0 dB (ganho linear 1.0).** Escrever com
    `IAudioEndpointVolume::SetMasterVolumeLevel(0.0f, nullptr)`, depois de conferir com
    `GetVolumeRange` que 0 dB está dentro da faixa.
@@ -65,17 +68,15 @@ Host ASIO em **userland** sobre **WASAPI Exclusive + RAW + event-driven**.
 ## Repo e migração
 - Repo **privado**, escopo só UM2/UMC22. Código de origem: `C:\driver xd\behringer-um2`.
 - A importação segue `MIGRATION.md` à risca (3 commits, passos 🔒 antes do primeiro push).
-- **Bug ativo:** `panel_backend.py:1675` (`POST /api/auto-gain`) chama
-  `ensure_microphone_gain(0.86)` → slider em 86% → chiado. Corrigir no commit 3 da migração.
+- Migração concluída (`v0.0.0-baseline`); o Auto-Gain já grava 0,0 dB (`ensure_capture_level_0db`).
 
 ## Perguntas ABERTAS — não assuma resposta
 Estão em `docs/FATOS-VERIFICADOS.md`. C1, C4 e C7 e a parte do chip de C2 já foram fechados
-com datasheet/documentação oficial — use esses valores. Enquanto um item estiver aberto,
+com datasheet/documentação oficial; **C8 foi fechado por medição** (M6, 1 h: entrada e saída da UM2
+derivam 0,002 ppm entre si; os dois estão ~11 ppm abaixo do QPC) — use esses valores. Enquanto um item estiver aberto,
 **não escreva código que dependa dele** e não cite número de dossiê como se fosse fato. Abertos:
 - **C2** RTL total (o chip contribui 0,66 ms; o resto só medindo). Define o critério de aceite.
 - **C3** `ASIOSTInt16LSB` vs `ASIOSTInt32LSB`.
-- **C8** Entrada (assíncrona, cristal da UM2) e saída (adaptativa, ritmo do host) derivam entre
-  si em sessão duplex longa. Pode exigir correção também no caminho da DAW.
 - **C5** Qual API abre o stream. **`IAudioClient3::InitializeSharedAudioStream` é shared mode
   por definição** — não existe combiná-la com exclusive. Exclusive é `IAudioClient::Initialize`
   + `AUDCLNT_SHAREMODE_EXCLUSIVE` + `AUDCLNT_STREAMFLAGS_EVENTCALLBACK`.
