@@ -1,0 +1,359 @@
+{
+ "schema": 1,
+ "run_id": "2026-11-01-p5-mic",
+ "date": "2026-11-01T06:59:04",
+ "commit": "49173c6",
+ "describe": "v0.0.0-baseline-14-g49173c6",
+ "driver_dll": {
+  "path": "D:\\DEV\\driver-kaxwav\\build\\Release\\BehringerUM2ASIODriver.dll",
+  "md5": "FDD2208B08E67B4FF12799113A4FF480",
+  "bytes": 173056
+ },
+ "machine": {
+  "os": "Windows-11-10.0.26300-SP0",
+  "cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"
+ },
+ "conditions": {
+  "gain_ch1": "~60% (mesma posicao da baseline)",
+  "gain_ch2": "nao informado",
+  "output_knob": "nao informado",
+  "monitor_switch": "off",
+  "input_connection": "microfone dinamico no XLR da entrada 1, 48V desligado; fone ligado no PHONES (nada tocando)",
+  "room": "silencio, ninguem falando",
+  "cpu_load": "nenhuma"
+ },
+ "registry_before_run": {
+  "DriverMode": 0,
+  "BufferSize": 1024
+ },
+ "dsp_state_shared_memory": {
+  "isLicensed": 1,
+  "softwareMute": 0,
+  "driverMode": 1,
+  "bufferSize": 64,
+  "sampleRate": 48000,
+  "pdcOffsetSamples": 0,
+  "inputLatencySamples": 512,
+  "outputLatencySamples": 512,
+  "hardwareModel": 0,
+  "xruns": 70,
+  "ch1Phase": 0,
+  "ch1Hpf": 0,
+  "ch1Mute": 0,
+  "ch1Trim": 1.0,
+  "ch1Gate": 0,
+  "ch1PreampMode": 0,
+  "ch1CompAmount": 0.0,
+  "ch1DeesserAmount": 0.0,
+  "ch2Phase": 0,
+  "ch2Pad": 0,
+  "ch2Mute": 0,
+  "ch2Trim": 1.0,
+  "ch2Gate": 0,
+  "ch2PreampMode": 0,
+  "ch2CompAmount": 0.0,
+  "ch2CabSim": 0,
+  "gateThresholdDb": 0.0,
+  "dspMonitorOnly": 0,
+  "loopbackEnabled": 0,
+  "loopbackGain": 1.0,
+  "loopbackMono": 0,
+  "loopbackBroadcastMix": 0,
+  "loopbackMode": 0,
+  "masterDim": 0,
+  "masterMono": 0,
+  "masterMute": 0,
+  "masterTrim": 1.0,
+  "monSubCheck": 0,
+  "monPhoneSim": 0,
+  "monCrossfeed": 0
+ },
+ "fixed": {
+  "sample_rate": 48000,
+  "buffers": [
+   64,
+   128,
+   256
+  ],
+  "modes": [
+   "SharedFlex",
+   "ExclusivePro"
+  ]
+ },
+ "protocol": "docs/MEASUREMENT-PROTOCOL.md",
+ "analysis_code": "v0.0.0-baseline-14-g49173c6",
+ "M8": {
+  "status": "nao executado"
+ },
+ "M2": {
+  "tool": "tools/raw_capture_test.exe (shared default/APO e shared RAW, float WAV)",
+  "seconds": 60,
+  "input": "microfone dinamico no XLR da entrada 1, 48V desligado; fone ligado no PHONES (nada tocando)",
+  "reused_captures": false,
+  "raw_capture_test_stdout": [
+   "RawProcessingSupported vt=0 val=-1",
+   "EndpointVolume: range -96.00..30.00 dB step 1.500 | atual 0.00 dB (scalar 0.54) | hwSupport=0x0",
+   "Exclusive 1ch 44100 Hz 16-bit: hr=0x00000000",
+   "Exclusive 1ch 48000 Hz 16-bit: hr=0x00000000",
+   "Exclusive 2ch 44100 Hz 16-bit: hr=0x00000000",
+   "Exclusive 2ch 48000 Hz 16-bit: hr=0x00000000",
+   "[default/APO]",
+   "  mix: ch=2 sr=48000 bits=32 tag=0x3",
+   "[raw]",
+   "  SetClientProperties(RAW) hr=0x00000000",
+   "  mix: ch=1 sr=48000 bits=32 tag=0xFFFE"
+  ],
+  "apo": {
+   "sr": 48000,
+   "channels": 2,
+   "ch1_mic": {
+    "rms_dbfs_broadband": -43.01,
+    "psd_median_20_20k_db_hz": -103.2,
+    "psd_bands_db_hz": {
+     "20-200": -73.5,
+     "200-2000": -76.3,
+     "2000-8000": -93.5,
+     "8000-12000": -99.1,
+     "12000-20000": -115.4
+    },
+    "step_7k": {
+     "psd_4k_6k5_db_hz": -96.7,
+     "psd_7k5_12k_db_hz": -98.5,
+     "drop_db": 1.8,
+     "valid": true,
+     "step_detected": false
+    },
+    "hum": {
+     "white_floor_db_hz": -95.9,
+     "white_floor_20_20k_dbfs": -52.86,
+     "hum_60hz_dbfs": -91.0,
+     "hum_60hz_over_floor_db": 3.9,
+     "hum_120hz_dbfs": -68.4,
+     "hum_120hz_over_floor_db": 23.7,
+     "hum_180hz_dbfs": -64.3,
+     "hum_180hz_over_floor_db": 27.4,
+     "hum_240hz_dbfs": -66.5,
+     "hum_240hz_over_floor_db": 26.4,
+     "hum_300hz_dbfs": -67.0,
+     "hum_300hz_over_floor_db": 25.2,
+     "hum_total_dbfs": -60.3,
+     "total_20_20k_dbfs": -42.68,
+     "hum_share_percent": 1.7
+    },
+    "legacy": {
+     "rms_dbfs": -43.0,
+     "rms_A_dbfs": -46.1,
+     "peak_dbfs": -6.599999904632568,
+     "band_20_200": -50.9,
+     "band_200_2k": -43.7,
+     "band_2k_8k": -55.7,
+     "band_8k_20k": -62.9,
+     "tone_over_floor_db": {
+      "50": -0.699999988079071,
+      "60": 4.099999904632568,
+      "100": 8.399999618530273,
+      "120": 4.300000190734863,
+      "150": -1.2000000476837158,
+      "180": 6.199999809265137,
+      "1000": 4.699999809265137,
+      "2000": 1.0
+     }
+    }
+   },
+   "ch2_inst": {
+    "rms_dbfs_broadband": -43.01,
+    "psd_median_20_20k_db_hz": -103.2,
+    "psd_bands_db_hz": {
+     "20-200": -73.5,
+     "200-2000": -76.3,
+     "2000-8000": -93.5,
+     "8000-12000": -99.1,
+     "12000-20000": -115.4
+    },
+    "step_7k": {
+     "psd_4k_6k5_db_hz": -96.7,
+     "psd_7k5_12k_db_hz": -98.5,
+     "drop_db": 1.8,
+     "valid": true,
+     "step_detected": false
+    },
+    "hum": {
+     "white_floor_db_hz": -95.9,
+     "white_floor_20_20k_dbfs": -52.86,
+     "hum_60hz_dbfs": -91.0,
+     "hum_60hz_over_floor_db": 3.9,
+     "hum_120hz_dbfs": -68.4,
+     "hum_120hz_over_floor_db": 23.7,
+     "hum_180hz_dbfs": -64.3,
+     "hum_180hz_over_floor_db": 27.4,
+     "hum_240hz_dbfs": -66.5,
+     "hum_240hz_over_floor_db": 26.4,
+     "hum_300hz_dbfs": -67.0,
+     "hum_300hz_over_floor_db": 25.2,
+     "hum_total_dbfs": -60.3,
+     "total_20_20k_dbfs": -42.68,
+     "hum_share_percent": 1.7
+    },
+    "legacy": {
+     "rms_dbfs": -43.0,
+     "rms_A_dbfs": -46.1,
+     "peak_dbfs": -6.599999904632568,
+     "band_20_200": -50.9,
+     "band_200_2k": -43.7,
+     "band_2k_8k": -55.7,
+     "band_8k_20k": -62.9,
+     "tone_over_floor_db": {
+      "50": -0.699999988079071,
+      "60": 4.099999904632568,
+      "100": 8.399999618530273,
+      "120": 4.300000190734863,
+      "150": -1.2000000476837158,
+      "180": 6.199999809265137,
+      "1000": 4.699999809265137,
+      "2000": 1.0
+     }
+    }
+   }
+  },
+  "raw": {
+   "sr": 48000,
+   "channels": 1,
+   "ch1_mic": {
+    "rms_dbfs_broadband": -44.61,
+    "psd_median_20_20k_db_hz": -113.8,
+    "psd_bands_db_hz": {
+     "20-200": -71.0,
+     "200-2000": -79.3,
+     "2000-8000": -98.1,
+     "8000-12000": -111.7,
+     "12000-20000": -120.0
+    },
+    "step_7k": {
+     "psd_4k_6k5_db_hz": -102.8,
+     "psd_7k5_12k_db_hz": -111.5,
+     "drop_db": 8.8,
+     "valid": true,
+     "step_detected": true
+    },
+    "hum": {
+     "white_floor_db_hz": -105.7,
+     "white_floor_20_20k_dbfs": -62.72,
+     "hum_60hz_dbfs": -79.1,
+     "hum_60hz_over_floor_db": 24.7,
+     "hum_120hz_dbfs": -67.2,
+     "hum_120hz_over_floor_db": 35.6,
+     "hum_180hz_dbfs": -65.1,
+     "hum_180hz_over_floor_db": 36.5,
+     "hum_240hz_dbfs": -64.9,
+     "hum_240hz_over_floor_db": 37.4,
+     "hum_300hz_dbfs": -69.0,
+     "hum_300hz_over_floor_db": 33.1,
+     "hum_total_dbfs": -60.2,
+     "total_20_20k_dbfs": -44.4,
+     "hum_share_percent": 2.6
+    },
+    "legacy": {
+     "rms_dbfs": -44.599998474121094,
+     "rms_A_dbfs": -50.8,
+     "peak_dbfs": -15.800000190734863,
+     "band_20_200": -48.4,
+     "band_200_2k": -46.8,
+     "band_2k_8k": -60.3,
+     "band_8k_20k": -74.6,
+     "tone_over_floor_db": {
+      "50": 7.5,
+      "60": 9.0,
+      "100": 8.199999809265137,
+      "120": 0.699999988079071,
+      "150": 7.699999809265137,
+      "180": 1.2999999523162842,
+      "1000": 1.899999976158142,
+      "2000": -3.0
+     }
+    }
+   },
+   "note": "mix format do stream tem 1 canal: so o canal 1 aparece nesta captura"
+  },
+  "_step_seconds": 121.5,
+  "_dsp_state": {
+   "isLicensed": 1,
+   "softwareMute": 0,
+   "driverMode": 1,
+   "bufferSize": 64,
+   "sampleRate": 48000,
+   "pdcOffsetSamples": 0,
+   "inputLatencySamples": 512,
+   "outputLatencySamples": 512,
+   "hardwareModel": 0,
+   "xruns": 70,
+   "ch1Phase": 0,
+   "ch1Hpf": 0,
+   "ch1Mute": 0,
+   "ch1Trim": 1.0,
+   "ch1Gate": 0,
+   "ch1PreampMode": 0,
+   "ch1CompAmount": 0.0,
+   "ch1DeesserAmount": 0.0,
+   "ch2Phase": 0,
+   "ch2Pad": 0,
+   "ch2Mute": 0,
+   "ch2Trim": 1.0,
+   "ch2Gate": 0,
+   "ch2PreampMode": 0,
+   "ch2CompAmount": 0.0,
+   "ch2CabSim": 0,
+   "gateThresholdDb": 0.0,
+   "dspMonitorOnly": 0,
+   "loopbackEnabled": 0,
+   "loopbackGain": 1.0,
+   "loopbackMono": 0,
+   "loopbackBroadcastMix": 0,
+   "loopbackMode": 0,
+   "masterDim": 0,
+   "masterMono": 0,
+   "masterMute": 0,
+   "masterTrim": 1.0,
+   "monSubCheck": 0,
+   "monPhoneSim": 0,
+   "monCrossfeed": 0
+  },
+  "_endpoint_capture_before": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_endpoint_capture_after": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_conditions": {
+   "gain_ch1": "~60% (mesma posicao da baseline)",
+   "gain_ch2": "nao informado",
+   "output_knob": "nao informado",
+   "monitor_switch": "off",
+   "input_connection": "microfone dinamico no XLR da entrada 1, 48V desligado; fone ligado no PHONES (nada tocando)",
+   "room": "silencio, ninguem falando",
+   "cpu_load": "nenhuma"
+  },
+  "_measured_at": "2026-11-01T07:01:06"
+ },
+ "M5": {
+  "status": "nao executado"
+ },
+ "M7": {
+  "status": "nao executado"
+ },
+ "M1": {
+  "status": "nao executado"
+ },
+ "M3": {
+  "status": "nao executado"
+ },
+ "M6": {
+  "status": "nao executado"
+ },
+ "M4": {
+  "status": "nao executado",
+  "reason": null,
+  "see": "M3"
+ }
+}
