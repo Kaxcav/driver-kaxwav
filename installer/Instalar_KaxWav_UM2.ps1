@@ -29,8 +29,23 @@ $Sources = [ordered]@{
 $ComCheck = Join-Path $Build 'test_com_reg.exe'
 $Stamp    = Get-Date -Format 'yyyyMMdd_HHmmss'
 $Backup   = Join-Path $env:ProgramData "KaxWav\backups\$Stamp"
+# Native tools: in Windows PowerShell 5.1, stderr redirected from a native exe becomes an ErrorRecord, which is
+# terminating under EAP=Stop (reg export of a missing key aborted the first real install). Run them under Continue.
+function Invoke-Native([string]$Exe, [string[]]$Argv) {
+    $eap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+    try { $o = & $Exe @Argv 2>&1 | ForEach-Object { "$_" }; return @{ code = $LASTEXITCODE; out = ($o -join "`n") } }
+    finally { $ErrorActionPreference = $eap }
+}
 function Md5($p) { if (Test-Path $p) { (Get-FileHash $p -Algorithm MD5).Hash } else { $null } }
 function Say($m) { Write-Host "[KaxWav] $m"; if (Test-Path $Backup) { Add-Content (Join-Path $Backup 'install.log') "$(Get-Date -Format s) $m" } }
+# The elevated window closes on exit: persist any terminating error (in the backup log and in a fixed file).
+trap {
+    $msg = "ERRO: $($_.Exception.Message) (linha $($_.InvocationInfo.ScriptLineNumber))"
+    Say $msg
+    $d = Join-Path $env:ProgramData 'KaxWav'; New-Item -ItemType Directory -Force -Path $d | Out-Null
+    Set-Content (Join-Path $d 'install_last_error.txt') "$(Get-Date -Format s) $msg"
+    exit 1
+}
 
 # --- 1. artefatos
 foreach ($k in $Sources.Keys) { if (-not (Test-Path $Sources[$k])) { throw "Falta $($Sources[$k]) - compile Release x64 e o painel (PyInstaller) antes." } }
@@ -73,8 +88,8 @@ $regKeys = @(
 $i = 0
 foreach ($k in $regKeys) {
     $file = Join-Path $Backup ("reg_{0:D2}.reg" -f $i); $i++
-    & reg.exe export $k $file /y 2>$null | Out-Null
-    $manifest.registry += [ordered]@{ key = $k; existed = ($LASTEXITCODE -eq 0); file = (Split-Path $file -Leaf) }
+    $r = Invoke-Native 'reg.exe' @('export', $k, $file, '/y')
+    $manifest.registry += [ordered]@{ key = $k; existed = ($r.code -eq 0); file = (Split-Path $file -Leaf) }
 }
 $run = (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -ErrorAction SilentlyContinue).'KaxWav UM2 Console'
 $manifest.run_key = $run
@@ -88,9 +103,9 @@ foreach ($k in $Sources.Keys) { Copy-Item $Sources[$k] (Join-Path $Dest $k) -For
 
 # --- 5. registro COM/ASIO
 $dll = Join-Path $Dest 'BehringerUM2ASIODriver.dll'
-& regsvr32.exe /s $dll
-if ($LASTEXITCODE -ne 0) { throw "regsvr32 falhou ($LASTEXITCODE) - rode Rollback_KaxWav_UM2.ps1" }
-& reg.exe delete 'HKLM\SOFTWARE\WOW6432Node\ASIO\Behringer UM2 ASIO' /f 2>$null | Out-Null  # x64-only DLL
+$p = Start-Process regsvr32.exe -ArgumentList '/s', "`"$dll`"" -Wait -PassThru
+if ($p.ExitCode -ne 0) { throw "regsvr32 falhou ($($p.ExitCode)) - rode Rollback_KaxWav_UM2.ps1" }
+Invoke-Native 'reg.exe' @('delete', 'HKLM\SOFTWARE\WOW6432Node\ASIO\Behringer UM2 ASIO', '/f') | Out-Null  # x64-only DLL
 Say 'regsvr32 OK'
 
 # --- 6. verificacao
@@ -103,7 +118,7 @@ foreach ($root in 'HKCU:\Software\Classes', 'HKLM:\SOFTWARE\Classes') {
     $p = (Get-ItemProperty "$root\CLSID\$Clsid\InprocServer32" -ErrorAction SilentlyContinue).'(default)'
     Say "InprocServer32 ($root): $p"; if ($p -and ($p -ne $dll)) { $ok = $false }
 }
-$out = & $ComCheck 2>&1 | Out-String
+$out = (Invoke-Native $ComCheck @()).out
 Say ("test_com_reg: " + ($out -replace "`r?`n", ' | '))
 if ($out -notmatch [regex]::Escape("LOADED_PATH=$dll")) { $ok = $false; Say 'COM NAO carregou a DLL instalada' }
 if ($ok) { Say 'INSTALACAO VERIFICADA' } else { Say 'VERIFICACAO FALHOU - rode Rollback_KaxWav_UM2.ps1'; exit 2 }

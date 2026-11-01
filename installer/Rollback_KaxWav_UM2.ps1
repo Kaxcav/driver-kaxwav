@@ -8,7 +8,14 @@ param([string]$BackupDir)
 $ErrorActionPreference = 'Stop'
 $Clsid = '{77DBBCCD-91C6-4856-A900-FC8D007D161C}'
 $root = Join-Path $env:ProgramData 'KaxWav\backups'
-if (-not $BackupDir) { $BackupDir = (Get-ChildItem $root -Directory | Sort-Object Name -Descending | Select-Object -First 1).FullName }
+# Same PS 5.1 stderr pitfall as the installer: native tools run under EAP=Continue.
+function Invoke-Native([string]$Exe, [string[]]$Argv) {
+    $eap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+    try { & $Exe @Argv 2>&1 | Out-Null; return $LASTEXITCODE } finally { $ErrorActionPreference = $eap }
+}
+# Latest COMPLETE backup (an install aborted before the manifest leaves a dir without it).
+if (-not $BackupDir) { $BackupDir = (Get-ChildItem $root -Directory | Where-Object { Test-Path (Join-Path $_.FullName 'manifest.json') } |
+                                    Sort-Object Name -Descending | Select-Object -First 1).FullName }
 if (-not $BackupDir -or -not (Test-Path (Join-Path $BackupDir 'manifest.json'))) { throw "Backup nao encontrado em $root" }
 $m = Get-Content (Join-Path $BackupDir 'manifest.json') -Raw | ConvertFrom-Json
 $id = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
@@ -26,8 +33,11 @@ foreach ($p in $m.files.PSObject.Properties) {
     Write-Host ("[KaxWav] {0}: {1} (esperado {2})" -f $p.Name, $h, $p.Value); if ($h -ne $p.Value) { $ok = $false }
 }
 foreach ($r in $m.registry) {
-    & reg.exe delete $r.key /f 2>$null | Out-Null
-    if ($r.existed) { & reg.exe import (Join-Path $BackupDir $r.file) 2>$null | Out-Null }
+    Invoke-Native 'reg.exe' @('delete', $r.key, '/f') | Out-Null   # missing key is fine
+    if ($r.existed) {
+        $c = Invoke-Native 'reg.exe' @('import', (Join-Path $BackupDir $r.file))
+        if ($c -ne 0) { Write-Host "[KaxWav] reg import falhou ($c): $($r.key)"; $ok = $false }
+    }
 }
 Write-Host "[KaxWav] InprocServer32 HKCU: $((Get-ItemProperty "HKCU:\Software\Classes\CLSID\$Clsid\InprocServer32" -ErrorAction SilentlyContinue).'(default)')"
 if ($ok) { Write-Host "[KaxWav] ROLLBACK OK ($BackupDir)" } else { Write-Host '[KaxWav] ROLLBACK COM DIVERGENCIA DE MD5'; exit 2 }
