@@ -1,0 +1,57 @@
+# --- Build ---
+build/
+out/
+bin/
+obj/
+x64/
+Debug/
+Release/
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.dll
+*.exe
+*.sys
+*.user
+.vs/
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+compile_commands.json
+
+# --- Terceiros que NAO podem ser redistribuidos ---
+# ASIO SDK: licenca proprietaria Steinberg. Baixe local, nunca comite.
+third_party/asio-sdk/
+third_party/**/*.zip
+
+# --- Artefatos de release e backups ---
+release_package/
+_backup_*/
+_rollback_build/
+*.msi
+*.cab
+
+# --- Medicao: dados brutos sao grandes, baselines sao commitados ---
+measure/raw/
+measure/out/
+*.etl
+*.wav
+*.flac
+*.csv.gz
+
+# --- Painel ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+panel/web/dist/
+
+# --- Local ---
+*.log
+.env
+.env.local
+.DS_Store
+Thumbs.db
