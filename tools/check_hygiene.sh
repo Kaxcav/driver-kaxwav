@@ -21,9 +21,9 @@ vol=$(git grep -nI 'SetMasterVolumeLevelScalar' -- ':!tools/check_hygiene.sh' ':
 if [ -n "$vol" ]; then echo "ERRO: SetMasterVolumeLevelScalar proibido (ADR 0005) - use SetMasterVolumeLevel(0.0f):"; echo "$vol"; fail=1; fi
 
 # 5. License secret / keygen / personal data (repo privado, mas nunca no historico)
-sec=$(git grep -nIE 'OBFUSCATED_SECRET[[:space:]]*(\[[[:space:]]*[0-9]*[[:space:]]*\])?[[:space:]]*=[[:space:]]*(\{|bytes)' -- ':!*.example.h' ':!tools/check_hygiene.sh' || true)
+sec=$(git grep -nIE 'OBFUSCATED_SECRET[[:space:]]*(\[[[:space:]]*[0-9]*[[:space:]]*\])?[[:space:]]*=[[:space:]]*(\{|bytes)' -- ':!*.example.h' ':!*.example.py' ':!tools/check_hygiene.sh' || true)
 if [ -n "$sec" ]; then echo "ERRO: segredo HMAC de licenca versionado (use src/UM2LicenseSecret.h, gitignorado):"; echo "$sec"; fail=1; fi
-kg=$(git ls-files | grep -Ei '(^|/)(generate_license\.py|Gerar_Chave_Cliente_UM2\.bat|license\.key|donate_config\.json)$' || true)
+kg=$(git ls-files | grep -Ei '(^|/)(generate_license\.py|Gerar_Chave_Cliente_UM2\.bat|license\.key|donate_config\.json|UM2LicenseSecret\.h|um2_license_secret\.py)$' || true)
 if [ -n "$kg" ]; then echo "ERRO: keygen/licenca/config pessoal versionado:"; echo "$kg"; fail=1; fi
 
 [ $fail -eq 0 ] && echo "Higiene OK."

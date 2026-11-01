@@ -66,6 +66,8 @@ license.key
 *.license
 # Config de doação contém chave PIX: versionar só o .example.json
 panel/donate_config.json
+# Segredo HMAC do lado Python (painel): só o .example.py é versionado
+panel/um2_license_secret.py
 
 # --- Artefatos do painel (PyInstaller) ---
 panel/build/

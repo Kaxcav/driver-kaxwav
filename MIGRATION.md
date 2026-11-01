@@ -18,6 +18,7 @@ reescrevendo o histórico.
 | `_backup_2026-10-31/` | Backup; o Git substitui | — |
 | `_rollback_build/` | `src/` lá é **idêntico** ao atual (conferido byte a byte) | Só `UM2HissReducer.h.disabled` vai para o branch `archive/stft-hiss-reducer` |
 | `driver_um2.log`, `tools/measurements/*.wav` (≈45 MB) | Dados brutos | `measure/raw/` local (ignorado) |
+| `tools/set_mic_fx.cpp` | Desliga APO via `IPolicyConfig` (invariante 6; falha aqui com `0x800706C5`) **e** escreve o volume com `SetMasterVolumeLevelScalar` (invariante 4, linha 50) — o CI de higiene barraria | Fica só em `behringer-um2/tools/`; o RAW na abertura do stream substitui (ADR 0002) |
 
 ## 2. Mapeamento
 
@@ -28,7 +29,7 @@ reescrevendo o histórico.
 | `test_um2_host.cpp`, `test_um2_probe.cpp`, `test_com_reg.cpp` | raiz na importação → `tests/` no refactor | `test_um2_host.cpp` inclui `"src/UM2Ipc.h"` com caminho relativo à raiz; mover exige ajustar o include |
 | `panel/panel_backend.py`, `panel/web/`, `panel/*.spec` | `panel/` | O `.spec` referencia `../build/Release/BehringerUM2Bridge.dll` e `donate_config.json` |
 | `tools/*.py` (`analyze_wav`, `api`, `ipc_dump`, `measure_monitor`, `measure_noise`) | `tools/` | Candidatos a `measure/scripts/` |
-| `tools/raw_capture_test.cpp`, `tools/set_mic_fx.cpp`, `tools/ver_hwid.cpp` | `tools/` | `set_mic_fx.cpp` usa `IPolicyConfig` (não documentado, falha aqui com `0x800706C5`); `ver_hwid.cpp` inclui `../src/UM2License.h` |
+| `tools/raw_capture_test.cpp`, `tools/ver_hwid.cpp` | `tools/` | `ver_hwid.cpp` inclui `../src/UM2License.h` |
 | `tools/measurements/*.json` | `measure/baselines/legacy/` | Medições de 31/10 — histórico |
 | `*.bat`, `Registrar_UM2_FL_Studio.reg` (exceto o keygen) | `installer/` | Revisar contra a invariante 7 |
 | `Manual_Behringer_UM2_ASIO_Pro_v2.0.pdf`, `docs/manual_um2.html`, `docs/console_screenshot.png` | `docs/manual/` | |
@@ -40,6 +41,10 @@ reescrevendo o histórico.
    - `src/UM2LicenseSecret.h` — o array real (gitignorado; guardar cópia segura fora do repo);
    - `src/UM2LicenseSecret.example.h` — mesmo formato, bytes zerados (versionado).
    - No `CMakeLists.txt`, falhar com mensagem clara se `src/UM2LicenseSecret.h` não existir.
+   - **Achado na importação:** `panel/panel_backend.py:80` tinha uma segunda cópia do mesmo array
+     (`OBFUSCATED_SECRET = bytes([...])`). Foi para `panel/um2_license_secret.py` (gitignorado) +
+     `panel/um2_license_secret.example.py` zerado; o hygiene ignora `*.example.py` e barra os dois
+     arquivos reais por nome.
 2. **ASIO SDK.** Trocar o caminho fixo por variável de cache, sem copiar o SDK:
    ```cmake
    set(ASIO_SDK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../asiosdk/asiosdk_2.3.3_2019-06-14/common"
@@ -48,6 +53,9 @@ reescrevendo o histórico.
 3. **Doação.** Criar `panel/donate_config.example.json` com os mesmos campos
    (`creditsTitle`, `creditsSubtitle`, `donateEnabled`, `donateButtonLabel`, `donateUrl`,
    `pixKey`, `donateMessage`) e valores de exemplo.
+
+4. **`test_um2_host.cpp`** carregava a DLL de `c:\driver xd\behringer-um2\build\Release\` (caminho fixo):
+   o 8/8 testaria a DLL antiga. Passa a carregar `BehringerUM2ASIODriver.dll` da pasta do próprio `.exe`.
 
 Nada além disso muda no commit de importação.
 

@@ -1,0 +1,2656 @@
+/* ============================================================================
+   KaxWav Studio Suite — Behringer U-Phoria UM2 Console Interface
+   Authentic Skeuomorphic Hardware Audio Console (Anti-AI Physical Realism)
+   Inspired by: UAD Console, FabFilter Pro-Q 4, Neural DSP & Analog Studio Gear
+   Paleta: Deep Midnight Navy Metal (#080C14 / #101626) & Electric Lime (#D4FF00)
+   ============================================================================ */
+
+:root {
+  --bg-page: #080C14;
+  --chassis-bg: #101626;
+  --faceplate-top: #192338;
+  --faceplate-bottom: #0C121E;
+  --strip-bg: #131A2A;
+  --strip-header-bg: #1A243A;
+  --recess-oled: #060910;
+  --recess-rail: #05080E;
+
+  --border-rim: rgba(255, 255, 255, 0.14);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-light: rgba(255, 255, 255, 0.22);
+
+  --ink-primary: #FFFFFF;
+  --ink-secondary: #9BA5B8;
+  --ink-muted: #5F6B82;
+  --ink-dim: #3F485A;
+
+  /* Cores Semânticas de Hardware Físico (Referência Direta ao Design de Estúdio) */
+  --led-lime: #D4FF00;
+  --led-lime-glow: rgba(212, 255, 0, 0.55);
+  --led-lime-bright: #E8FF33;
+
+  --led-amber: #FFB300;
+  --led-amber-bright: #FFC107;
+  --led-amber-glow: rgba(255, 179, 0, 0.5);
+
+  --led-cyan: #00E5FF;
+  --led-cyan-glow: rgba(0, 229, 255, 0.5);
+
+  --led-red: #FF2638;
+  --led-red-glow: rgba(255, 38, 56, 0.65);
+
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body.studio-body {
+  background-color: var(--bg-page);
+  background-image: 
+    radial-gradient(ellipse at 50% 12%, #1C273E 0%, #0D1320 55%, #05080F 100%),
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 28px 28px, 28px 28px;
+  color: var(--ink-primary);
+  font-family: var(--font-ui);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 14px;
+}
+
+/* ============================================================================
+   19" RACK CHASSIS (ALUMÍNIO USINADO COM BRILHO ESPECULAR DIAGONAL)
+   ============================================================================ */
+
+.rack-chassis {
+  width: 100%;
+  max-width: 1280px;
+  background: linear-gradient(180deg, var(--chassis-bg) 0%, #0A0F1A 100%);
+  border: 1px solid var(--border-rim);
+  border-radius: 9px;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 24px 64px rgba(0, 0, 0, 0.95),
+    0 6px 18px rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Raio de Luz / Sheen Especular Diagonal Realista (Anti-IA) */
+.rack-chassis::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(132deg, 
+    rgba(255, 255, 255, 0.08) 0%, 
+    rgba(255, 255, 255, 0.02) 34%, 
+    transparent 42%, 
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* ============================================================================
+   TOP RACK HEADER (ALTURA FIXA 60px)
+   ============================================================================ */
+
+.top-rack-header {
+  height: 60px;
+  background: linear-gradient(180deg, var(--faceplate-top) 0%, var(--faceplate-bottom) 100%);
+  border-bottom: 1px solid var(--border-rim);
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  position: relative;
+  user-select: none;
+  z-index: 6;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.rack-screws {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hex-screw {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #586378 0%, #2A303D 60%, #151820 100%);
+  border: 1px solid rgba(0, 0, 0, 0.9);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hex-inner {
+  width: 4px;
+  height: 4px;
+  background: #080A0E;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.brand-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.brand-title {
+  font-family: var(--font-ui);
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  color: #FFFFFF;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 14px rgba(255, 255, 255, 0.15);
+}
+
+.badge-studio {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--led-lime);
+  background: rgba(212, 255, 0, 0.14);
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid rgba(212, 255, 0, 0.4);
+  box-shadow: 0 0 8px rgba(212, 255, 0, 0.2);
+  white-space: nowrap;
+}
+
+.brand-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+/* Visor OLED Unificado de Telemetria Horizontal */
+.telemetry-oled-panel {
+  display: flex;
+  align-items: center;
+  background: radial-gradient(ellipse at 50% 50%, #0C121E 0%, #05070D 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    inset 0 3px 6px rgba(0, 0, 0, 0.9),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  padding: 4px 8px;
+  gap: 7px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.oled-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.oled-label {
+  font-family: var(--font-mono);
+  font-size: 0.50rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.oled-val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink-primary);
+  white-space: nowrap;
+}
+
+.oled-val small {
+  font-size: 0.56rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.oled-val.oled-amber {
+  color: var(--led-amber-bright);
+  text-shadow: 0 0 8px var(--led-amber-glow);
+}
+
+.oled-val.oled-neon {
+  color: var(--led-lime);
+  text-shadow: 0 0 8px var(--led-lime-glow);
+}
+
+.oled-val.oled-green {
+  color: var(--led-lime);
+  text-shadow: 0 0 6px var(--led-lime-glow);
+}
+
+.oled-sep {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Header Right: Status Capsule & Sync Badge */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.asio-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(180deg, #161D2B 0%, #0C1019 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.status-led-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--led-lime);
+  box-shadow: 0 0 10px var(--led-lime);
+  animation: pulse-led 1.8s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-led {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px var(--led-lime); }
+  50% { opacity: 0.6; transform: scale(0.9); box-shadow: 0 0 4px var(--led-lime); }
+}
+
+.asio-status-text {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--led-lime);
+  white-space: nowrap;
+}
+
+.asio-status-badge.standalone {
+  background: linear-gradient(180deg, #0A1E26 0%, #061117 100%);
+  border-color: rgba(0, 229, 255, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
+.asio-status-badge.standalone .asio-status-text {
+  color: var(--led-cyan);
+}
+
+.asio-status-badge.standalone .status-led-pulse {
+  background: var(--led-cyan);
+  box-shadow: 0 0 10px var(--led-cyan);
+}
+
+.sync-badge-capsule {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 7px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.sync-badge-capsule.synced {
+  background: rgba(212, 255, 0, 0.14);
+  border: 1px solid rgba(212, 255, 0, 0.45);
+  color: var(--led-lime);
+  box-shadow: 0 0 8px rgba(212, 255, 0, 0.25);
+}
+
+.sync-badge-capsule.pending {
+  background: rgba(255, 179, 0, 0.16);
+  border: 1px solid rgba(255, 179, 0, 0.6);
+  color: var(--led-amber-bright);
+  animation: blink-pending 1.2s infinite ease-in-out;
+}
+
+@keyframes blink-pending {
+  0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--led-amber-glow); }
+  50% { opacity: 0.5; box-shadow: none; }
+}
+
+.sync-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ============================================================================
+   MONITOR DE SINAL DUPLO (OSCILOSCÓPIO CRT + ANALISADOR RTA)
+   ============================================================================ */
+
+.signal-monitor-section {
+  padding: 8px 16px;
+  background: #090E17;
+  border-bottom: 1px solid var(--border-rim);
+  position: relative;
+  z-index: 6;
+}
+
+.monitor-glass-viewport {
+  height: 92px;
+  background: #04060B;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  box-shadow: 
+    inset 0 3px 8px rgba(0, 0, 0, 0.95),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+#scopeCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.graticule-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(rgba(100, 150, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 150, 255, 0.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+.grat-db {
+  position: absolute;
+  left: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  color: rgba(150, 180, 255, 0.4);
+  pointer-events: none;
+}
+
+.grat-db.db-0 { top: 4px; }
+.grat-db.db-6 { top: 24px; }
+.grat-db.db-12 { top: 46px; }
+.grat-db.db-24 { top: 70px; }
+
+.crt-scanlines {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.25) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+.monitor-controls-row {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(14, 20, 32, 0.92);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 2px 7px;
+  z-index: 4;
+}
+
+.ctrl-sublabel {
+  font-family: var(--font-mono);
+  font-size: 0.53rem;
+  color: var(--ink-muted);
+}
+
+.source-selector, .mode-selector {
+  display: flex;
+  gap: 2px;
+}
+
+.btn-source-pill, .btn-mode-pill {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-source-pill:hover, .btn-mode-pill:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-source-pill.active, .btn-mode-pill.active {
+  background: rgba(212, 255, 0, 0.18);
+  border-color: rgba(212, 255, 0, 0.55);
+  color: var(--led-lime);
+  box-shadow: 0 0 8px rgba(212, 255, 0, 0.25);
+}
+
+.fps-badge {
+  font-family: var(--font-mono);
+  font-size: 0.53rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  padding-left: 6px;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   MAIN CONSOLE WORKSPACE (56% / 44% ZERO-OVERFLOW DUAL COLUMN)
+   ============================================================================ */
+
+.console-main-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 56fr) minmax(0, 44fr);
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--chassis-bg);
+  min-width: 0;
+  align-items: stretch;
+  position: relative;
+  z-index: 6;
+}
+
+.channel-strips-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.engine-controls-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.module-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.title-with-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.panel-section-title {
+  font-family: var(--font-ui);
+  font-size: 0.70rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  color: var(--ink-primary);
+  white-space: nowrap;
+}
+
+.pill-spec {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  background: #141C2B;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.txt-subinfo {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   CHANNEL STRIPS VERTICAIS (4 CANAIS LADO A LADO — ZERO OVERFLOW)
+   ============================================================================ */
+
+.channel-strips-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.channel-strip {
+  background: linear-gradient(180deg, #182236 0%, #101624 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 6px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  position: relative;
+}
+
+.strip-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 5px;
+  min-width: 0;
+}
+
+.strip-id-badge {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.ch1-badge, .ch2-badge {
+  background: rgba(212, 255, 0, 0.15);
+  border: 1px solid rgba(212, 255, 0, 0.4);
+  color: var(--led-lime);
+}
+
+.loop-badge {
+  background: rgba(0, 229, 255, 0.15);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  color: var(--led-cyan);
+}
+
+.master-badge {
+  background: rgba(212, 255, 0, 0.18);
+  border: 1px solid rgba(212, 255, 0, 0.45);
+  color: var(--led-lime);
+}
+
+.strip-title {
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+.strip-spec {
+  font-family: var(--font-mono);
+  font-size: 0.51rem;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.loop-spec {
+  color: rgba(0, 229, 255, 0.75);
+}
+
+.master-spec {
+  color: rgba(212, 255, 0, 0.75);
+}
+
+/* ============================================================================
+   BOTÕES TÁTICOS DE CONSOLE (HARDWARE BACKLIT SWITCHES SSL/UAD)
+   ============================================================================ */
+
+.tactile-buttons-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 5px;
+  min-width: 0;
+}
+
+.tactile-buttons-row.three-cols {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.btn-tactile {
+  width: 100%;
+  min-width: 0;
+  height: 22px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #323B4C 0%, #1B202B 100%);
+  border: 1px solid rgba(0, 0, 0, 0.9);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: #9CA7BA;
+  font-family: var(--font-mono);
+  font-size: 0.50rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  padding: 0 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.btn-tactile:hover {
+  background: linear-gradient(180deg, #3E495E 0%, #232A38 100%);
+  color: #FFFFFF;
+}
+
+.btn-tactile:active {
+  transform: translateY(1px);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    inset 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Estado Ativo: Ícone Iluminado Incandescente Neon Lime */
+.btn-tactile.active-led {
+  background: linear-gradient(180deg, #283C1E 0%, #152210 100%);
+  border-color: rgba(212, 255, 0, 0.8);
+  color: #FFFFFF;
+  box-shadow: 
+    0 0 8px rgba(212, 255, 0, 0.35),
+    inset 0 0 8px rgba(212, 255, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  text-shadow: 0 0 6px #D4FF00;
+}
+
+/* Estado MUTE: Lente Vermelho Rubi Brilhante */
+.btn-tactile.btn-mute-ch.muted,
+.btn-tactile.btn-mute-ch.active {
+  background: linear-gradient(180deg, #48161C 0%, #260A0E 100%);
+  border-color: rgba(255, 38, 56, 0.85);
+  color: #FFFFFF;
+  box-shadow: 
+    0 0 8px rgba(255, 38, 56, 0.45),
+    inset 0 0 10px rgba(255, 38, 56, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  text-shadow: 0 0 6px #FF2638;
+}
+
+.btn-tactile.btn-daw-send {
+  font-size: 0.46rem;
+}
+
+.btn-tactile.btn-daw-send.active {
+  background: linear-gradient(180deg, #103540 0%, #071B22 100%);
+  border-color: rgba(0, 229, 255, 0.8);
+  color: #FFFFFF;
+  box-shadow: 
+    0 0 8px rgba(0, 229, 255, 0.35),
+    inset 0 0 8px rgba(0, 229, 255, 0.3);
+  text-shadow: 0 0 6px #00E5FF;
+}
+
+.btn-tactile.btn-broadcast.active {
+  background: linear-gradient(180deg, #3D2808 0%, #211504 100%);
+  border-color: rgba(255, 179, 0, 0.85);
+  color: #FFFFFF;
+  box-shadow: 
+    0 0 8px rgba(255, 179, 0, 0.35),
+    inset 0 0 8px rgba(255, 179, 0, 0.3);
+  text-shadow: 0 0 6px #FFB300;
+}
+
+/* ============================================================================
+   MEDIDORES VU VERTICAIS (TRILHOS COM CHANFRO E BRILHO DE VIDRO)
+   ============================================================================ */
+
+.vertical-vu-chassis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+  background: var(--recess-rail);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 
+    inset 0 3px 8px rgba(0, 0, 0, 0.95),
+    0 1px 0 rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-bottom: 5px;
+  position: relative;
+}
+
+/* Reflexo sutil de vidro sobre o VU meter */
+.vertical-vu-chassis::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 45%; height: 100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0%, transparent 100%);
+  pointer-events: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.meter-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.vertical-vu-canvas {
+  background: #030509;
+  border-radius: 2px;
+  display: block;
+}
+
+.vertical-vu-canvas.half-rail {
+  border-radius: 1px;
+}
+
+.stereo-rail-group {
+  display: flex;
+  gap: 4px;
+}
+
+.clip-led-top {
+  width: 100%;
+  height: 13px;
+  line-height: 11px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 800;
+  color: #5C282C;
+  background: #180A0C;
+  border: 1px solid rgba(255, 38, 56, 0.22);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.clip-led-top.clipped,
+.clip-led-top.on {
+  color: #FFFFFF;
+  background: var(--led-red);
+  border-color: #FF6B78;
+  box-shadow: 0 0 10px var(--led-red);
+  text-shadow: 0 0 4px #FFFFFF;
+}
+
+.clip-led-top.mini-clip {
+  font-size: 0.46rem;
+}
+
+.vu-scale-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 132px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.50rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  user-select: none;
+}
+
+/* Leitura Digital Tabular */
+.db-readout-box {
+  width: 100%;
+  background: #060910;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.70rem;
+  font-weight: 800;
+  color: var(--led-lime);
+  text-shadow: 0 0 6px var(--led-lime-glow);
+  padding: 2px 0;
+  margin-bottom: 5px;
+  white-space: nowrap;
+}
+
+.db-readout-box.loop-readout {
+  color: var(--led-cyan);
+  text-shadow: 0 0 6px var(--led-cyan-glow);
+}
+
+.db-readout-box.master-readout {
+  color: var(--led-lime);
+  text-shadow: 0 0 6px var(--led-lime-glow);
+}
+
+/* ============================================================================
+   KNOBS ROTATIVOS 3D SKEUOMÓRFICOS COM HALO NEON LIME
+   ============================================================================ */
+
+.strip-knob-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+}
+
+.rotary-knob-dial {
+  width: 50px;
+  height: 50px;
+  cursor: ns-resize;
+  position: relative;
+  touch-action: none;
+  border-radius: 50%;
+  box-shadow: 
+    inset 0 3px 8px rgba(0, 0, 0, 0.95),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+  background: #080C14;
+}
+
+.rotary-knob-dial.master-dial {
+  width: 50px;
+  height: 50px;
+}
+
+.knob-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Poço Escuro do Knob */
+.knob-well {
+  fill: #060910;
+  stroke: rgba(0, 0, 0, 0.9);
+  stroke-width: 1;
+}
+
+/* Ponto Indicador de Calibração às 12 horas (como na foto de referência) */
+.knob-top-bead {
+  fill: var(--led-lime);
+  filter: drop-shadow(0 0 3px var(--led-lime));
+}
+
+/* Trilho Base do Knob */
+.knob-base-ring {
+  fill: none;
+  stroke: #121824;
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  transform-origin: 28px 28px;
+  transform: rotate(135deg);
+  stroke-dasharray: 106.03 141.4;
+}
+
+/* Arco de Halo Neon Lime (#D4FF00) com Bloom Incandescente */
+.knob-fill-arc {
+  fill: none;
+  stroke: var(--led-lime);
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  transform-origin: 28px 28px;
+  transform: rotate(135deg);
+  stroke-dasharray: 53.0 141.4;
+  filter: drop-shadow(0 0 5px var(--led-lime)) drop-shadow(0 0 10px rgba(212, 255, 0, 0.45));
+  transition: stroke-dasharray 0.04s linear;
+}
+
+.knob-fill-arc.cyan-arc {
+  stroke: var(--led-cyan);
+  filter: drop-shadow(0 0 5px var(--led-cyan)) drop-shadow(0 0 10px rgba(0, 229, 255, 0.45));
+}
+
+.knob-fill-arc.green-arc {
+  stroke: var(--led-lime);
+  filter: drop-shadow(0 0 6px var(--led-lime)) drop-shadow(0 0 12px rgba(212, 255, 0, 0.5));
+}
+
+/* Chanfro Metálico Externo 3D do Rotor */
+.knob-cap-outer {
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 0.8;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.85));
+}
+
+/* Prato Côncavo Interno */
+.knob-cap-inner {
+  stroke: rgba(0, 0, 0, 0.7);
+  stroke-width: 1;
+}
+
+/* Marcador / Pino Indicador de Posição Iluminado (LED Notch) */
+.knob-needle {
+  stroke: var(--led-lime);
+  stroke-width: 3.0;
+  stroke-linecap: round;
+  transform-origin: 28px 28px;
+  transform: rotate(0deg);
+  filter: drop-shadow(0 0 4px var(--led-lime));
+}
+
+.knob-legend {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.knob-legend.loop-legend {
+  color: var(--led-cyan);
+}
+
+.knob-legend.master-legend {
+  color: var(--led-lime);
+}
+
+.knob-numeric {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.70rem;
+  font-weight: 800;
+  color: var(--led-lime);
+  text-shadow: 0 0 6px var(--led-lime-glow);
+  white-space: nowrap;
+}
+
+.knob-numeric.cyan-val {
+  color: var(--led-cyan);
+  text-shadow: 0 0 6px var(--led-cyan-glow);
+}
+
+.knob-numeric.green-val {
+  color: var(--led-lime);
+  text-shadow: 0 0 6px var(--led-lime-glow);
+}
+
+/* ============================================================================
+   COLUNA DIREITA (MOTOR ASIO, BUFFER MATRIX & DECK UM2)
+   ============================================================================ */
+
+.engine-controls-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.engine-module-box {
+  background: linear-gradient(180deg, #162033 0%, #0E1422 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+  padding: 9px 12px;
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Módulo 1: Engine Architecture Cards */
+.engine-architecture-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.btn-engine-card {
+  background: linear-gradient(180deg, #202A3C 0%, #121825 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 5px;
+  padding: 7px 9px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.btn-engine-card:hover {
+  background: linear-gradient(180deg, #28364E 0%, #172032 100%);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-engine-card.active {
+  background: linear-gradient(180deg, #2A3A24 0%, #152212 100%);
+  border-color: var(--led-lime);
+  box-shadow: 
+    0 0 16px rgba(212, 255, 0, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.card-top-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.mode-led-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #374151;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+}
+
+.mode-led-dot.active {
+  background: var(--led-lime);
+  box-shadow: 0 0 8px var(--led-lime);
+}
+
+.card-engine-name {
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.card-badge-pill {
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 800;
+  background: rgba(212, 255, 0, 0.16);
+  color: var(--led-lime);
+  padding: 1px 4px;
+  border-radius: 2px;
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.card-badge-pill.exclusive-pill {
+  background: rgba(255, 38, 56, 0.18);
+  color: #FF8590;
+}
+
+.card-engine-desc {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  color: var(--ink-secondary);
+  line-height: 1.28;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Módulo 2: Buffer Matrix Grid (4x2) */
+.buffer-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 9px;
+}
+
+.btn-matrix-cell {
+  background: linear-gradient(180deg, #242E42 0%, #141A28 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 4px;
+  padding: 5px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  cursor: pointer;
+  min-width: 0;
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.btn-matrix-cell:hover {
+  background: linear-gradient(180deg, #2E3B54 0%, #1B2336 100%);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.btn-matrix-cell.active {
+  background: linear-gradient(180deg, #2C3C24 0%, #162212 100%);
+  border-color: var(--led-lime);
+  box-shadow: 
+    0 0 14px rgba(212, 255, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.cell-samples {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.80rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+.btn-matrix-cell.active .cell-samples {
+  text-shadow: 0 0 8px rgba(212, 255, 0, 0.5);
+}
+
+.cell-ms {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--led-lime);
+  white-space: nowrap;
+}
+
+.cell-tag {
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.btn-matrix-cell.active .cell-tag {
+  color: var(--ink-primary);
+}
+
+/* Barra de Sincronização em Linha Única */
+.sync-action-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: #070B12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 6px 9px;
+  min-width: 0;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.selected-target-spec {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  flex-shrink: 1;
+}
+
+.spec-label {
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.spec-val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: var(--led-lime);
+  text-shadow: 0 0 6px var(--led-lime-glow);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-apply-sync {
+  background: linear-gradient(180deg, #D4FF00 0%, #AACC00 100%);
+  border: 1px solid #E6FF4D;
+  border-radius: 4px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #0A0F17;
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  box-shadow: 
+    0 2px 10px rgba(212, 255, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: all 0.12s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-apply-sync:hover {
+  background: linear-gradient(180deg, #E2FF33 0%, #B8DC00 100%);
+  box-shadow: 
+    0 4px 16px rgba(212, 255, 0, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transform: translateY(-1px);
+}
+
+.btn-apply-sync:active {
+  transform: translateY(0);
+}
+
+.sync-icon-svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* Módulo 3: Painel Físico Behringer UM2 (Hardware Mimic Deck) */
+.um2-hardware-deck {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.info-help-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1B2436;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 800;
+  cursor: help;
+}
+
+.hardware-mimic-panel {
+  background: #070A11;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
+  border-radius: 4px;
+  padding: 7px 10px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.hw-channel-bank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  min-width: 0;
+}
+
+.hw-channel-bank:last-child {
+  border-right: none;
+}
+
+.hw-bank-title {
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  font-weight: 800;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.hw-leds-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.hw-led-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Lentes Jewel LED Físicas com Ponto Quente Especular */
+.hw-led-bulb {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #1A212E;
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+  transition: all 0.12s ease;
+}
+
+.hw-led-bulb.led-green.on, .hw-led-bulb.led-green.active {
+  background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, #D4FF00 45%, #7A9E00 100%);
+  box-shadow: 0 0 10px #D4FF00, 0 0 20px rgba(212, 255, 0, 0.7);
+}
+
+.hw-led-bulb.led-red.on, .hw-led-bulb.led-red.active {
+  background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, #FF2638 45%, #8B000C 100%);
+  box-shadow: 0 0 10px #FF2638, 0 0 20px rgba(255, 38, 56, 0.7);
+}
+
+.hw-led-bulb.led-amber.on {
+  background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, #FFB300 45%, #996B00 100%);
+  box-shadow: 0 0 10px #FFB300, 0 0 20px rgba(255, 179, 0, 0.7);
+}
+
+.hw-led-tag {
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+
+.hw-direct-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #131A28;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px 6px;
+  border-radius: 3px;
+  margin-top: 2px;
+}
+
+.hw-switch-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--led-lime);
+  box-shadow: 0 0 6px var(--led-lime);
+}
+
+.hw-switch-text {
+  font-family: var(--font-mono);
+  font-size: 0.50rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+/* Botão Largo de Mute Rápido com Acabamento Metálico e Lente Jewel */
+.fast-mute-bar {
+  width: 100%;
+}
+
+.btn-fast-mute {
+  width: 100%;
+  background: linear-gradient(180deg, #242E40 0%, #141A26 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.12s ease;
+}
+
+.btn-fast-mute:hover {
+  background: linear-gradient(180deg, #2B384F 0%, #1A2232 100%);
+}
+
+.btn-fast-mute.muted {
+  background: linear-gradient(180deg, #3C161A 0%, #200B0E 100%);
+  border-color: var(--led-red);
+}
+
+.fast-mute-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--led-lime);
+  box-shadow: 0 0 8px var(--led-lime);
+}
+
+.btn-fast-mute.muted .fast-mute-led {
+  background: var(--led-red);
+  box-shadow: 0 0 10px var(--led-red);
+}
+
+.fast-mute-label {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+.btn-fast-mute.muted .fast-mute-label {
+  color: #FFB3BA;
+}
+
+/* ============================================================================
+   BOTTOM RACK RIBBON
+   ============================================================================ */
+
+.bottom-rack-ribbon {
+  background: #070B12;
+  border-top: 1px solid var(--border-rim);
+  padding: 6px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  color: var(--ink-muted);
+  user-select: none;
+  z-index: 6;
+  flex-shrink: 0;
+}
+
+.ribbon-left {
+  display: flex;
+  gap: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ribbon-tag strong {
+  color: var(--ink-secondary);
+}
+
+.ribbon-right {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================================
+   FLOATING TOAST
+   ============================================================================ */
+
+.studio-toast {
+  position: fixed;
+  bottom: 34px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  opacity: 0;
+  background: #0E1422;
+  border: 1px solid var(--led-lime);
+  border-radius: 4px;
+  padding: 9px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 100;
+}
+
+.studio-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast-indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.toast-msg-text {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   SISTEMA DE LICENCIAMENTO KAXWAV PRO (CÁPSULA & MODAL SKEUOMÓRFICO)
+   ============================================================================ */
+
+.license-badge-capsule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: rgba(14, 18, 26, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.license-badge-capsule:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.license-badge-capsule.demo {
+  border-color: rgba(255, 153, 0, 0.4);
+  background: rgba(45, 26, 0, 0.5);
+}
+
+.license-badge-capsule.demo .license-dot {
+  background: #FF9900;
+  box-shadow: 0 0 8px #FF9900;
+  animation: pulseAmber 1.8s infinite;
+}
+
+.license-badge-capsule.demo .license-text {
+  color: #FFB347;
+}
+
+.license-badge-capsule.pro {
+  border-color: rgba(0, 255, 136, 0.4);
+  background: rgba(0, 35, 20, 0.5);
+}
+
+.license-badge-capsule.pro .license-dot {
+  background: #00FF88;
+  box-shadow: 0 0 8px #00FF88;
+}
+
+.license-badge-capsule.pro .license-text {
+  color: #00FF88;
+}
+
+.license-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.license-text {
+  font-family: var(--font-mono);
+  font-size: 0.60rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+@keyframes pulseAmber {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Modal Backdrop */
+.license-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 9, 14, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.license-modal-dialog {
+  width: 100%;
+  max-width: 580px;
+  background: linear-gradient(180deg, #1A1F2B 0%, #10141D 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-rack-header {
+  height: 52px;
+  background: #141824;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.modal-title-wrap {
+  display: flex;
+  flex-direction: column;
+  margin-left: 12px;
+  flex: 1;
+}
+
+.modal-title {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.05em;
+}
+
+.modal-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+}
+
+.btn-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--ink-muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.btn-modal-close:hover {
+  color: #FF5555;
+}
+
+.modal-content-body {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Status Card */
+.license-status-card {
+  background: rgba(14, 18, 26, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 14px;
+}
+
+.license-status-card.demo {
+  border-left: 4px solid #FF9900;
+}
+
+.license-status-card.pro {
+  border-left: 4px solid #00FF88;
+}
+
+.lic-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.lic-status-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+
+.lic-status-badge.demo {
+  background: rgba(255, 153, 0, 0.2);
+  color: #FFB347;
+  border: 1px solid rgba(255, 153, 0, 0.4);
+}
+
+.lic-status-badge.pro {
+  background: rgba(0, 255, 136, 0.15);
+  color: #00FF88;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+}
+
+.lic-status-tier {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--ink-muted);
+}
+
+.lic-status-desc {
+  font-size: 0.72rem;
+  color: #B0B8C8;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.modal-field-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #8C96A8;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.hwid-visor-row {
+  display: flex;
+  gap: 8px;
+}
+
+.hwid-oled-display {
+  flex: 1;
+  background: #080A0F;
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  border-radius: 4px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.hwid-oled-text {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #00FFCC;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
+}
+
+.btn-copy-hwid {
+  background: #1E2535;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  border-radius: 4px;
+  padding: 0 14px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+
+.btn-copy-hwid:hover {
+  background: #283247;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-copy-hwid:active {
+  transform: scale(0.97);
+}
+
+.copy-icon {
+  font-size: 0.85rem;
+}
+
+.field-hint {
+  font-size: 0.58rem;
+  color: var(--ink-muted);
+  margin-top: 4px;
+  display: block;
+}
+
+.input-license-key {
+  width: 100%;
+  background: #0A0D14;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.12em;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+
+.input-license-key:focus {
+  outline: none;
+  border-color: #00FF88;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.btn-activate-license {
+  width: 100%;
+  background: linear-gradient(180deg, #00FF88 0%, #00B359 100%);
+  border: 1px solid #33FFA3;
+  border-radius: 5px;
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #061A10;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(0, 255, 136, 0.35);
+  transition: all 0.15s;
+}
+
+.btn-activate-license:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-activate-license:active {
+  transform: translateY(1px);
+}
+
+.activate-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #061A10;
+}
+
+/* ==========================================================================
+   CREDITS & DONATE MODULE (Created by 8kaxcav & fuj11)
+   ========================================================================== */
+
+#btnCredits,
+#btnOpenCreditsModal,
+.credits-badge-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(180deg, #241D12 0%, #15110A 100%);
+  border: 1px solid rgba(255, 204, 0, 0.35);
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: none;
+  overflow: visible;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+#btnCredits:hover,
+#btnOpenCreditsModal:hover,
+.credits-badge-capsule:hover {
+  border-color: #FFCC00;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 12px rgba(255, 204, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+#btnCredits:active,
+#btnOpenCreditsModal:active,
+.credits-badge-capsule:active {
+  transform: translateY(1px);
+}
+
+.credits-star {
+  color: #FFCC00;
+  font-size: 0.70rem;
+  line-height: 1;
+  text-shadow: 0 0 6px rgba(255, 204, 0, 0.6);
+  flex-shrink: 0;
+}
+
+.credits-text {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  font-weight: 800;
+  color: #FFF2B2;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  max-width: none;
+  flex-shrink: 0;
+}
+
+.credits-modal-dialog {
+  max-width: 540px;
+  border-color: rgba(255, 204, 0, 0.25);
+}
+
+.credits-hero-card {
+  background: radial-gradient(circle at 50% 0%, rgba(255, 204, 0, 0.12) 0%, rgba(14, 18, 26, 0.95) 75%);
+  border: 1px solid rgba(255, 204, 0, 0.2);
+  border-radius: 8px;
+  padding: 22px 18px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.credits-star-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #FFCC00;
+  letter-spacing: 0.18em;
+  margin-bottom: 8px;
+  text-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
+}
+
+.credits-hero-title {
+  font-family: var(--font-mono);
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.04em;
+  margin: 0 0 10px 0;
+  text-shadow: 0 2px 12px rgba(255, 204, 0, 0.25);
+}
+
+.credits-hero-desc {
+  font-size: 0.78rem;
+  color: #B4BFD2;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.donate-actions-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.btn-donate-livepix {
+  width: 100%;
+  background: linear-gradient(180deg, #FFB800 0%, #D48800 100%);
+  border: 1px solid #FFD043;
+  border-radius: 6px;
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1A1200;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(255, 184, 0, 0.35);
+  transition: all 0.15s;
+}
+
+.btn-donate-livepix:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(255, 184, 0, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-donate-livepix:active {
+  transform: translateY(1px);
+}
+
+.donate-icon {
+  font-size: 0.95rem;
+}
+
+.pix-key-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pix-oled-display {
+  background: #090C12;
+  border: 1px solid rgba(255, 204, 0, 0.2);
+}
+
+.pix-oled-display .hwid-oled-text {
+  color: #FFD23F;
+}
+
+/* ==========================================================================
+   UNDERGROUND STUDIO CONSOLE v3.0 — UNISON DSP, PER-APP SAMPLER, TUNER & FLASHBACK
+   ========================================================================== */
+
+:root {
+  --led-emerald: #D4FF00;
+}
+
+/* Hardware Model Switch (UM2 / UMC22) in Top Rack Header */
+.hw-model-switch {
+  display: inline-flex;
+  background: #070B12;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 3px;
+  padding: 1px;
+  gap: 2px;
+}
+
+.btn-hw-model {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.btn-hw-model:hover {
+  color: #FFFFFF;
+}
+
+.btn-hw-model.active {
+  background: rgba(212, 255, 0, 0.18);
+  border-color: rgba(212, 255, 0, 0.55);
+  color: var(--led-lime);
+  box-shadow: 0 0 6px rgba(212, 255, 0, 0.25);
+}
+
+/* Flashback 60s RAM Recorder Bar (Top-Left of CRT Monitor) */
+.flashback-bar-left {
+  position: absolute;
+  top: 6px;
+  left: 38px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(14, 20, 32, 0.92);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 2px 7px;
+  z-index: 4;
+}
+
+.flashback-rec-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--led-red);
+  box-shadow: 0 0 8px var(--led-red);
+  animation: pulse-led 1.5s infinite;
+}
+
+.flashback-status-text {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  font-weight: 800;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+
+.btn-flashback-pill {
+  background: linear-gradient(180deg, #25161B 0%, #160C0F 100%);
+  border: 1px solid rgba(255, 38, 56, 0.45);
+  color: #FFB3BA;
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+}
+
+.btn-flashback-pill:hover {
+  background: linear-gradient(180deg, #3D1820 0%, #240D12 100%);
+  border-color: var(--led-red);
+  color: #FFFFFF;
+  box-shadow: 0 0 8px rgba(255, 38, 56, 0.4);
+}
+
+.btn-flashback-pill.btn-flashback-folder {
+  background: #161F30;
+  border-color: rgba(255, 255, 255, 0.16);
+  color: var(--ink-secondary);
+  padding: 2px 5px;
+}
+
+.btn-flashback-pill.btn-flashback-folder:hover {
+  border-color: var(--led-lime);
+  color: #FFFFFF;
+}
+
+/* Tuner Mode Pills in CRT Monitor */
+.btn-tuner-src-pill {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-tuner-src-pill:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-tuner-src-pill.active {
+  background: rgba(0, 229, 255, 0.18);
+  border-color: rgba(0, 229, 255, 0.55);
+  color: var(--led-cyan);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.25);
+}
+
+.btn-mode-pill.btn-mode-tuner.active {
+  background: rgba(0, 229, 255, 0.20);
+  border-color: var(--led-cyan);
+  color: var(--led-cyan);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
+}
+
+/* Channel Strip Header Badge Row & ADC Clip Guard */
+.strip-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 4px;
+  margin-bottom: 1px;
+}
+
+.adc-clip-badge {
+  font-family: var(--font-mono);
+  font-size: 0.46rem;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 2px;
+  background: #0D1420;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--ink-muted);
+  white-space: nowrap;
+  transition: all 0.12s ease;
+}
+
+.adc-clip-badge.clipped {
+  background: rgba(255, 38, 56, 0.25);
+  border-color: var(--led-red);
+  color: #FFFFFF;
+  box-shadow: 0 0 8px var(--led-red);
+  animation: pulse-led 0.8s infinite;
+}
+
+.adc-clip-badge.gr-active {
+  background: rgba(255, 179, 0, 0.22);
+  border-color: var(--led-amber);
+  color: var(--led-amber-bright);
+  box-shadow: 0 0 6px rgba(255, 179, 0, 0.35);
+}
+
+.adc-clip-badge.cyan-chip {
+  color: var(--led-cyan);
+  border-color: rgba(0, 229, 255, 0.3);
+  background: rgba(0, 229, 255, 0.08);
+}
+
+/* Strip Mode Bar (Unison Preamp Voicing / Loopback Mode / DSP Path) */
+.strip-mode-bar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  width: 100%;
+  background: #080C14;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 2px;
+  margin-bottom: 5px;
+}
+
+#stripMaster .strip-mode-bar {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.btn-strip-mode {
+  background: #121928;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 800;
+  padding: 3px 1px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+  text-align: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-strip-mode:hover {
+  color: #FFFFFF;
+  background: #1B253A;
+}
+
+.btn-strip-mode.active {
+  background: rgba(212, 255, 0, 0.18);
+  border-color: rgba(212, 255, 0, 0.6);
+  color: var(--led-lime);
+  box-shadow: inset 0 0 6px rgba(212, 255, 0, 0.25);
+}
+
+.btn-strip-mode.cyan-mode.active {
+  background: rgba(0, 229, 255, 0.18);
+  border-color: rgba(0, 229, 255, 0.6);
+  color: var(--led-cyan);
+  box-shadow: inset 0 0 6px rgba(0, 229, 255, 0.25);
+}
+
+/* Strip Utility Bar (Auto-Gain, Cab 4x12, App PID Select, Mix Check) */
+.strip-utility-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 5px;
+  height: 22px;
+  min-width: 0;
+}
+
+.btn-utility-action {
+  width: 100%;
+  height: 22px;
+  background: linear-gradient(180deg, #1E283C 0%, #111724 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+  padding: 0 3px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-utility-action:hover {
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.28);
+  background: linear-gradient(180deg, #27344E 0%, #161E2E 100%);
+}
+
+.btn-utility-action.half-util {
+  width: 50%;
+}
+
+.btn-utility-action.third-util {
+  width: 33.33%;
+  font-size: 0.46rem;
+}
+
+.btn-utility-action.active {
+  background: radial-gradient(circle at 50% 30%, #3A280A 0%, #1C1304 100%);
+  border-color: var(--led-amber);
+  color: var(--led-amber-bright);
+  box-shadow: 0 0 8px rgba(255, 179, 0, 0.35);
+}
+
+.btn-utility-action.calibrating {
+  background: rgba(0, 229, 255, 0.22);
+  border-color: var(--led-cyan);
+  color: #FFFFFF;
+  animation: blink-pending 0.7s infinite;
+}
+
+/* Per-App Loopback PID Select Dropdown */
+.select-app-pid {
+  flex: 1;
+  min-width: 0;
+  height: 22px;
+  background: #070B12;
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: 3px;
+  color: var(--led-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 700;
+  padding: 0 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.select-app-pid:disabled {
+  cursor: default;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--ink-muted);
+}
+
+.select-app-pid option {
+  background: #0B101B;
+  color: #FFFFFF;
+}
+
+.btn-refresh-pids {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  background: #141D2E;
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: 3px;
+  color: var(--led-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.60rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-refresh-pids:hover {
+  background: rgba(0, 229, 255, 0.2);
+  color: #FFFFFF;
+}
+
+/* Gain Reduction (GR) Vertical Meter Rail inside VU Chassis */
+.gr-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.gr-track {
+  width: 8px;
+  height: 132px;
+  background: #030509;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.gr-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  background: linear-gradient(180deg, #FFB300 0%, #FF2638 100%);
+  box-shadow: 0 0 6px rgba(255, 179, 0, 0.65);
+  transition: height 0.05s linear;
+}
+
+.gr-tag {
+  font-family: var(--font-mono);
+  font-size: 0.44rem;
+  font-weight: 800;
+  color: var(--led-amber);
+  height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Strip Micro-FX Rack (1176 FET Comp, De-Esser, 808 Note, PDC Offset) */
+.strip-fx-rack {
+  width: 100%;
+  height: 44px;
+  background: #080C15;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 4px 5px;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.fx-slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  height: 16px;
+  width: 100%;
+  min-width: 0;
+}
+
+.fx-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.46rem;
+  font-weight: 800;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  width: 42px;
+  flex-shrink: 0;
+}
+
+.fx-mini-slider {
+  width: 100%;
+  flex: 1 1 0%;
+  min-width: 0;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #161F30;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.fx-mini-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--led-lime);
+  box-shadow: 0 0 6px var(--led-lime);
+  cursor: pointer;
+}
+
+.fx-val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.46rem;
+  font-weight: 800;
+  color: var(--led-lime);
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.fx-val-badge {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.46rem;
+  font-weight: 800;
+  color: var(--led-amber-bright);
+  background: rgba(255, 179, 0, 0.12);
+  border: 1px solid rgba(255, 179, 0, 0.35);
+  border-radius: 2px;
+  padding: 0 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.fx-val-badge.cyan-badge {
+  color: var(--led-cyan);
+  background: rgba(0, 229, 255, 0.12);
+  border-color: rgba(0, 229, 255, 0.35);
+}
+
+.btn-fx-trigger {
+  width: 100%;
+  height: 16px;
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  border-radius: 2px;
+  color: var(--led-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.46rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-fx-trigger:hover {
+  background: rgba(0, 229, 255, 0.25);
+  color: #FFFFFF;
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.35);
+}
+
+@media (max-width: 1210px) {
+  .top-rack-header {
+    padding: 0 8px;
+    gap: 6px;
+  }
+  .header-left {
+    gap: 6px;
+  }
+  .brand-title {
+    font-size: 0.94rem;
+    letter-spacing: 0.06em;
+  }
+  .badge-studio {
+    font-size: 0.50rem;
+    padding: 1px 4px;
+  }
+  .brand-subtitle {
+    font-size: 0.50rem;
+    letter-spacing: 0.02em;
+  }
+  .telemetry-oled-panel {
+    padding: 3px 6px;
+    gap: 5px;
+    height: 36px;
+  }
+  .oled-label {
+    font-size: 0.44rem;
+    letter-spacing: 0.03em;
+  }
+  .oled-val {
+    font-size: 0.72rem;
+  }
+  .oled-val small {
+    font-size: 0.48rem;
+  }
+  .header-right {
+    gap: 4px;
+  }
+  .asio-status-badge,
+  .sync-badge-capsule,
+  .license-badge-capsule,
+  #btnCredits {
+    padding: 3px 5px;
+    gap: 4px;
+  }
+  .asio-status-text,
+  .sync-badge-capsule,
+  .license-text,
+  .credits-text {
+    font-size: 0.50rem;
+    letter-spacing: 0.02em;
+  }
+  #stripMaster .fx-lbl {
+    width: 30px;
+  }
+}
+

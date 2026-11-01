@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KaxWav Studio — Behringer U-Phoria Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="studio-body">
+  <!-- Shared Hardware SVG Gradients & Filters (Skeuomorphic Realism) -->
+  <svg width="0" height="0" style="position:absolute;visibility:hidden;" aria-hidden="true">
+    <defs>
+      <linearGradient id="knobBevelGrad" x1="20%" y1="15%" x2="80%" y2="85%">
+        <stop offset="0%" stop-color="#555E72" />
+        <stop offset="40%" stop-color="#2D3342" />
+        <stop offset="100%" stop-color="#141822" />
+      </linearGradient>
+      <radialGradient id="knobDishGrad" cx="38%" cy="32%" r="65%">
+        <stop offset="0%" stop-color="#3A4354" />
+        <stop offset="65%" stop-color="#1B202A" />
+        <stop offset="100%" stop-color="#0E1117" />
+      </radialGradient>
+    </defs>
+  </svg>
+
+  <!-- 19" Rack Chassis Unit -->
+  <div class="rack-chassis">
+    
+    <!-- TOP RACK HEADER (Altura Fixa 68px, Exclusivo UM2) -->
+    <header class="top-rack-header">
+      <!-- Left: Machined Rack Screws & Logo -->
+      <div class="header-left">
+        <div class="rack-screws">
+          <div class="hex-screw"><div class="hex-inner"></div></div>
+          <div class="hex-screw"><div class="hex-inner"></div></div>
+        </div>
+        <div class="brand-group">
+          <div class="brand-line">
+            <span class="brand-title">KAXWAV</span>
+            <span class="badge-studio">STUDIO SUITE v3.0</span>
+            <div class="hw-model-switch" id="hwModelSwitch" title="Alternar perfil de hardware entre Behringer UM2 (XENYX) e UMC22 (MIDAS)">
+              <button class="btn-hw-model active" id="btnModelUm2" data-model="0">UM2</button>
+              <button class="btn-hw-model" id="btnModelUmc22" data-model="1">UMC22</button>
+            </div>
+          </div>
+          <span class="brand-subtitle" id="brandSubtitle">BEHRINGER U-PHORIA UM2 • XENYX PRE • TI PCM2902</span>
+        </div>
+      </div>
+
+      <!-- Center: Unified OLED Hardware Telemetry Display -->
+      <div class="telemetry-oled-panel">
+        <div class="oled-cell">
+          <span class="oled-label">BLOCK</span>
+          <span class="oled-val" id="oledBlockSize">64 <small>SMP</small></span>
+        </div>
+        <div class="oled-sep"></div>
+        <div class="oled-cell">
+          <span class="oled-label">OUT LAT</span>
+          <span class="oled-val oled-amber" id="oledOutLatency">1.33 <small>ms</small></span>
+        </div>
+        <div class="oled-sep"></div>
+        <div class="oled-cell" title="Latência total reportada ao DAW (Plugin Delay Compensation)">
+          <span class="oled-label">RTL / PDC</span>
+          <span class="oled-val oled-neon" id="oledRtlLatency">2.66 <small>ms</small></span>
+        </div>
+        <div class="oled-sep"></div>
+        <div class="oled-cell" title="Carga de CPU do motor DSP C++20 em tempo real (QPC)">
+          <span class="oled-label">DSP CPU</span>
+          <span class="oled-val oled-green" id="oledDspCpu">0.2 <small>%</small></span>
+        </div>
+        <div class="oled-sep"></div>
+        <div class="oled-cell">
+          <span class="oled-label">RATE</span>
+          <span class="oled-val" id="oledSampleRate">48.0 <small>kHz</small></span>
+        </div>
+        <div class="oled-sep"></div>
+        <div class="oled-cell">
+          <span class="oled-label">XRUNS</span>
+          <span class="oled-val oled-green" id="oledXruns">0 <small>ERR</small></span>
+        </div>
+      </div>
+
+      <!-- Right: ASIO Status Capsule & Sync Badge -->
+      <div class="header-right">
+        <div class="asio-status-badge active" id="asioBadge">
+          <span class="status-led-pulse" id="asioLedPulse"></span>
+          <span class="asio-status-text" id="asioStatusText">DSP ACTIVE • UM2</span>
+        </div>
+        <button class="credits-badge-capsule" id="btnCredits" title="Créditos dos Desenvolvedores e Apoio ao Projeto">
+          <span class="credits-star">★</span>
+          <span class="credits-text">8KAXCAV &amp; FUJ11</span>
+        </button>
+        <div class="license-badge-capsule demo" id="licenseBadgeCapsule" title="Clique para gerenciar licença KaxWav Pro">
+          <span class="license-dot"></span>
+          <span class="license-text" id="licenseBadgeText">MODO DEMO</span>
+        </div>
+        <div class="sync-badge-capsule synced" id="syncStatusCapsule">
+          <span class="sync-dot"></span>
+          <span class="sync-text" id="syncStatusText">SINCRONIZADO</span>
+        </div>
+        <div class="rack-screws right-screws">
+          <div class="hex-screw"><div class="hex-inner"></div></div>
+          <div class="hex-screw"><div class="hex-inner"></div></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- DUAL SIGNAL MONITOR (Osciloscópio CRT + Analisador de Espectro RTA + Chromatic Tuner / 808 Key) -->
+    <section class="signal-monitor-section">
+      <div class="monitor-glass-viewport">
+        <!-- Canvas de alta precisão 60 FPS -->
+        <canvas id="scopeCanvas" height="92"></canvas>
+        <div class="graticule-overlay" id="graticuleOverlay">
+          <span class="grat-db db-0">0dB</span>
+          <span class="grat-db db-6">-6dB</span>
+          <span class="grat-db db-12">-12dB</span>
+          <span class="grat-db db-24">-24dB</span>
+        </div>
+        <div class="crt-scanlines"></div>
+
+        <!-- Flashback 60s Circular RAM Recorder Bar (Top-Left) -->
+        <div class="flashback-bar-left" id="flashbackBar" title="Gravador circular em RAM: salva os últimos 30s ou 60s de áudio mesmo sem apertar REC no DAW">
+          <span class="flashback-rec-dot"></span>
+          <span class="flashback-status-text" id="flashbackStatusText">FLASHBACK: 0s / 60s</span>
+          <button class="btn-flashback-pill" id="btnFlashback30" title="Salvar últimos 30 segundos em .WAV (16-bit 48kHz Estéreo)">↺ 30s .WAV</button>
+          <button class="btn-flashback-pill" id="btnFlashback60" title="Salvar últimos 60 segundos em .WAV (16-bit 48kHz Estéreo)">↺ 60s .WAV</button>
+          <button class="btn-flashback-pill btn-flashback-folder" id="btnFlashbackFolder" title="Abrir pasta de capturas Flashback">DIR</button>
+        </div>
+
+        <!-- Monitor Bar Controls (Top-Right) -->
+        <div class="monitor-controls-row">
+          <div class="source-selector" id="scopeSourceSelector" title="Canal fonte do osciloscópio / RTA">
+            <span class="ctrl-sublabel">FONTE:</span>
+            <button class="btn-source-pill active" data-source="master">MASTER</button>
+            <button class="btn-source-pill" data-source="ch1">CH 1</button>
+            <button class="btn-source-pill" data-source="ch2">CH 2</button>
+            <button class="btn-source-pill" data-source="loopback">LOOP</button>
+          </div>
+          <div class="source-selector" id="tunerSourceSelector" style="display:none;" title="Canal fonte do Afinador Cromático YIN / Detector de 808">
+            <span class="ctrl-sublabel">AFINAR:</span>
+            <button class="btn-tuner-src-pill" data-tunersrc="1">CH1 VOZ</button>
+            <button class="btn-tuner-src-pill active" data-tunersrc="2">CH2 INST</button>
+            <button class="btn-tuner-src-pill" data-tunersrc="3">LOOP 808</button>
+          </div>
+          <div class="mode-selector">
+            <button class="btn-mode-pill active" id="btnModeWave">WAVEFORM</button>
+            <button class="btn-mode-pill" id="btnModeRta">SPECTRUM RTA</button>
+            <button class="btn-mode-pill" id="btnModeDual">DUAL</button>
+            <button class="btn-mode-pill btn-mode-tuner" id="btnModeTuner" title="Afinador Cromático Estroboscópico YIN + Detector de Nota Fundamental de 808">◎ TUNER / 808</button>
+          </div>
+          <span class="fps-badge">60 FPS</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN CONSOLE WORKSPACE (Duas Colunas Balanceadas: 58% Mixer / 42% Engine) -->
+    <main class="console-main-layout">
+      
+      <!-- COLUNA ESQUERDA (58%): 4 CHANNEL STRIPS VERTICAIS ESTILO CONSOLE SSL / UA -->
+      <section class="channel-strips-col">
+        <div class="module-title-bar">
+          <div class="title-with-pill">
+            <span class="panel-section-title">CONSOLE CHANNEL STRIPS</span>
+            <span class="pill-spec">UNISON PREAMPS • ZERO-ALLOC C++20 DSP</span>
+          </div>
+          <span class="txt-subinfo">TRUE HARDWARE DUAL-DMA STREAM</span>
+        </div>
+
+        <div class="channel-strips-grid">
+          
+          <!-- STRIP 1: CH 1 • MIC / LINE 1 (XLR/TRS) -->
+          <div class="channel-strip" id="stripCh1">
+            <div class="strip-header">
+              <div class="strip-badge-row">
+                <span class="strip-id-badge ch1-badge">CH 1</span>
+                <span class="adc-clip-badge" id="adcClipBadge1" title="Indicador de Saturação do Conversor Analógico-Digital Burr-Brown PCM2902 (Pré-Trim)">ADC OK</span>
+              </div>
+              <span class="strip-title" title="Input 1: Microfone XLR ou Line In TRS">MIC / LINE 1</span>
+              <span class="strip-spec" id="ch1PreSpec">XENYX PRE • XLR/TRS</span>
+            </div>
+
+            <!-- Seletor de Modelagem Analógica Unison -->
+            <div class="strip-mode-bar" title="Modelagem Harmônica de Pré-Amplificador Analógico">
+              <button class="btn-strip-mode active" data-ch="1" data-preamp="0">CLEAN</button>
+              <button class="btn-strip-mode" data-ch="1" data-preamp="1" title="Neve 1073 Trap Vocal: Corpo em 110Hz, Saturação Assimétrica + Air 12kHz">73 TRAP</button>
+              <button class="btn-strip-mode" data-ch="1" data-preamp="2" title="12AX7 Tube Warmth: Harmônicos Pares Quentes">TUBE</button>
+            </div>
+
+            <!-- Botões Táticos de Canal estilo SSL -->
+            <div class="tactile-buttons-row">
+              <button class="btn-tactile" id="btnPhase1" title="Inversor de Fase Polaridade 180°">Ø</button>
+              <button class="btn-tactile" id="btnHpf1" title="Filtro Passa-Altas 80Hz Low-Cut">80Hz</button>
+              <button class="btn-tactile" id="btnGate1" title="Noise Gate de Estúdio com Histerese (-52dBFS)">GATE</button>
+              <button class="btn-tactile btn-mute-ch" id="btnMute1" title="Mute Instantâneo deste canal">MUTE</button>
+            </div>
+
+            <!-- Barra Utilitária: Smart Auto-Gain -->
+            <div class="strip-utility-bar">
+              <button class="btn-utility-action" id="btnAutoGain1" title="Calibra automaticamente o Digital Trim para cravar picos vocais em -12 dBFS">AUTO-GAIN (-12dB)</button>
+            </div>
+
+            <!-- Medidor VU Vertical + Barra de Gain Reduction (GR) -->
+            <div class="vertical-vu-chassis">
+              <div class="meter-rail">
+                <div class="clip-led-top" id="clipLed1" title="Clique para resetar indicador de pico">CLIP</div>
+                <canvas id="vuCanvas1" class="vertical-vu-canvas" width="26" height="132"></canvas>
+              </div>
+              <div class="gr-rail" title="Redução de Ganho (GR) do Compressor 1176 FET + De-Esser">
+                <span class="gr-tag" id="grTag1">GR</span>
+                <div class="gr-track">
+                  <div class="gr-fill" id="grFill1"></div>
+                </div>
+              </div>
+              <div class="vu-scale-labels">
+                <span>0</span><span>-3</span><span>-6</span><span>-12</span><span>-18</span><span>-24</span><span>-36</span><span>-48</span>
+              </div>
+            </div>
+
+            <!-- Leitura Digital Tabular -->
+            <div class="db-readout-box" id="dbBox1">-∞ dBFS</div>
+
+            <!-- Rack Micro-FX: 1176 FET Comp + De-Esser -->
+            <div class="strip-fx-rack">
+              <div class="fx-slider-row" title="Compressor Vocal Estilo 1176 FET (Ataque Rápido)">
+                <span class="fx-lbl">1176 COMP</span>
+                <input type="range" class="fx-mini-slider" id="sliderComp1" min="0" max="100" value="0">
+                <span class="fx-val" id="valComp1">0%</span>
+              </div>
+              <div class="fx-slider-row" title="De-Esser Dinâmico Split-Band (6.5kHz Sibilância)">
+                <span class="fx-lbl">DE-ESSER</span>
+                <input type="range" class="fx-mini-slider" id="sliderDeEss1" min="0" max="100" value="0">
+                <span class="fx-val" id="valDeEss1">0%</span>
+              </div>
+            </div>
+
+            <!-- Rotary Vector Knob: Digital Trim -->
+            <div class="strip-knob-wrapper">
+              <div class="rotary-knob-dial" id="knobTrim1" data-val="100" data-min="0" data-max="200" title="Arrastar verticalmente para Trim (-24dB a +12dB) • Duplo-clique reseta em 0.0dB">
+                <svg class="knob-svg" viewBox="0 0 56 56">
+                  <circle cx="28" cy="28" r="26" class="knob-well"/>
+                  <circle cx="28" cy="4" r="1.5" class="knob-top-bead"/>
+                  <circle cx="28" cy="28" r="22.5" class="knob-base-ring"/>
+                  <circle cx="28" cy="28" r="22.5" class="knob-fill-arc" id="arcTrim1"/>
+                  <circle cx="28" cy="28" r="17.5" class="knob-cap-outer" fill="url(#knobBevelGrad)"/>
+                  <circle cx="28" cy="28" r="13" class="knob-cap-inner" fill="url(#knobDishGrad)"/>
+                  <line x1="28" y1="11" x2="28" y2="17" class="knob-needle" id="needleTrim1"/>
+                </svg>
+              </div>
+              <span class="knob-legend">DIGITAL TRIM</span>
+              <span class="knob-numeric" id="valTrim1">0.0 dB</span>
+            </div>
+          </div>
+
+          <!-- STRIP 2: CH 2 • INST 2 (HI-Z 1/4" TS GUITAR/BASS) -->
+          <div class="channel-strip" id="stripCh2">
+            <div class="strip-header">
+              <div class="strip-badge-row">
+                <span class="strip-id-badge ch2-badge">CH 2</span>
+                <span class="adc-clip-badge" id="adcClipBadge2" title="Indicador de Saturação do Conversor Analógico-Digital Burr-Brown PCM2902 (Pré-Trim)">ADC OK</span>
+              </div>
+              <span class="strip-title" title="Input 2: Instrumento P10 Hi-Z Direto (Guitarra/Baixo)">INST 2</span>
+              <span class="strip-spec">HI-Z • 1/4" TS</span>
+            </div>
+
+            <!-- Seletor de Modelagem Analógica Unison -->
+            <div class="strip-mode-bar" title="Modelagem Harmônica de Pré-Amplificador de Instrumento">
+              <button class="btn-strip-mode active" data-ch="2" data-preamp="0">CLEAN</button>
+              <button class="btn-strip-mode" data-ch="2" data-preamp="1" title="73 Drive: Corpo Grave e Mordida Média">73 TRAP</button>
+              <button class="btn-strip-mode" data-ch="2" data-preamp="2" title="12AX7 Tube DI: Saturação Valvulada para Guitarra/Baixo">TUBE</button>
+            </div>
+
+            <!-- Botões Táticos de Canal -->
+            <div class="tactile-buttons-row">
+              <button class="btn-tactile" id="btnPhase2" title="Inversor de Fase Polaridade 180°">Ø</button>
+              <button class="btn-tactile" id="btnPad2" title="Atenuador PAD -10dB (Instrumento Hi-Z)">PAD</button>
+              <button class="btn-tactile" id="btnGate2" title="Noise Gate de Estúdio com Histerese (-52dBFS)">GATE</button>
+              <button class="btn-tactile btn-mute-ch" id="btnMute2" title="Mute Instantâneo deste canal">MUTE</button>
+            </div>
+
+            <!-- Barra Utilitária: Auto-Gain + Cab Sim 4x12 -->
+            <div class="strip-utility-bar">
+              <button class="btn-utility-action half-util" id="btnAutoGain2" title="Calibra automaticamente o nível de entrada Hi-Z para -12 dBFS">AUTO-GAIN</button>
+              <button class="btn-utility-action half-util" id="btnCab2" title="Simulador Analógico de Gabinete 4x12 (Ressono 110Hz + Presença 2.2kHz + Roll-off 4.8kHz)">CAB 4x12</button>
+            </div>
+
+            <!-- Medidor VU Vertical + Barra de Gain Reduction (GR) -->
+            <div class="vertical-vu-chassis">
+              <div class="meter-rail">
+                <div class="clip-led-top" id="clipLed2" title="Clique para resetar indicador de pico">CLIP</div>
+                <canvas id="vuCanvas2" class="vertical-vu-canvas" width="26" height="132"></canvas>
+              </div>
+              <div class="gr-rail" title="Redução de Ganho (GR) do Compressor 1176 FET">
+                <span class="gr-tag" id="grTag2">GR</span>
+                <div class="gr-track">
+                  <div class="gr-fill" id="grFill2"></div>
+                </div>
+              </div>
+              <div class="vu-scale-labels">
+                <span>0</span><span>-3</span><span>-6</span><span>-12</span><span>-18</span><span>-24</span><span>-36</span><span>-48</span>
+              </div>
+            </div>
+
+            <!-- Leitura Digital Tabular -->
+            <div class="db-readout-box" id="dbBox2">-∞ dBFS</div>
+
+            <!-- Rack Micro-FX: 1176 FET Comp + GR Readout -->
+            <div class="strip-fx-rack">
+              <div class="fx-slider-row" title="Compressor de Instrumento Estilo 1176 FET">
+                <span class="fx-lbl">1176 COMP</span>
+                <input type="range" class="fx-mini-slider" id="sliderComp2" min="0" max="100" value="0">
+                <span class="fx-val" id="valComp2">0%</span>
+              </div>
+              <div class="fx-slider-row fx-info-row">
+                <span class="fx-lbl">GAIN RED.</span>
+                <span class="fx-val-badge" id="lblGrDb2">0.0 dB</span>
+              </div>
+            </div>
+
+            <!-- Rotary Vector Knob: Digital Trim -->
+            <div class="strip-knob-wrapper">
+              <div class="rotary-knob-dial" id="knobTrim2" data-val="100" data-min="0" data-max="200" title="Arrastar verticalmente para Trim (-24dB a +12dB) • Duplo-clique reseta em 0.0dB">
+                <svg class="knob-svg" viewBox="0 0 56 56">
+                  <circle cx="28" cy="28" r="26" class="knob-well"/>
+                  <circle cx="28" cy="4" r="1.5" class="knob-top-bead"/>
+                  <circle cx="28" cy="28" r="22.5" class="knob-base-ring"/>
+                  <circle cx="28" cy="28" r="22.5" class="knob-fill-arc" id="arcTrim2"/>
+                  <circle cx="28" cy="28" r="17.5" class="knob-cap-outer" fill="url(#knobBevelGrad)"/>
+                  <circle cx="28" cy="28" r="13" class="knob-cap-inner" fill="url(#knobDishGrad)"/>
+                  <line x1="28" y1="11" x2="28" y2="17" class="knob-needle" id="needleTrim2"/>
+                </svg>
+              </div>
+              <span class="knob-legend">DIGITAL TRIM</span>
+              <span class="knob-numeric" id="valTrim2">0.0 dB</span>
+            </div>
+          </div>
+
+          <!-- STRIP 3: CH 3-4 • LOOPBACK VIRTUAL (STEREO L/R & PER-APP SAMPLER) -->
+          <div class="channel-strip strip-loopback" id="stripLoopback">
+            <div class="strip-header">
+              <div class="strip-badge-row">
+                <span class="strip-id-badge loop-badge">CH 3-4</span>
+                <span class="adc-clip-badge cyan-chip" id="loopStatusChip">SAMPLER</span>
+              </div>
+              <span class="strip-title" title="Áudio do Windows ou de Aplicativo Isolado roteado para o DAW">LOOPBACK</span>
+              <span class="strip-spec loop-spec">PER-APP WASAPI → DAW</span>
+            </div>
+
+            <!-- Seletor de Modo de Captura Loopback -->
+            <div class="strip-mode-bar" title="Modo de Captura WASAPI: Mix Global do PC, Isolar apenas 1 App ou Excluir 1 App (Ex: Discord)">
+              <button class="btn-strip-mode cyan-mode active" data-loopmode="0" title="Captura todo o áudio do Windows">MIX PC</button>
+              <button class="btn-strip-mode cyan-mode" data-loopmode="1" title="Captura SOMENTE o aplicativo selecionado abaixo (ignora Discord e alertas)">ISOLAR</button>
+              <button class="btn-strip-mode cyan-mode" data-loopmode="2" title="Captura tudo EXCETO o aplicativo selecionado">EXCLUIR</button>
+            </div>
+
+            <!-- Botões Táticos de Roteamento -->
+            <div class="tactile-buttons-row three-cols">
+              <button class="btn-tactile btn-daw-send active" id="btnDawSend" title="Enviar áudio do Loopback para os canais 3 e 4 do FL Studio">DAW SEND</button>
+              <button class="btn-tactile btn-broadcast" id="btnBroadcastMix" title="Broadcast Mix: Mixa Loopback + Microfone CH1 + Instrumento CH2">B-CAST</button>
+              <button class="btn-tactile" id="btnLoopMono" title="Somar para sinal Mono">MONO</button>
+            </div>
+
+            <!-- Seletor de Processo (PID) para Captura por Aplicativo -->
+            <div class="strip-utility-bar" id="loopbackPidRow">
+              <select class="select-app-pid" id="selectLoopPid" title="Selecione o aplicativo alvo para ISOLAR ou EXCLUIR no Loopback">
+                <option value="0">Mix Global Windows (PC)</option>
+              </select>
+              <button class="btn-refresh-pids" id="btnRefreshPids" title="Atualizar lista de aplicativos de áudio abertos">↻</button>
+            </div>
+
+            <!-- Medidor VU Estéreo Duplo L/R -->
+            <div class="vertical-vu-chassis dual-rail-chassis">
+              <div class="stereo-rail-group">
+                <div class="meter-rail">
+                  <div class="clip-led-top mini-clip" id="clipLedLoopL">L</div>
+                  <canvas id="vuCanvasLoopL" class="vertical-vu-canvas half-rail" width="15" height="132"></canvas>
+                </div>
+                <div class="meter-rail">
+                  <div class="clip-led-top mini-clip" id="clipLedLoopR">R</div>
+                  <canvas id="vuCanvasLoopR" class="vertical-vu-canvas half-rail" width="15" height="132"></canvas>
+                </div>
+              </div>
+              <div class="vu-scale-labels">
+                <span>0</span><span>-3</span><span>-6</span><span>-12</span><span>-18</span><span>-24</span><span>-36</span><span>-48</span>
+              </div>
+            </div>
+
+            <!-- Leitura Digital Tabular -->
+            <div class="db-readout-box loop-readout" id="dbBoxLoop">-∞ dBFS</div>
+
+            <!-- Rack Micro-FX: Detector de 808 & Nota Fundamental -->
+            <div class="strip-fx-rack">
+              <div class="fx-slider-row fx-info-row">
+                <span class="fx-lbl">NOTA / 808</span>
+                <span class="fx-val-badge cyan-badge" id="lblLoopTunerNote">-- (0 Hz)</span>
+              </div>
+              <button class="btn-fx-trigger" id="btnLoopDetect808" title="Abrir Afinador / Detector de 808 focado na sample do Loopback">◎ DETECTAR NOTA 808</button>
+            </div>
+
+            <!-- Rotary Vector Knob: Loopback Gain -->
+            <div class="strip-knob-wrapper">
+              <div class="rotary-knob-dial" id="knobLoopGain" data-val="100" data-min="0" data-max="200" title="Arrastar verticalmente para alterar Ganho de Loopback • Duplo-clique reseta em 0.0dB">
+                <svg class="knob-svg" viewBox="0 0 56 56">
+                  <circle cx="28" cy="28" r="26" class="knob-well"/>
+                  <circle cx="28" cy="4" r="1.5" class="knob-top-bead"/>
+                  <circle cx="28" cy="28" r="22.5" class="knob-base-ring"/>
+                  <circle cx="28" cy="28" r="22.5" class="knob-fill-arc cyan-arc" id="arcLoopGain"/>
+                  <circle cx="28" cy="28" r="17.5" class="knob-cap-outer" fill="url(#knobBevelGrad)"/>
+                  <circle cx="28" cy="28" r="13" class="knob-cap-inner" fill="url(#knobDishGrad)"/>
+                  <line x1="28" y1="11" x2="28" y2="17" class="knob-needle" id="needleLoopGain"/>
+                </svg>
+              </div>
+              <span class="knob-legend loop-legend">LOOP GAIN</span>
+              <span class="knob-numeric cyan-val" id="valLoopGain">0.0 dB</span>
+            </div>
+          </div>
+
+          <!-- STRIP 4: OUT 1-2 • OUTPUT (PHONES & RCA + MIX CHECK) -->
+          <div class="channel-strip strip-master" id="stripMaster">
+            <div class="strip-header">
+              <div class="strip-badge-row">
+                <span class="strip-id-badge master-badge">OUT 1-2</span>
+                <span class="adc-clip-badge" id="pdcBadgeMaster" title="Latência total reportada ao DAW via ASIOGetLatencies">PDC SYNC</span>
+              </div>
+              <span class="strip-title" title="Saída Master de Fone P10 e RCA Traseiro">OUTPUT</span>
+              <span class="strip-spec master-spec">PHONES &amp; RCA</span>
+            </div>
+
+            <!-- Seletor de Roteamento DSP: Print DAW vs Monitor Only -->
+            <div class="strip-mode-bar" title="Define se o DSP (Preamp/Comp/De-Ess) é gravado no DAW ou ouvido apenas na monitoração">
+              <button class="btn-strip-mode active" id="btnDspPrint" data-mononly="0" title="Grava o sinal processado pelo DSP diretamente no DAW">PRINT DAW</button>
+              <button class="btn-strip-mode" id="btnDspMonOnly" data-mononly="1" title="Envia sinal limpo (Dry) ao DAW e aplica DSP apenas na monitoração">MON ONLY</button>
+            </div>
+
+            <!-- Botões Táticos de Saída -->
+            <div class="tactile-buttons-row three-cols">
+              <button class="btn-tactile" id="btnDim" title="Atenuador DIM (-14dB no monitor)">DIM</button>
+              <button class="btn-tactile" id="btnMasterMono" title="Checagem rápida de mixagem em Mono">MONO</button>
+              <button class="btn-tactile btn-mute-ch" id="btnMuteMaster" title="Mute Geral de Saída">MUTE</button>
+            </div>
+
+            <!-- Barra Utilitária: Producer Mix Check Matrix -->
+            <div class="strip-utility-bar">
+              <button class="btn-utility-action third-util" id="btnMonSub" title="Filtro Sub-Check (<120Hz): Isola o grave do 808 e Kick">808 SUB</button>
+              <button class="btn-utility-action third-util" id="btnMonPhone" title="Simulador de Alto-Falante de Celular (300Hz-3.5kHz)">PHONE</button>
+              <button class="btn-utility-action third-util" id="btnMonXfeed" title="Crossfeed Acústico de Monitores de Estúdio para Fones">X-FEED</button>
+            </div>
+
+            <!-- Medidor VU Estéreo Duplo L/R -->
+            <div class="vertical-vu-chassis dual-rail-chassis">
+              <div class="stereo-rail-group">
+                <div class="meter-rail">
+                  <div class="clip-led-top mini-clip" id="clipLedOutL">L</div>
+                  <canvas id="vuCanvasOutL" class="vertical-vu-canvas half-rail" width="15" height="132"></canvas>
+                </div>
+                <div class="meter-rail">
+                  <div class="clip-led-top mini-clip" id="clipLedOutR">R</div>
+                  <canvas id="vuCanvasOutR" class="vertical-vu-canvas half-rail" width="15" height="132"></canvas>
+                </div>
+              </div>
+              <div class="vu-scale-labels">
+                <span>0</span><span>-3</span><span>-6</span><span>-12</span><span>-18</span><span>-24</span><span>-36</span><span>-48</span>
+              </div>
+            </div>
+
+            <!-- Leitura Digital Tabular -->
+            <div class="db-readout-box master-readout" id="dbBoxOut">-∞ dBFS</div>
+
+            <!-- Rack Micro-FX: Calibração Fina de PDC Offset -->
+            <div class="strip-fx-rack">
+              <div class="fx-slider-row fx-info-row" title="Latência total reportada ao FL Studio / DAW (In / Out)">
+                <span class="fx-lbl">PDC</span>
+                <span class="fx-val-badge" id="lblTotalPdc">608 SMP</span>
+              </div>
+              <div class="fx-slider-row" title="Ajuste fino de compensação de atraso de gravação (-256 a +256 samples)">
+                <span class="fx-lbl">OFFSET</span>
+                <input type="range" class="fx-mini-slider" id="sliderPdcOffset" min="-256" max="256" value="0">
+                <span class="fx-val" id="valPdcOffset">0</span>
+              </div>
+            </div>
+
+            <!-- Rotary Vector Knob: Monitor Master Level -->
+            <div class="strip-knob-wrapper">
+              <div class="rotary-knob-dial master-dial" id="knobMasterOut" data-val="100" data-min="0" data-max="200" title="Arrastar verticalmente para ajuste fino Master • Duplo-clique reseta em 0.0dB">
+                <svg class="knob-svg" viewBox="0 0 56 56">
+                  <circle cx="28" cy="28" r="26" class="knob-well"/>
+                  <circle cx="28" cy="4" r="1.5" class="knob-top-bead"/>
+                  <circle cx="28" cy="28" r="22.5" class="knob-base-ring"/>
+                  <circle cx="28" cy="28" r="22.5" class="knob-fill-arc green-arc" id="arcMasterOut"/>
+                  <circle cx="28" cy="28" r="17.5" class="knob-cap-outer" fill="url(#knobBevelGrad)"/>
+                  <circle cx="28" cy="28" r="13" class="knob-cap-inner" fill="url(#knobDishGrad)"/>
+                  <line x1="28" y1="11" x2="28" y2="17" class="knob-needle" id="needleMasterOut"/>
+                </svg>
+              </div>
+              <span class="knob-legend master-legend">MONITOR TRIM</span>
+              <span class="knob-numeric green-val" id="valMasterOut">0.0 dB</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- COLUNA DIREITA (42%): MOTOR ASIO, MATRIZ DE BUFFER & PAINEL FÍSICO UM2 -->
+      <section class="engine-controls-col">
+        
+        <!-- MÓDULO 1: SELETOR DE ARQUITETURA DO MOTOR ASIO -->
+        <div class="engine-module-box">
+          <div class="module-title-bar">
+            <span class="panel-section-title">ASIO ENGINE ARCHITECTURE</span>
+            <span class="pill-spec">DUAL-MODE CORE</span>
+          </div>
+
+          <div class="engine-architecture-cards">
+            <!-- Flex / Shared Engine -->
+            <button class="btn-engine-card active" id="cardModeShared" data-mode="shared">
+              <div class="card-top-row">
+                <span class="mode-led-dot active"></span>
+                <span class="card-engine-name">FLEX / SHARED ENGINE</span>
+                <span class="card-badge-pill">MULTI-APP</span>
+              </div>
+              <span class="card-engine-desc">FIFO Elástico • Multi-App (DAW + Discord/Browser) • Zero Picotes a 64 smp</span>
+            </button>
+
+            <!-- Pro Exclusive Engine -->
+            <button class="btn-engine-card" id="cardModeExclusive" data-mode="exclusive">
+              <div class="card-top-row">
+                <span class="mode-led-dot"></span>
+                <span class="card-engine-name">PRO EXCLUSIVE (WDM-KS)</span>
+                <span class="card-badge-pill exclusive-pill">KERNEL DMA</span>
+              </div>
+              <span class="card-engine-desc">Acesso Direto Kernel • Piso Físico 144 smp (3.0 ms) • Gravação Crítica</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- MÓDULO 2: MATRIZ TÁTICA DE BUFFER SIZE (GRID 4x2) -->
+        <div class="engine-module-box">
+          <div class="module-title-bar">
+            <span class="panel-section-title">BUFFER SIZE &amp; LATENCY MATRIX</span>
+            <span class="txt-subinfo">PULSO DE SYNC VIA kAsioResetRequest</span>
+          </div>
+
+          <div class="buffer-matrix-grid" id="bufferMatrixGrid">
+            <!-- Gerado via JavaScript: 64, 96, 128, 144, 192, 256, 512, 1024 -->
+          </div>
+
+          <!-- Barra de Ação e Sincronização em Linha Única -->
+          <div class="sync-action-strip">
+            <div class="selected-target-spec">
+              <span class="spec-label">SELECIONADO:</span>
+              <span class="spec-val" id="lblSelectedSpec">64 SMP (1.33 ms) • FLEX</span>
+            </div>
+            <button class="btn-apply-sync" id="btnApplySync">
+              <svg class="sync-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span id="btnApplyText">↻ APLICAR NO FL STUDIO</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- MÓDULO 3: PAINEL FÍSICO BEHRINGER U-PHORIA UM2 (HARDWARE LED DECK) -->
+        <div class="engine-module-box um2-hardware-deck">
+          <div class="module-title-bar">
+            <div class="title-with-pill">
+              <span class="panel-section-title">U-PHORIA HARDWARE DECK (UM2 / UMC22)</span>
+              <span class="pill-spec">FRONT PANEL ANALOG STATUS</span>
+            </div>
+            <span class="info-help-icon" title="A Behringer UM2/UMC22 possui controles de ganho de entrada (Gain 1 e 2) e Direct Monitor puramente analógicos na carcaça. O painel KaxWav v3.0 adiciona Unison Preamps, 1176 FET, De-Esser, Per-App Loopback e Flashback 60s.">?</span>
+          </div>
+
+          <!-- Mini Deck imitativo do painel frontal da UM2 -->
+          <div class="hardware-mimic-panel">
+            <div class="hw-channel-bank">
+              <span class="hw-bank-title">MIC / LINE 1</span>
+              <div class="hw-leds-row">
+                <div class="hw-led-item">
+                  <span class="hw-led-bulb led-green" id="hwLedSig1"></span>
+                  <span class="hw-led-tag">SIG</span>
+                </div>
+                <div class="hw-led-item">
+                  <span class="hw-led-bulb led-red" id="hwLedClip1"></span>
+                  <span class="hw-led-tag">CLIP</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hw-channel-bank">
+              <span class="hw-bank-title">INST 2</span>
+              <div class="hw-leds-row">
+                <div class="hw-led-item">
+                  <span class="hw-led-bulb led-green" id="hwLedSig2"></span>
+                  <span class="hw-led-tag">SIG</span>
+                </div>
+                <div class="hw-led-item">
+                  <span class="hw-led-bulb led-red" id="hwLedClip2"></span>
+                  <span class="hw-led-tag">CLIP</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hw-channel-bank">
+              <span class="hw-bank-title">GLOBAL</span>
+              <div class="hw-leds-row">
+                <div class="hw-led-item">
+                  <span class="hw-led-bulb led-green on"></span>
+                  <span class="hw-led-tag">POWER</span>
+                </div>
+                <div class="hw-led-item" title="Chave física deslizante no painel traseiro (Hardware UM2/UMC22)">
+                  <span class="hw-led-bulb led-amber" id="hwLedPhantom"></span>
+                  <span class="hw-led-tag">+48V (REAR)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hw-channel-bank">
+              <span class="hw-bank-title">MONITOR</span>
+              <div class="hw-direct-badge">
+                <span class="hw-switch-led on"></span>
+                <span class="hw-switch-text">DIRECT MON</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botão Tático Largo de Mute de Software -->
+          <div class="fast-mute-bar">
+            <button class="btn-fast-mute" id="btnGlobalMute">
+              <span class="fast-mute-led led-green" id="fastMuteLed"></span>
+              <span class="fast-mute-label" id="fastMuteLabel">● MICROFONE ABERTO (ATIVO NO FL STUDIO)</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- FOOTER RACK RIBBON -->
+    <footer class="bottom-rack-ribbon">
+      <div class="ribbon-left">
+        <span class="ribbon-tag">ASIO DRIVER: <strong id="footerDriverName">Behringer U-Phoria ASIO (v3.0.0)</strong></span>
+        <span class="ribbon-tag">DLL: <strong>BehringerUM2ASIODriver.dll (x64 C++20 SIMD)</strong></span>
+        <span class="ribbon-tag">IPC: <strong>Local\BehringerUM2SharedMemory (848 B)</strong></span>
+      </div>
+      <div class="ribbon-right">
+        <span class="ribbon-tag">KERNEL STREAMING: <strong>MMCSS PRO AUDIO • REALTIME DMA</strong></span>
+        <span class="ribbon-tag" style="opacity:0.65;font-size:0.52rem;">ASIO is a trademark and software of Steinberg Media Technologies GmbH</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- MODAL DE ATIVAÇÃO DE LICENÇA KAXWAV PRO (SKEUOMORPHIC STUDIO HARDWARE DIALOG) -->
+  <div class="license-modal-backdrop" id="licenseModal" style="display:none;">
+    <div class="license-modal-dialog">
+      <div class="modal-rack-header">
+        <div class="rack-screws">
+          <div class="hex-screw"><div class="hex-inner"></div></div>
+          <div class="hex-screw"><div class="hex-inner"></div></div>
+        </div>
+        <div class="modal-title-wrap">
+          <span class="modal-title">SISTEMA DE LICENCIAMENTO KAXWAV PRO</span>
+          <span class="modal-subtitle">CRIPTOGRAFIA DE GRAU MILITAR • HARDWARE ID BINDING</span>
+        </div>
+        <button class="btn-modal-close" id="btnCloseLicenseModal" title="Fechar">&times;</button>
+      </div>
+
+      <div class="modal-content-body">
+        <!-- Status Card -->
+        <div class="license-status-card" id="licenseStatusCard">
+          <div class="lic-status-header">
+            <span class="lic-status-badge demo" id="licCardBadge">MODO DEMONSTRAÇÃO</span>
+            <span class="lic-status-tier" id="licCardTier">Restrição: Áudio pausa 2s a cada 120s</span>
+          </div>
+          <p class="lic-status-desc" id="licCardDesc">
+            Ative sua licença para desbloquear latência ultrabaixa de 64 samples e fluxo ininterrupto de estúdio.
+          </p>
+        </div>
+
+        <!-- Visor OLED do HWID da Máquina -->
+        <div class="hwid-visor-group">
+          <label class="modal-field-label">SEU HARDWARE ID DESTA MÁQUINA:</label>
+          <div class="hwid-visor-row">
+            <div class="hwid-oled-display">
+              <span class="hwid-oled-text" id="hwidDisplay">CARREGANDO HWID...</span>
+            </div>
+            <button class="btn-copy-hwid" id="btnCopyHwid" title="Copiar HWID para a área de transferência">
+              <span class="copy-icon">⎘</span>
+              <span id="btnCopyHwidText">COPIAR ID</span>
+            </button>
+          </div>
+          <span class="field-hint">Envie este Hardware ID para obter sua chave de ativação vitalícia.</span>
+        </div>
+
+        <!-- Input da Chave de Ativação -->
+        <div class="license-input-group">
+          <label class="modal-field-label">CHAVE DE ATIVAÇÃO PRO (BASE32):</label>
+          <div class="license-input-wrapper">
+            <input type="text" class="input-license-key" id="inputLicenseKey" placeholder="UM2-XXXX-XXXX-XXXX-XXXX" maxlength="23" spellcheck="false" autocomplete="off" />
+          </div>
+          <span class="field-hint">Formato: UM2-XXXX-XXXX-XXXX-XXXX</span>
+        </div>
+
+        <!-- Botões de Ação do Modal -->
+        <div class="modal-actions-row">
+          <button class="btn-activate-license" id="btnActivateLicense">
+            <span class="activate-led" id="activateLed"></span>
+            <span class="activate-text">ATIVAR LICENÇA PRO VITALÍCIO</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREDITS & DONATE MODAL (Studio Hardware Rack Unit) -->
+  <div class="license-modal-backdrop" id="creditsModal" style="display:none;">
+    <div class="license-modal-dialog credits-modal-dialog">
+      <div class="modal-rack-header">
+        <div class="rack-screws">
+          <div class="hex-screw"><div class="hex-inner"></div></div>
+          <div class="hex-screw"><div class="hex-inner"></div></div>
+        </div>
+        <div class="modal-title-wrap">
+          <span class="modal-title">CRÉDITOS &amp; SUPORTE • KAXWAV STUDIO</span>
+          <span class="modal-subtitle" id="creditsModalSubtitle">KAXWAV STUDIO SUITE • ENGENHARIA DE ÁUDIO</span>
+        </div>
+        <button class="btn-modal-close" id="btnCloseCreditsModal" title="Fechar">&times;</button>
+      </div>
+
+      <div class="modal-content-body">
+        <!-- Credits Hero Card -->
+        <div class="credits-hero-card">
+          <div class="credits-star-badge">★ DEV TEAM ★</div>
+          <h2 class="credits-hero-title" id="creditsModalTitle">Created by 8kaxcav &amp; fuj11</h2>
+          <p class="credits-hero-desc" id="creditsModalMessage">
+            Gostou da latência absurda do driver? Apoie os criadores 8kaxcav &amp; fuj11 para continuarmos lançando atualizações!
+          </p>
+        </div>
+
+        <!-- Donate Actions Box -->
+        <div class="donate-actions-box" id="donateSection">
+          <!-- Botão LivePix / Doação Online -->
+          <button class="btn-donate-livepix" id="btnOpenDonateLink">
+            <span class="donate-icon">⚡</span>
+            <span id="btnDonateLabel">APOIE O PROJETO (DONATE)</span>
+          </button>
+
+          <!-- Visor Chave Pix com Copiar em 1 Clique -->
+          <div class="pix-key-wrapper" id="pixSection">
+            <label class="modal-field-label">CHAVE PIX DIRETA:</label>
+            <div class="hwid-visor-row">
+              <div class="hwid-oled-display pix-oled-display">
+                <span class="hwid-oled-text" id="pixKeyDisplay">sua-chave-pix-aqui</span>
+              </div>
+              <button class="btn-copy-hwid" id="btnCopyPix" title="Copiar Chave Pix">
+                <span class="copy-icon">⎘</span>
+                <span id="btnCopyPixText">COPIAR PIX</span>
+              </button>
+            </div>
+            <span class="field-hint">Qualquer valor ajuda a manter o desenvolvimento ativo e novos drivers saindo!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Studio Floating Toast Feedback -->
+  <div class="studio-toast" id="studioToast">
+    <span class="toast-indicator-dot"></span>
+    <span class="toast-msg-text" id="toastMessageText">Configuração aplicada com sucesso</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
