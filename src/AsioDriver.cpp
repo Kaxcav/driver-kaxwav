@@ -41,6 +41,25 @@ static void LogAsio(const char* fmt, ...) {
     }
 }
 
+// Invariante 6: APOs desligados com AUDCLNT_STREAMOPTIONS_RAW em todo stream shared da UM2.
+// Tem de rodar depois do Activate e antes de GetMixFormat/Initialize: o mix format em RAW pode
+// ser diferente do padrao (na UM2 desta maquina a captura RAW vem mono, como o formato do device).
+static HRESULT ApplyRawStreamOption(IAudioClient* client, const char* what) {
+    IAudioClient2* client2 = nullptr;
+    HRESULT hr = client ? client->QueryInterface(__uuidof(IAudioClient2), reinterpret_cast<void**>(&client2)) : E_POINTER;
+    if (SUCCEEDED(hr) && client2) {
+        AudioClientProperties props{};
+        props.cbSize = sizeof(props);
+        props.bIsOffload = FALSE;
+        props.eCategory = AudioCategory_Other;
+        props.Options = AUDCLNT_STREAMOPTIONS_RAW;
+        hr = client2->SetClientProperties(&props);
+        client2->Release();
+    }
+    LogAsio("%s: SetClientProperties(AUDCLNT_STREAMOPTIONS_RAW) hr=0x%08X", what, hr);
+    return hr;
+}
+
 // GUIDs
 const GUID IID_IASIO = 
     { 0x933923e0, 0x01fe, 0x11d2, { 0xbc, 0x7b, 0x00, 0x80, 0xc7, 0x79, 0xb4, 0x3e } };
@@ -1063,6 +1082,7 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
                     m_pCaptureClient->Release();
                     m_pCaptureClient = nullptr;
                     m_pCaptureDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_pCaptureClient));
+                    if (m_pCaptureClient) ApplyRawStreamOption(m_pCaptureClient, "Capture Shared (fallback hibrido)");
                     if (m_pCaptureClient) {
                         WAVEFORMATEX* pCapMix = nullptr;
                         m_pCaptureClient->GetMixFormat(&pCapMix);
@@ -1127,9 +1147,14 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
         // 1. Inicializa Render Shared
         if (m_pRenderDevice) {
             m_pRenderDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_pRenderClient));
+            if (m_pRenderClient) ApplyRawStreamOption(m_pRenderClient, "Render Shared");
             if (m_pRenderClient) {
                 WAVEFORMATEX* pMixFormat = nullptr;
                 m_pRenderClient->GetMixFormat(&pMixFormat);
+                if (pMixFormat) {
+                    LogAsio("Render Shared Format: channels=%u, rate=%lu, bits=%u, tag=0x%04X",
+                            pMixFormat->nChannels, pMixFormat->nSamplesPerSec, pMixFormat->wBitsPerSample, pMixFormat->wFormatTag);
+                }
 
                 DWORD origRenderRate = pMixFormat ? pMixFormat->nSamplesPerSec : static_cast<DWORD>(m_sampleRate);
                 HRESULT hr = E_FAIL;
@@ -1170,6 +1195,7 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
                         m_pRenderClient = nullptr;
                     }
                     m_pRenderDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_pRenderClient));
+                    if (m_pRenderClient) ApplyRawStreamOption(m_pRenderClient, "Render Shared (fallback)");
                     if (m_pRenderClient) {
                         hr = m_pRenderClient->Initialize(
                             AUDCLNT_SHAREMODE_SHARED,
@@ -1185,6 +1211,7 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
                             m_pRenderClient->Release();
                             m_pRenderClient = nullptr;
                             m_pRenderDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_pRenderClient));
+                            if (m_pRenderClient) ApplyRawStreamOption(m_pRenderClient, "Render Shared (fallback taxa original)");
                             if (m_pRenderClient) {
                                 hr = m_pRenderClient->Initialize(
                                     AUDCLNT_SHAREMODE_SHARED,
@@ -1220,6 +1247,7 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
         // 2. Inicializa Capture Shared
         if (m_pCaptureDevice) {
             m_pCaptureDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_pCaptureClient));
+            if (m_pCaptureClient) ApplyRawStreamOption(m_pCaptureClient, "Capture Shared");
             if (m_pCaptureClient) {
                 WAVEFORMATEX* pMixFormat = nullptr;
                 m_pCaptureClient->GetMixFormat(&pMixFormat);
@@ -1252,6 +1280,7 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
                     m_pCaptureClient->Release();
                     m_pCaptureClient = nullptr;
                     m_pCaptureDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_pCaptureClient));
+                    if (m_pCaptureClient) ApplyRawStreamOption(m_pCaptureClient, "Capture Shared (fallback)");
                     if (m_pCaptureClient) {
                         hr = m_pCaptureClient->Initialize(
                             AUDCLNT_SHAREMODE_SHARED,
