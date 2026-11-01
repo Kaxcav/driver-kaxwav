@@ -115,8 +115,11 @@ def step_7k(f, p, drop_db=6.0):
     """Flags the Voice Clarity signature: PSD 7.5-12 kHz more than drop_db below 4-6.5 kHz."""
     lo = band_mean_db(f, p, 4000, 6500)
     hi = band_mean_db(f, p, 7500, 12000)
+    valid = lo > -160.0  # below this the band is digital silence (16-bit LSB noise is ~ -147 dB/Hz)
     return {"psd_4k_6k5_db_hz": round(lo, 1), "psd_7k5_12k_db_hz": round(hi, 1),
-            "drop_db": round(lo - hi, 1), "step_detected": bool(lo - hi > drop_db)}
+            "drop_db": round(lo - hi, 1), "valid": bool(valid),
+            "step_detected": bool(valid and lo - hi > drop_db),
+            **({} if valid else {"reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"})}
 
 
 def noise_floor(x, fs=FS):
@@ -261,4 +264,6 @@ def null_test(digital_ref_i16, captured_f32_mono, scale=32768.0, max_search=9600
             "residual_max_lsb": float(np.max(np.abs(resid))), "residual_rms_lsb": round(float(np.sqrt(np.mean(resid ** 2))), 4),
             "residual_dbfs": round(dbfs(resid / scale), 2), "best_fit_gain_db": round(20 * np.log10(abs(g) + 1e-20), 4),
             "identical_samples_percent": round(100.0 * float(np.mean(resid == 0)), 3),
-            "bit_perfect": bool(np.all(resid == 0))}
+            "bit_perfect": bool(np.all(resid == 0)),
+            "conclusive": bool(act.mean() > 0.5),
+            **({} if act.mean() > 0.5 else {"reason": "referencia quase toda zero: sem sinal para comparar"})}

@@ -2,6 +2,7 @@
 
     python measure/scripts/run_baseline.py                 # everything, asks for the physical setup
     python measure/scripts/run_baseline.py --steps m2,m5   # subset (results merge into the same run)
+    python measure/scripts/run_baseline.py --steps assemble # only rebuild the baseline JSON
     python measure/scripts/run_baseline.py --cond gain_ch1="12h" --yes   # non-interactive
 
 Each step writes measure/out/<date>-<commit>/<step>.json; after every invocation all step files of
@@ -119,6 +120,7 @@ def probe(mode, buffer, seconds, rundir, tag, stim=None, stim_at=0, taps=False, 
     j["_rec"] = str(rec)
     if poll_telemetry:
         j["_telemetry"] = um2_ipc.summarize_telemetry(last)
+    (rundir / f"{tag}.probe.json").write_text(json.dumps(j, indent=1, default=str), encoding="utf-8")
     return j
 
 
@@ -145,10 +147,14 @@ def step_m2(args, rundir, cond):
         "e informe a posicao (--cond gain_ch1=..., gain_ch2=...).", args)
     secs = args.m2_seconds
     prefix = rundir / "m2"
-    rc, out, err = sh([str(RAWCAP), str(secs), str(prefix)], timeout=secs * 2 + 60)
-    info = {"raw_capture_test_stdout": out.strip().splitlines()}
+    reuse = args.m2_reuse and Path(f"{prefix}_apo.wav").exists() and Path(f"{prefix}_raw.wav").exists()
+    if reuse:  # analyse captures already taken in this run; endpoint info only (3rd arg skips capture)
+        rc, out, err = sh([str(RAWCAP), "1", str(prefix), "info"], timeout=60)
+    else:
+        rc, out, err = sh([str(RAWCAP), str(secs), str(prefix)], timeout=secs * 2 + 60)
     res = {"tool": "tools/raw_capture_test.exe (shared default/APO e shared RAW, float WAV)",
-           "seconds": secs, "input": cond.get("input_connection", "nada ligado"), **info}
+           "seconds": secs, "input": cond.get("input_connection", "nada ligado"),
+           "reused_captures": bool(reuse), "raw_capture_test_stdout": out.strip().splitlines()}
     for kind in ("apo", "raw"):
         wav = Path(f"{prefix}_{kind}.wav")
         if not wav.exists():
@@ -156,7 +162,14 @@ def step_m2(args, rundir, cond):
             continue
         sr, x = A.read_wav_float(wav)
         x = x[int(0.3 * sr):]
-        res[kind] = {"sr": sr, "ch1_mic": A.noise_floor(x[:, 0], sr), "ch2_inst": A.noise_floor(x[:, 1], sr)}
+        if x.ndim == 1:
+            x = x[:, None]
+        r = {"sr": sr, "channels": int(x.shape[1]), "ch1_mic": A.noise_floor(x[:, 0], sr)}
+        if x.shape[1] > 1:
+            r["ch2_inst"] = A.noise_floor(x[:, 1], sr)
+        else:
+            r["note"] = "mix format do stream tem 1 canal: so o canal 1 aparece nesta captura"
+        res[kind] = r
     return res
 
 
@@ -194,7 +207,11 @@ def step_m5(args, rundir, cond):
 def step_m7(args, rundir, cond):
     stim = A.to_i16(A.pseudo_noise(3.0, -20.0))
     at = 24000
-    j = probe(1, 256, 4.5, rundir, "m7_SharedFlex_256", stim=stim, stim_at=at, taps=True)
+    saved = rundir / "m7_SharedFlex_256.probe.json"
+    if args.m7_reuse and saved.exists():  # reanalyse the capture already taken in this run
+        j = json.loads(saved.read_text(encoding="utf-8"))
+    else:
+        j = probe(1, 256, 4.5, rundir, "m7_SharedFlex_256", stim=stim, stim_at=at, taps=True)
     res = {"mode_requested": "SharedFlex", "mode_active": j.get("mode_active"), "buffer": 256,
            "stimulus": "ruido pseudo-aleatorio -20 dBFS, 3 s, int16, nas duas saidas",
            "taps": {"capture": j.get("tap_capture"), "loopback": j.get("tap_loopback")}}
@@ -329,6 +346,7 @@ STEP_FUNCS = {"m8": step_m8, "m2": step_m2, "m5": step_m5, "m7": step_m7, "m1": 
 
 def assemble(rundir, run_id, header):
     doc = dict(header)
+    doc["analysis_code"] = git("describe", "--tags", "--always", "--dirty")  # code that produced the analyses
     for s in ALL_STEPS:
         p = rundir / f"{s}.json"
         doc[s.upper()] = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"status": "nao executado"}
@@ -348,6 +366,8 @@ def main():
     ap.add_argument("--run-id", help="default: <data>-<commit>")
     ap.add_argument("--m1-sessions", type=int, default=20)
     ap.add_argument("--m2-seconds", type=int, default=60)
+    ap.add_argument("--m7-reuse", action="store_true", help="reanalisa a captura M7 ja feita nesta corrida")
+    ap.add_argument("--m2-reuse", action="store_true", help="reanalisa m2_apo.wav/m2_raw.wav ja capturados nesta corrida")
     ap.add_argument("--m5-seconds", type=int, default=60)
     ap.add_argument("--drift-seconds", type=int, default=3600)
     ap.add_argument("--drift-csv", help="importa uma corrida de um2_drift ja feita em vez de rodar de novo")
@@ -390,7 +410,10 @@ def main():
     hp.write_text(json.dumps(header, indent=1, ensure_ascii=False), encoding="utf-8")
 
     try:
-        for s in [x.strip().lower() for x in args.steps.split(",") if x.strip()]:
+        steps = [x.strip().lower() for x in args.steps.split(",") if x.strip()]
+        for bad in [x for x in steps if x not in STEP_FUNCS and x != "assemble"]:
+            print(f"passo desconhecido ignorado: {bad}")
+        for s in [x for x in steps if x in STEP_FUNCS]:
             print(f"== {s.upper()} ==")
             t0 = time.time()
             try:
