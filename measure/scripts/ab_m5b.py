@@ -27,7 +27,7 @@ def one(label, dll, use_com, mode, buf, secs, rundir, tag):
          "driver_version": j.get("driver_version"), "mode_requested": RB.MODES[mode], "mode_active": j.get("mode_active"),
          "buffer": buf, "seconds": secs, "ok": j.get("ok"), "pdc_in": j.get("input_latency"),
          "pdc_out": j.get("output_latency"), "callbacks": j.get("blocks"), "telemetry": j.get("_telemetry"),
-         "diag": j.get("_diag"),
+         "diag": j.get("_diag"), "threads": j.get("_threads"), "driver_tid_log": j.get("_driver_tid_log"),
          "mmcss_log": [l for l in (j.get("driver_log") or []) if "MMCSS" in l or "AvSetMm" in l]}
     r["punctuality"] = RB.punctuality(r, j)
     return r

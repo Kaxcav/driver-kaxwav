@@ -21,6 +21,7 @@ import subprocess
 import sys
 import time
 import winreg
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
@@ -138,14 +139,21 @@ def probe(mode, buffer, seconds, rundir, tag, stim=None, stim_at=0, taps=False, 
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=REPO, errors="replace")
     last = None
     last_diag = None
+    prio = {}  # tid -> Counter((current, base)) sampled every 0.5 s
+    starts = {}  # tid -> module+offset of the thread start address (taken once, ~2 s in)
+    t_start = time.time()
     if poll_telemetry:
         while p.poll() is None:
+            if not starts and time.time() - t_start > 2.0:
+                starts = um2_ipc.thread_start_modules(p.pid)
             t = um2_ipc.read_telemetry()
             if t is not None and t.ownerPid == p.pid:
                 last = t
             d = um2_ipc.read_diag()  # only present with DiagCounters=1
             if d is not None and d.ownerPid == p.pid:
                 last_diag = d
+            for tid, cur, base in um2_ipc.thread_priorities(p.pid):
+                prio.setdefault(tid, Counter())[(cur, base)] += 1
             time.sleep(0.5)
     out, err = p.communicate(timeout=seconds + 60)
     try:
@@ -153,12 +161,28 @@ def probe(mode, buffer, seconds, rundir, tag, stim=None, stim_at=0, taps=False, 
     except Exception:
         j = {"ok": False, "error": "probe output", "stdout": out[-2000:], "stderr": err[-2000:]}
     j["_rec"] = str(rec)
+    j["_probe_pid"] = p.pid
     if poll_telemetry:
         j["_telemetry"] = um2_ipc.summarize_telemetry(last)
         if last_diag is not None:
             j["_diag"] = um2_ipc.summarize_diag(last_diag)
+        # threads that ever ran above normal (the audio thread among them), with sampled priorities
+        j["_threads"] = [{"tid": tid, "start": starts.get(tid), "samples": sum(c.values()),
+                          "current_base": {f"{a}/{b}": n for (a, b), n in c.most_common()}}
+                         for tid, c in prio.items() if max(a for a, _ in c) > 10]
+        j["_driver_tid_log"] = [l for l in tail_driver_log(200) if "tid=" in l][-1:]
     (rundir / f"{tag}.probe.json").write_text(json.dumps(j, indent=1, default=str), encoding="utf-8")
     return j
+
+
+def tail_driver_log(n):
+    """Last n lines of the driver log (%LOCALAPPDATA%\\KaxWav\\UM2\\driver_um2.log)."""
+    import os
+    f = Path(os.environ.get("LOCALAPPDATA", "")) / "KaxWav" / "UM2" / "driver_um2.log"
+    try:
+        return f.read_text(encoding="utf-8", errors="replace").splitlines()[-n:]
+    except OSError:
+        return []
 
 
 def endpoint_capture_level():

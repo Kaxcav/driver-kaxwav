@@ -36,20 +36,23 @@ def main():
     try:
         RB.reg_restore({"DiagCounters": 1})
         for case in [c.strip() for c in args.cases.split(",") if c.strip()]:
-            cond, _, buf = case.partition(":")
-            buf = int(buf)
+            parts = case.split(":")  # cond:buffer[:sf]
+            cond, buf = parts[0], int(parts[1])
+            mode = 1 if len(parts) > 2 and parts[2].lower() == "sf" else 0
             burners = RB.cpu_burners(args.cpu_load) if cond == "load" else []
             try:
                 if burners:
                     time.sleep(3)
-                j = RB.probe(0, buf, args.seconds, rundir, f"diag_{cond}_{buf}", poll_telemetry=True)
+                j = RB.probe(mode, buf, args.seconds, rundir, f"diag_{cond}_{buf}_{RB.MODES[mode]}", poll_telemetry=True)
             finally:
                 for b in burners:
                     b.kill()
             r = {"case": case, "load": f"{args.cpu_load} busy-loops" if burners else "ociosa", "buffer": buf,
                  "seconds": args.seconds, "ok": j.get("ok"), "mode_active": j.get("mode_active"),
                  "pdc_in": j.get("input_latency"), "pdc_out": j.get("output_latency"), "callbacks": j.get("blocks"),
-                 "telemetry": j.get("_telemetry"), "diag": j.get("_diag"), "driver_log": j.get("driver_log")}
+                 "telemetry": j.get("_telemetry"), "diag": j.get("_diag"), "driver_log": j.get("driver_log"),
+                 "mode_requested": RB.MODES[mode], "probe_pid": j.get("_probe_pid"), "threads": j.get("_threads"),
+                 "driver_tid_log": j.get("_driver_tid_log")}
             r["punctuality"] = RB.punctuality(r, j)
             runs.append(r)
             d = r["diag"] or {}

@@ -138,6 +138,84 @@ def summarize_telemetry(t):
     }
 
 
+# ---------------- thread priorities of another process (no elevation needed for own processes) ----------------
+class _THREADENTRY32(ctypes.Structure):
+    _fields_ = [("dwSize", wintypes.DWORD), ("cntUsage", wintypes.DWORD), ("th32ThreadID", wintypes.DWORD),
+                ("th32OwnerProcessID", wintypes.DWORD), ("tpBasePri", wintypes.LONG), ("tpDeltaPri", wintypes.LONG),
+                ("dwFlags", wintypes.DWORD)]
+
+
+class _THREAD_BASIC_INFORMATION(ctypes.Structure):
+    _fields_ = [("ExitStatus", wintypes.LONG), ("TebBaseAddress", ctypes.c_void_p),
+                ("UniqueProcess", ctypes.c_void_p), ("UniqueThread", ctypes.c_void_p),
+                ("AffinityMask", ctypes.c_size_t), ("Priority", wintypes.LONG), ("BasePriority", wintypes.LONG)]
+
+
+_k.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+_k.OpenThread.restype = wintypes.HANDLE
+_ntdll = ctypes.windll.ntdll
+
+
+class _MODULEINFO(ctypes.Structure):
+    _fields_ = [("lpBaseOfDll", ctypes.c_void_p), ("SizeOfImage", wintypes.DWORD), ("EntryPoint", ctypes.c_void_p)]
+
+
+def thread_start_modules(pid):
+    """{tid: 'module+0xoffset'} of each thread's Win32 start address (who created the thread)."""
+    psapi = ctypes.windll.psapi
+    _k.OpenProcess.restype = wintypes.HANDLE
+    hp = _k.OpenProcess(0x0410, False, pid)  # PROCESS_QUERY_INFORMATION | PROCESS_VM_READ
+    mods = []
+    if hp:
+        arr = (ctypes.c_void_p * 1024)()
+        need = wintypes.DWORD()
+        if psapi.EnumProcessModulesEx(hp, arr, ctypes.sizeof(arr), ctypes.byref(need), 3):
+            for i in range(min(1024, need.value // ctypes.sizeof(ctypes.c_void_p))):
+                mi = _MODULEINFO()
+                name = ctypes.create_unicode_buffer(260)
+                if psapi.GetModuleInformation(hp, ctypes.c_void_p(arr[i]), ctypes.byref(mi), ctypes.sizeof(mi)):
+                    psapi.GetModuleBaseNameW(hp, ctypes.c_void_p(arr[i]), name, 260)
+                    mods.append((mi.lpBaseOfDll or 0, mi.SizeOfImage, name.value))
+        _k.CloseHandle(hp)
+    out = {}
+    for tid, _c, _b in thread_priorities(pid):
+        h = _k.OpenThread(0x0040, False, tid)  # THREAD_QUERY_INFORMATION
+        if not h:
+            continue
+        addr = ctypes.c_void_p()
+        if _ntdll.NtQueryInformationThread(h, 9, ctypes.byref(addr), ctypes.sizeof(addr), None) == 0 and addr.value:
+            a = addr.value
+            hit = next((f"{n}+0x{a - b:X}" for b, s, n in mods if b <= a < b + s), f"0x{a:X}")
+            out[tid] = hit
+        _k.CloseHandle(h)
+    return out
+
+
+def thread_priorities(pid):
+    """[(tid, current_priority, base_priority)] for every thread of pid, via NtQueryInformationThread
+    (ThreadBasicInformation): the current priority includes boosts such as the MMCSS one."""
+    snap = _k.CreateToolhelp32Snapshot(0x4, 0)  # TH32CS_SNAPTHREAD
+    out = []
+    if not snap or snap == wintypes.HANDLE(-1).value:
+        return out
+    try:
+        te = _THREADENTRY32()
+        te.dwSize = ctypes.sizeof(te)
+        ok = _k.Thread32First(snap, ctypes.byref(te))
+        while ok:
+            if te.th32OwnerProcessID == pid:
+                h = _k.OpenThread(0x0800, False, te.th32ThreadID)  # THREAD_QUERY_LIMITED_INFORMATION
+                if h:
+                    tbi = _THREAD_BASIC_INFORMATION()
+                    if _ntdll.NtQueryInformationThread(h, 0, ctypes.byref(tbi), ctypes.sizeof(tbi), None) == 0:
+                        out.append((te.th32ThreadID, tbi.Priority, tbi.BasePriority))
+                    _k.CloseHandle(h)
+            ok = _k.Thread32Next(snap, ctypes.byref(te))
+    finally:
+        _k.CloseHandle(snap)
+    return out
+
+
 # ---------------- engine-loop diagnostics (src/UM2Diag.h, off unless DiagCounters=1) ----------------
 DIAG_RING = 4096
 DIAG_TBINS = 128
