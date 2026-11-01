@@ -38,8 +38,10 @@ def m5(a, b):
         for tag, d in (("antes", A.get(key, {})), ("depois", B.get(key, {}))):
             t = d.get("telemetry") or {}
             n = d.get("asio_input_ch1_noise") or {}
-            rows.append([f"{key[0]} {key[1]}", tag, d.get("ok", "-"), d.get("mode_active", "-"),
-                         f"{d.get('pdc_in', '-')}/{d.get('pdc_out', '-')}", t.get("block_us_p50", "-"),
+            ok = d.get("ok", "-")
+            active = d.get("mode_active", "-") if ok is not False else "recusado"
+            pdc = f"{d.get('pdc_in', '-')}/{d.get('pdc_out', '-')}" if ok is not False else "-"
+            rows.append([f"{key[0]} {key[1]}", tag, ok, active, pdc, t.get("block_us_p50", "-"),
                          t.get("block_us_p99", "-"), t.get("block_us_max", "-"), t.get("deadline_misses", "-"),
                          n.get("rms_dbfs", "-"), g(n, "step_7k", "step_detected")])
     return ("### M5\n" + f"carga: antes = {g(a, 'M5', 'load')} · depois = {g(b, 'M5', 'load')}\n\n" +
