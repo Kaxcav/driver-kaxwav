@@ -103,7 +103,10 @@ process loopback) e protocolo de medição, use a skill **engenharia-driver-audi
 ## Fluxo de trabalho obrigatório
 1. Rodar o harness (`measure/`) e guardar o baseline.
 2. Fazer **uma** mudança.
-3. Rodar o harness de novo e comparar contra o baseline.
+3. Rodar o harness de novo e comparar contra o baseline. **Mexeu em thread, prioridade, espera
+   ou timing?** Rode também o M5 sob carga (`--cpu-load 12`, antes e depois) e confira
+   callbacks/min contra o esperado e o maior intervalo entre callbacks — o p99 da duração do bloco
+   sozinho não pega thread acordando atrasada.
 4. Regrediu em qualquer métrica → reverter, não "ajustar depois".
 5. Ganho confirmado → commit com os números no corpo da mensagem.
 

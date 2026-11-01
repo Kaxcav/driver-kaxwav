@@ -181,6 +181,33 @@ def step_m2(args, rundir, cond):
     return res
 
 
+def punctuality(r, j):
+    """M5b: callbacks/min vs expected and the longest gap between callbacks.
+
+    Cadence = period at which the driver thread is woken: the buffer period in ExclusivePro,
+    the shared engine period in SharedFlex (blocks come in bursts once per engine period;
+    engine period = PDC - 2 x buffer, see UpdateLatencyTelemetry)."""
+    if not r.get("ok"):
+        return None
+    secs, buf = r["seconds"], r["buffer"]
+    cb = r.get("callbacks") or 0
+    expected = secs * 48000 / buf
+    tel = r.get("telemetry") or {}
+    gap = tel.get("max_gap_between_blocks_us")
+    if r.get("mode_active") == "SharedFlex" and r.get("pdc_in"):
+        cadence_us = (r["pdc_in"] - 2 * buf) / 48000 * 1e6
+    else:
+        cadence_us = buf / 48000 * 1e6
+    ratio = cb / expected if expected else None
+    out = {"callbacks_per_min": round(cb * 60 / secs, 1), "expected_per_min": round(expected * 60 / secs, 1),
+           "ratio": round(ratio, 4) if ratio else None, "max_gap_us": gap, "cadence_us": round(cadence_us, 1),
+           "gap_limit_us": round(2 * cadence_us, 1),
+           "pass_ratio": bool(ratio is not None and ratio >= 0.99),
+           "pass_gap": bool(gap is not None and gap <= 2 * cadence_us)}
+    out["pass"] = out["pass_ratio"] and out["pass_gap"]
+    return out
+
+
 def cpu_burners(n):
     """N busy-loop processes at normal priority (synthetic load for M5)."""
     return [subprocess.Popen([sys.executable, "-c", "while True: pass"]) for _ in range(n)]
@@ -209,6 +236,7 @@ def _m5_runs(args, rundir, cond, secs, runs):
                  "telemetry": j.get("_telemetry"),
                  "shared_state_xruns_delta": (after - before) if None not in (before, after) else None,
                  "time_info": j.get("time_info"), "driver_log": j.get("driver_log")}
+            r["punctuality"] = punctuality(r, j)
             # the same recording doubles as ASIO-path noise spectrum (7 kHz step detector)
             try:
                 x = rec_channel(j, 0)[48000:]

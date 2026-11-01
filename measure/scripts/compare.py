@@ -43,10 +43,19 @@ def m5(a, b):
             pdc = f"{d.get('pdc_in', '-')}/{d.get('pdc_out', '-')}" if ok is not False else "-"
             rows.append([f"{key[0]} {key[1]}", tag, ok, active, pdc, t.get("block_us_p50", "-"),
                          t.get("block_us_p99", "-"), t.get("block_us_max", "-"), t.get("deadline_misses", "-"),
-                         n.get("rms_dbfs", "-"), g(n, "step_7k", "step_detected")])
+                         n.get("rms_dbfs", "-"), g(n, "step_7k", "step_detected"), cbmin(d), t.get("max_gap_between_blocks_us", "-")])
     return ("### M5\n" + f"carga: antes = {g(a, 'M5', 'load')} · depois = {g(b, 'M5', 'load')}\n\n" +
             table(["modo/buffer", "", "ok", "ativo", "PDC in/out", "p50 us", "p99 us", "max us", "misses",
-                   "ASIO in1 dBFS", "degrau 7k"], rows))
+                   "ASIO in1 dBFS", "degrau 7k", "callbacks/min (esperado)", "maior intervalo us"], rows))
+
+
+def cbmin(d):
+    """callbacks per minute vs expected; computed from the run if the JSON predates M5b."""
+    if not d.get("ok") or not d.get("callbacks"):
+        return "-"
+    secs, buf = d.get("seconds", 60), d.get("buffer")
+    got, exp = d["callbacks"] * 60 / secs, 48000 * 60 / buf
+    return f"{got:.0f} ({exp:.0f}, {got / exp:.3f})"
 
 
 def m2(a, b):
