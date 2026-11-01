@@ -351,7 +351,8 @@ def assemble(rundir, run_id, header):
         p = rundir / f"{s}.json"
         doc[s.upper()] = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"status": "nao executado"}
     if "M3" in doc and isinstance(doc["M3"], dict):
-        doc["M4"] = {"see": "M3.runs[].M4_thd_n_1khz"} if doc["M3"].get("runs") else {"status": "nao executado"}
+        doc["M4"] = ({"see": "M3.runs[].M4_thd_n_1khz"} if doc["M3"].get("runs") else
+                     {"status": doc["M3"].get("status", "nao executado"), "reason": doc["M3"].get("reason"), "see": "M3"})
     out = REPO / "measure" / "baselines" / f"{run_id}.json"
     out.write_text(json.dumps(doc, indent=1, ensure_ascii=False), encoding="utf-8")
     return out
