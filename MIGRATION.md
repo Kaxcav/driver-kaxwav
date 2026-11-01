@@ -42,7 +42,7 @@ reescrevendo o histórico.
    - `src/UM2LicenseSecret.example.h` — mesmo formato, bytes zerados (versionado).
    - No `CMakeLists.txt`, falhar com mensagem clara se `src/UM2LicenseSecret.h` não existir.
    - **Achado na importação:** `panel/panel_backend.py:80` tinha uma segunda cópia do mesmo array
-     (`OBFUSCATED_SECRET = bytes([...])`). Foi para `panel/um2_license_secret.py` (gitignorado) +
+     (o mesmo `OBFUSCATED_SECRET`, como `bytes` do Python). Foi para `panel/um2_license_secret.py` (gitignorado) +
      `panel/um2_license_secret.example.py` zerado; o hygiene ignora `*.example.py` e barra os dois
      arquivos reais por nome.
 2. **ASIO SDK.** Trocar o caminho fixo por variável de cache, sem copiar o SDK:

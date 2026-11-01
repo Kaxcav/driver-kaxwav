@@ -515,8 +515,13 @@ class WindowsCoreAudioController:
     def get_master_mute(self) -> Optional[bool]:
         return self._get_endpoint_mute(0, ['usb audio', 'u-phoria', 'um2', 'umc22', 'behringer'])
 
-    def ensure_microphone_gain(self, min_scalar: float = 0.78) -> bool:
-        """Garante que o ganho de captura USB Audio CODEC no Windows nao fique estrangulado em 53% (0 dB)."""
+    def ensure_capture_level_0db(self) -> bool:
+        """Set the UM2 capture endpoint to exactly 0.0 dB (unity gain) - ADR 0005.
+
+        Writes dB with SetMasterVolumeLevel, never the slider position: any digital
+        gain after the 16-bit ADC raises the noise floor, any attenuation drops bits.
+        Gain comes from the analog knob. Returns True only if every matching endpoint
+        reads back 0.0 dB (master and each channel)."""
         if sys.platform != "win32":
             return False
         keywords = ['usb audio', 'u-phoria', 'um2', 'umc22', 'behringer']
@@ -550,7 +555,8 @@ class WindowsCoreAudioController:
 
             count = wintypes.UINT(0)
             GetCount(pCol, ctypes.byref(count))
-            updated = False
+            matched = 0
+            ok = True
 
             for i in range(count.value):
                 pDev = ctypes.c_void_p()
@@ -574,24 +580,49 @@ class WindowsCoreAudioController:
                     ReleaseStore(pStore)
 
                 if any(k in name.lower() for k in keywords):
+                    matched += 1
                     pVol = ctypes.c_void_p()
                     if Activate(pDev, ctypes.byref(IID_IAudioEndpointVolume), 1, None, ctypes.byref(pVol)) == 0 and pVol:
                         vtable_vol = ctypes.cast(pVol, ctypes.POINTER(ctypes.POINTER(ctypes.c_void_p))).contents
-                        SetMasterVolumeLevelScalar = ctypes.WINFUNCTYPE(HRESULT, ctypes.c_void_p, ctypes.c_float, ctypes.c_void_p)(vtable_vol[7])
-                        GetMasterVolumeLevelScalar = ctypes.WINFUNCTYPE(HRESULT, ctypes.c_void_p, ctypes.POINTER(ctypes.c_float))(vtable_vol[9])
                         ReleaseVol = ctypes.WINFUNCTYPE(wintypes.ULONG, ctypes.c_void_p)(vtable_vol[2])
+                        GetChannelCount = ctypes.WINFUNCTYPE(HRESULT, ctypes.c_void_p, ctypes.POINTER(wintypes.UINT))(vtable_vol[5])
+                        SetMasterVolumeLevel = ctypes.WINFUNCTYPE(HRESULT, ctypes.c_void_p, ctypes.c_float, ctypes.c_void_p)(vtable_vol[6])
+                        GetMasterVolumeLevel = ctypes.WINFUNCTYPE(HRESULT, ctypes.c_void_p, ctypes.POINTER(ctypes.c_float))(vtable_vol[8])
+                        SetChannelVolumeLevel = ctypes.WINFUNCTYPE(HRESULT, ctypes.c_void_p, wintypes.UINT, ctypes.c_float, ctypes.c_void_p)(vtable_vol[10])
+                        GetChannelVolumeLevel = ctypes.WINFUNCTYPE(HRESULT, ctypes.c_void_p, wintypes.UINT, ctypes.POINTER(ctypes.c_float))(vtable_vol[12])
+                        GetVolumeRange = ctypes.WINFUNCTYPE(HRESULT, ctypes.c_void_p, ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float))(vtable_vol[20])
 
-                        cur_scalar = ctypes.c_float(0.0)
-                        if GetMasterVolumeLevelScalar(pVol, ctypes.byref(cur_scalar)) == 0:
-                            if cur_scalar.value < min_scalar:
-                                SetMasterVolumeLevelScalar(pVol, ctypes.c_float(min_scalar), None)
-                                updated = True
+                        mn, mx, step = ctypes.c_float(0.0), ctypes.c_float(0.0), ctypes.c_float(0.0)
+                        if GetVolumeRange(pVol, ctypes.byref(mn), ctypes.byref(mx), ctypes.byref(step)) != 0 \
+                                or not (mn.value <= 0.0 <= mx.value):
+                            ok = False  # 0 dB not reachable on this endpoint: leave it untouched
+                        else:
+                            cur = ctypes.c_float(0.0)
+                            if GetMasterVolumeLevel(pVol, ctypes.byref(cur)) != 0:
+                                ok = False
+                            elif abs(cur.value) > 0.01 and SetMasterVolumeLevel(pVol, ctypes.c_float(0.0), None) != 0:
+                                ok = False
+                            # master and per-channel levels combine: every channel must also sit at 0 dB
+                            nch = wintypes.UINT(0)
+                            if GetChannelCount(pVol, ctypes.byref(nch)) != 0:
+                                ok = False
+                            for ch in range(nch.value):
+                                lvl = ctypes.c_float(0.0)
+                                if GetChannelVolumeLevel(pVol, ch, ctypes.byref(lvl)) != 0:
+                                    ok = False
+                                elif abs(lvl.value) > 0.01 and SetChannelVolumeLevel(pVol, ch, ctypes.c_float(0.0), None) != 0:
+                                    ok = False
+                            # read back
+                            if GetMasterVolumeLevel(pVol, ctypes.byref(cur)) != 0 or abs(cur.value) > 0.01:
+                                ok = False
                         ReleaseVol(pVol)
+                    else:
+                        ok = False
                 ReleaseDev(pDev)
 
             ReleaseCol(pCol)
             ReleaseEnum(pEnumerator)
-            return updated
+            return ok and matched > 0
         except Exception:
             return False
 
@@ -1670,7 +1701,7 @@ def get_audio_processes():
 @app.post("/api/auto-gain")
 async def run_smart_auto_gain(req: AutoGainRequest):
     import math
-    core_audio.ensure_microphone_gain(0.86)
+    core_audio.ensure_capture_level_0db()
     dur = max(0.4, min(5.0, float(req.durationSec)))
     steps = max(8, int(dur / 0.05))
     peaks = []
