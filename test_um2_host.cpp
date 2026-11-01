@@ -1,4 +1,7 @@
 #include <windows.h>
+#include <mmdeviceapi.h>
+#include <audioclient.h>
+#include <functiondiscoverykeys_devpkey.h>
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -65,6 +68,48 @@ static void SetDriverRegistryConfig(int mode, long bufferSize) {
     }
 }
 
+// Independent of the driver: smallest buffer that fits the UM2's minimum exclusive period
+// (IAudioClient::GetDevicePeriod on the "USB Audio CODEC" endpoints), at 48 kHz. 0 = unknown.
+static long ExpectedExclusiveMinFrames() {
+    IMMDeviceEnumerator* e = nullptr;
+    if (FAILED(CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator),
+                                reinterpret_cast<void**>(&e))) || !e) return 0;
+    REFERENCE_TIME worst = 0;
+    for (EDataFlow flow : {eRender, eCapture}) {
+        IMMDeviceCollection* c = nullptr;
+        if (FAILED(e->EnumAudioEndpoints(flow, DEVICE_STATE_ACTIVE, &c)) || !c) continue;
+        UINT n = 0;
+        c->GetCount(&n);
+        for (UINT i = 0; i < n; ++i) {
+            IMMDevice* d = nullptr;
+            if (FAILED(c->Item(i, &d)) || !d) continue;
+            IPropertyStore* ps = nullptr;
+            bool hit = false;
+            if (SUCCEEDED(d->OpenPropertyStore(STGM_READ, &ps)) && ps) {
+                PROPVARIANT v;
+                PropVariantInit(&v);
+                hit = SUCCEEDED(ps->GetValue(PKEY_DeviceInterface_FriendlyName, &v)) && v.vt == VT_LPWSTR &&
+                      wcsstr(v.pwszVal, L"USB Audio CODEC") != nullptr;
+                PropVariantClear(&v);
+                ps->Release();
+            }
+            if (hit) {
+                IAudioClient* ac = nullptr;
+                if (SUCCEEDED(d->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&ac))) && ac) {
+                    REFERENCE_TIME def = 0, mn = 0;
+                    if (SUCCEEDED(ac->GetDevicePeriod(&def, &mn)) && mn > worst) worst = mn;
+                    ac->Release();
+                }
+            }
+            d->Release();
+        }
+        c->Release();
+    }
+    e->Release();
+    if (worst <= 0) return 0;
+    return (std::max)(64L, static_cast<long>(std::ceil(static_cast<double>(worst) * 48000.0 / 10000000.0 - 1e-9)));
+}
+
 static bool RunAsioTest(HMODULE hDll, long testBuffer, int mode) {
     SetDriverRegistryConfig(mode, testBuffer);
 
@@ -109,6 +154,35 @@ static bool RunAsioTest(HMODULE hDll, long testBuffer, int mode) {
     long numInputs = 0, numOutputs = 0;
     pAsio->getChannels(&numInputs, &numOutputs);
     std::cout << "[OK] Canais: " << numInputs << " In / " << numOutputs << " Out\n";
+
+    // ExclusivePro rule: getBufferSize().min == device minimum; smaller buffers are refused
+    // (ASE_InvalidMode) instead of silently running SharedFlex.
+    if (mode == 0) {
+        const long expectedMin = ExpectedExclusiveMinFrames();
+        long mn = 0, mx = 0, pref = 0, gran = 0;
+        pAsio->getBufferSize(&mn, &mx, &pref, &gran);
+        std::cout << "[INFO] getBufferSize ExclusivePro: min=" << mn << " max=" << mx << " pref=" << pref
+                  << " gran=" << gran << " | minimo esperado do device=" << expectedMin << "\n";
+        if (expectedMin > 0 && mn != expectedMin) {
+            std::cout << "[FALHA] minimo reportado (" << mn << ") difere do periodo minimo do device (" << expectedMin << ")\n";
+            pAsio->Release();
+            return false;
+        }
+        if (expectedMin > 0 && testBuffer < expectedMin) {
+            std::vector<ASIOBufferInfo> infos(numInputs + numOutputs);
+            for (long i = 0; i < numInputs + numOutputs; ++i) {
+                infos[i].isInput = i < numInputs ? ASIOTrue : ASIOFalse;
+                infos[i].channelNum = i < numInputs ? i : i - numInputs;
+            }
+            const ASIOError err = pAsio->createBuffers(infos.data(), numInputs + numOutputs, testBuffer, &s_callbacks);
+            const bool refused = (err == ASE_InvalidMode);
+            if (err == ASE_OK) pAsio->disposeBuffers();
+            std::cout << (refused ? "[OK] " : "[FALHA] ") << "buffer " << testBuffer << " abaixo do minimo: createBuffers = "
+                      << err << (refused ? " (ASE_InvalidMode, sem fallback)" : " (esperado ASE_InvalidMode)") << "\n";
+            pAsio->Release();
+            return refused;
+        }
+    }
 
     const long totalChannels = numInputs + numOutputs;
     std::vector<ASIOBufferInfo> bufferInfos(totalChannels);

@@ -59,6 +59,7 @@ public:
 private:
     void AudioThreadLoop();
     bool FindBehringerEndpoints();
+    long QueryExclusiveMinBufferFrames();
     void ReleaseEndpoints();
 
 private:

@@ -7,6 +7,7 @@
 #include <chrono>
 #include <algorithm>
 #include <cstdarg>
+#include <cmath>
 
 static void LogAsio(const char* fmt, ...) {
     char buffer[1024];
@@ -751,13 +752,43 @@ ASIOError BehringerUM2AsioDriver::getLatencies(long* inputLatency, long* outputL
     return ASE_OK;
 }
 
+// Smallest ASIO buffer whose duration fits the device's minimum exclusive period (render and
+// capture), at the current sample rate. Queried at runtime (IAudioClient::GetDevicePeriod), never
+// hard-coded: 3.0 ms -> 144 frames @ 48 kHz on the UM2 today. Returns 0 if it cannot be determined.
+long BehringerUM2AsioDriver::QueryExclusiveMinBufferFrames() {
+    if (!m_pRenderDevice && !m_pCaptureDevice) FindBehringerEndpoints();
+    REFERENCE_TIME worst = 0;
+    IMMDevice* devices[2] = { m_pRenderDevice, m_pCaptureDevice };
+    for (IMMDevice* dev : devices) {
+        if (!dev) continue;
+        IAudioClient* probe = nullptr;
+        if (SUCCEEDED(dev->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&probe))) && probe) {
+            REFERENCE_TIME defPeriod = 0, minPeriod = 0;
+            if (SUCCEEDED(probe->GetDevicePeriod(&defPeriod, &minPeriod)) && minPeriod > worst) worst = minPeriod;
+            probe->Release();
+        }
+    }
+    if (worst <= 0) return 0;
+    return static_cast<long>(std::ceil(static_cast<double>(worst) * m_sampleRate / 10000000.0 - 1e-9));
+}
+
 ASIOError BehringerUM2AsioDriver::getBufferSize(long* minSize, long* maxSize, long* preferredSize, long* granularity) {
     if (!minSize || !maxSize || !preferredSize || !granularity) return ASE_InvalidParameter;
     LoadSavedSettings();
-    *minSize = 64;          // 64 samples suportado em SharedFlex e ExclusivePro (Elastic FIFO)
     *maxSize = 2048;
-    *preferredSize = (std::max)(64L, (std::min)(2048L, m_preferredBufferSize));
-    *granularity = -1;      // Potencias de 2 e multiplos
+    if (m_driverMode == DriverEngineMode::ExclusivePro) {
+        // ExclusivePro: the minimum is what the device accepts in exclusive mode; sizes step by 16 from it
+        const long exMin = QueryExclusiveMinBufferFrames();
+        *minSize = (std::max)(64L, exMin);
+        *granularity = 16;
+        long pref = (std::max)(*minSize, (std::min)(2048L, m_preferredBufferSize));
+        pref = *minSize + ((pref - *minSize + 8) / 16) * 16;
+        *preferredSize = (std::min)(pref, 2048L);
+    } else {
+        *minSize = 64;          // SharedFlex: FIFO elastico sobre o periodo do engine
+        *preferredSize = (std::max)(64L, (std::min)(2048L, m_preferredBufferSize));
+        *granularity = -1;      // Potencias de 2
+    }
 
     LogAsio("getBufferSize() -> mode=%s, min=%ld, max=%ld, pref=%ld, gran=%ld", 
             (m_driverMode == DriverEngineMode::SharedFlex ? "SharedFlex" : "ExclusivePro"),
@@ -852,6 +883,15 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
     if (bufferSize < minAllowed) bufferSize = minAllowed;
     if (bufferSize > 2048) bufferSize = 2048;
 
+    if (m_driverMode == DriverEngineMode::ExclusivePro) {
+        const long exMin = QueryExclusiveMinBufferFrames();
+        if (exMin > 0 && bufferSize < exMin) {
+            LogAsio("createBuffers: ExclusivePro recusado - buffer %ld (%.2f ms) abaixo do minimo exclusive do device "
+                    "(%ld frames). Nao ha fallback para SharedFlex.", bufferSize, 1000.0 * bufferSize / m_sampleRate, exMin);
+            return ASE_InvalidMode;
+        }
+    }
+
     m_bufferSize = bufferSize;
     m_preferredBufferSize = bufferSize;
     m_callbacks = callbacks;
@@ -908,6 +948,7 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
         wfx.nAvgBytesPerSec = static_cast<DWORD>(m_sampleRate * 4);
 
         REFERENCE_TIME hwDuration = static_cast<REFERENCE_TIME>((10000000.0 * m_bufferSize / m_sampleRate) + 0.5);
+        HRESULT renderHr = AUDCLNT_E_DEVICE_INVALIDATED;  // stays if there is no render device
 
         if (m_pRenderDevice) {
             m_pRenderDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr, reinterpret_cast<void**>(&m_pRenderClient));
@@ -941,6 +982,7 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
                     }
                 }
 
+                renderHr = hr;
                 if (SUCCEEDED(hr)) {
                     m_pRenderClient->GetBufferSize(&m_exclusiveRenderFrames);
                     m_hwBufferSize = m_exclusiveRenderFrames;
@@ -1051,13 +1093,31 @@ ASIOError BehringerUM2AsioDriver::createBuffers(
         }
 
         if (!m_pRenderService) {
-            LogAsio("Render Exclusive bloqueado por outro processo. Ativando fallback SharedFlex...");
+            ASIOError err = ASE_HWMalfunction;
+            if (renderHr == AUDCLNT_E_INVALID_DEVICE_PERIOD) {
+                LogAsio("Render Exclusive: periodo de %.2f ms abaixo do minimo do device (AUDCLNT_E_INVALID_DEVICE_PERIOD 0x%08X). "
+                        "ExclusivePro recusado, sem fallback para SharedFlex.", hwDuration / 10000.0, renderHr);
+                err = ASE_InvalidMode;
+            } else if (renderHr == AUDCLNT_E_DEVICE_IN_USE) {
+                LogAsio("Render Exclusive: device em uso por outro processo (AUDCLNT_E_DEVICE_IN_USE 0x%08X). "
+                        "ExclusivePro recusado, sem fallback para SharedFlex.", renderHr);
+                err = ASE_NotPresent;
+            } else {
+                LogAsio("Render Exclusive falhou (hr=0x%08X). ExclusivePro recusado, sem fallback para SharedFlex.", renderHr);
+            }
+            if (m_hRenderEvent) { CloseHandle(m_hRenderEvent); m_hRenderEvent = nullptr; }
+            if (m_hCaptureEvent) { CloseHandle(m_hCaptureEvent); m_hCaptureEvent = nullptr; }
+            if (m_pCaptureService) { m_pCaptureService->Release(); m_pCaptureService = nullptr; }
             if (m_pRenderClient) { m_pRenderClient->Release(); m_pRenderClient = nullptr; }
             if (m_pCaptureClient) { m_pCaptureClient->Release(); m_pCaptureClient = nullptr; }
+            m_channelMemory.clear();
+            m_bufferInfos.clear();
+            m_callbacks = nullptr;
+            return err;
         }
     }
 
-    if (m_driverMode == DriverEngineMode::SharedFlex || !m_pRenderService) {
+    if (m_driverMode == DriverEngineMode::SharedFlex) {
         // ====================================================================
         // MODO COMPARTILHADO / FLEX (Elastic FIFO - Ultra Estavel a 64 samples)
         // ====================================================================
