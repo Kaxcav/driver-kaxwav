@@ -1,0 +1,73 @@
+{
+ "what": "A/B intercalado sob carga (12 processos em busy-loop, prioridade normal), ExclusivePro @256, 30 s por corrida",
+ "A": "build atual (MMCSS 'Pro Audio' + SetThreadPriority TIME_CRITICAL)",
+ "B": "mesmo codigo sem o SetThreadPriority TIME_CRITICAL",
+ "expected_per_min": 11250,
+ "runs": [
+  {
+   "run": 0,
+   "variant": "A",
+   "mode": "ExclusivePro",
+   "callbacks_30s": 3002,
+   "per_min": 6004,
+   "max_gap_us": 10386.9
+  },
+  {
+   "run": 0,
+   "variant": "B",
+   "mode": "ExclusivePro",
+   "callbacks_30s": 3002,
+   "per_min": 6004,
+   "max_gap_us": 10388.2
+  },
+  {
+   "run": 1,
+   "variant": "A",
+   "mode": "ExclusivePro",
+   "callbacks_30s": 3000,
+   "per_min": 6000,
+   "max_gap_us": 10796.3
+  },
+  {
+   "run": 1,
+   "variant": "B",
+   "mode": "ExclusivePro",
+   "callbacks_30s": 3001,
+   "per_min": 6002,
+   "max_gap_us": 10412.0
+  },
+  {
+   "run": 2,
+   "variant": "A",
+   "mode": "ExclusivePro",
+   "callbacks_30s": 2997,
+   "per_min": 5994,
+   "max_gap_us": 10386.8
+  },
+  {
+   "run": 2,
+   "variant": "B",
+   "mode": "ExclusivePro",
+   "callbacks_30s": 2999,
+   "per_min": 5998,
+   "max_gap_us": 10386.4
+  },
+  {
+   "run": 3,
+   "variant": "A",
+   "mode": "ExclusivePro",
+   "callbacks_30s": 3003,
+   "per_min": 6006,
+   "max_gap_us": 11459.7
+  },
+  {
+   "run": 3,
+   "variant": "B",
+   "mode": "ExclusivePro",
+   "callbacks_30s": 3001,
+   "per_min": 6002,
+   "max_gap_us": 10386.0
+  }
+ ],
+ "conclusion": "Sem diferenca: A e B entregam ~6.000 callbacks/min (53%) nas 8 corridas. O 11.253/min de p4-antes-carga (49173c6) nao se reproduziu."
+}

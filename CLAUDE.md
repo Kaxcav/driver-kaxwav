@@ -47,12 +47,13 @@ Host ASIO em **userland** sobre **WASAPI Exclusive + RAW + event-driven**.
 5. **Thread de áudio via MMCSS.** `AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex)` é
    **obrigatório**; se retornar NULL, registre o erro e reporte, não mascare. Nunca `timeBeginPeriod`
    como muleta.
-   **Exceção documentada (2026-11-01):** `SetThreadPriority(THREAD_PRIORITY_TIME_CRITICAL)` é
-   permitido **só depois de o MMCSS ter sido registrado com sucesso, como piso** — nunca no lugar dele
-   nem como fallback de falha. Motivo medido (commit `49173c6`): sob carga de CPU, ExclusivePro @256
-   com MMCSS + TIME_CRITICAL entregou 11.253 callbacks/min (esperado 11.250); só com MMCSS (com ou sem
-   `AvSetMmThreadPriority(CRITICAL)`), 6.000/min, com a thread acordando a cada ~10 ms. Causa provável
-   em `docs/FATOS-VERIFICADOS.md` (NÃO VERIFICADA). Tirar o piso exige repetir esse teste e passar.
+   **Exceção (2026-11-01, decisão do usuário, EVIDÊNCIA CONTESTADA):** `SetThreadPriority(
+   THREAD_PRIORITY_TIME_CRITICAL)` fica no código **só depois de o MMCSS ter sido registrado, como
+   piso** — nunca no lugar dele nem como fallback de falha. A justificativa original (commit
+   `49173c6`: 11.253 vs 6.000 callbacks/min sob carga) **não se reproduziu**: no A/B intercalado 4×4
+   (`measure/baselines/2026-11-01-ab-time-critical.json`) com e sem o TIME_CRITICAL o ExclusivePro
+   @256 sob carga deu ~6.000/min nos dois. Ou seja, hoje não há medição a favor nem contra o piso; e o
+   ExclusivePro sob carga perde ~47% dos callbacks de qualquer jeito (investigação aberta).
 6. **APO se desliga com `AUDCLNT_STREAMOPTIONS_RAW` na inicialização do stream.** Não via
    `IPolicyConfig` (não documentado, falha com `0x800706C5` nesta máquina) e não por
    registro (reverte em update de driver).

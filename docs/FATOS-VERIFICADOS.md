@@ -25,7 +25,7 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
 | **Faixa do volume do endpoint de captura** | **−96 a +30 dB, passo 1,5 dB; 0 dB = slider 0,537** | Medição local: `GetVolumeRange`, `GetMasterVolumeLevel` e `GetMasterVolumeLevelScalar` via COM, nos endpoints de captura que o painel reconhece pelo nome, com o `usbaudio.sys` atual. **Não vem de documentação** | 2026-10-31 |
 | **Drift entrada × saída (M6, fecha C8 nesta máquina)** | Entrada **−10,870 ppm**, saída **−10,872 ppm** vs QPC; diferencial **+0,002 ppm**; **0,0 amostra** acumulada em 1 h; 0 descontinuidades. Janelas de 5 min: cada stream entre −10,70 e −11,02 ppm, diferencial dentro de ±0,08 ppm | Medição local: `um2_drift`, WASAPI exclusive event-driven, captura+render simultâneos, 48 kHz/16-bit/2 ch, período 10 ms, `IAudioClock::GetPosition` contra QPC a cada 1 s (`measure/baselines/2026-11-01-f982fe7.json`, M6) | 2026-11-01 |
 | **Período mínimo exclusive (`usbaudio.sys`, UM2)** | **3,0 ms** (`min_100ns = 30000`) em captura e render; padrão 10 ms. A 48 kHz o menor buffer exclusive é **144 frames** | Medição local: `IAudioClient::GetDevicePeriod` (`um2_drift`, M6) | 2026-11-01 |
-| **Thread de áudio sob carga: MMCSS sozinho não basta** | ExclusivePro @256, 12 processos em busy-loop: MMCSS "Pro Audio" + `THREAD_PRIORITY_TIME_CRITICAL` → **11.253 callbacks/60 s** (esperado 11.250), maior intervalo 6,2 ms. Só MMCSS → **6.000** (repetido: 6.000), intervalo 10,4 ms. MMCSS + `AvSetMmThreadPriority(CRITICAL)` → **6.001**, 11,1 ms. Ociosa: sem diferença | Medição local, M5 com `--cpu-load 12` (`measure/baselines/2026-11-01-p4*.json`, commit `49173c6`) | 2026-11-01 |
+| **Thread de áudio sob carga — ExclusivePro perde callbacks com ou sem TIME_CRITICAL** | ExclusivePro @256, 12 processos em busy-loop. A/B intercalado 4×4, 30 s cada: **com** TIME_CRITICAL 5.994–6.006 callbacks/min, **sem** 5.998–6.004 (esperado 11.250); maior intervalo 10,4–11,5 ms nos dois. Uma corrida isolada anterior com TIME_CRITICAL deu 11.253/min (`49173c6`) e **não se reproduziu**. Ociosa: 11.250/min. SharedFlex sob carga: ≥ 0,999 do esperado | Medição local (`measure/baselines/2026-11-01-ab-time-critical.json`, `2026-11-01-s2-carga.json`, `2026-11-01-p4*.json`) | 2026-11-01 |
 | **Configuração MMCSS desta máquina** (só leitura, nada alterado) | `SystemProfile`: `SystemResponsiveness` = **20**, `NetworkThrottlingIndex` = 0xFFFFFFFF. `Tasks\Pro Audio`: `Scheduling Category` = **High**, `Priority` = **1**, `Clock Rate` = **10000** (1 ms), `GPU Priority` = 8, `SFIO Priority` = Normal, `Background Only` = False, `Affinity` = 0 | `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile` (leitura local) | 2026-11-01 |
 | **Semântica de `SetMasterVolumeLevelScalar`** | Valor normalizado *audio-tapered* 0.0–1.0, **1.0 = máximo da faixa**. Não é ganho linear | Microsoft Learn, `IAudioEndpointVolume::SetMasterVolumeLevelScalar` | 2026-10-31 |
 | **Licença do ASIO SDK** (C7) | **Dual: GPLv3 ou proprietária Steinberg**, desde out/2025 | Comunicado Steinberg 2025-10-29; heise | 2026-10-31 |
@@ -44,13 +44,12 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
 - **Consequência para a bridge:** a UM2 inteira está ~11 ppm abaixo do QPC. Qualquer consumidor em
   outro domínio de clock (cabo virtual, Discord) continua precisando de **ASRC contínuo com
   controlador PI**, dimensionado para ~11 ppm de offset com faixa de **±50 ppm**.
-- **Thread de áudio × MMCSS — hipótese, NÃO VERIFICADA:** 6.000 callbacks/min = 100/s, um a cada
-  10 ms. Explicação provável: com `SystemResponsiveness` = 20, o MMCSS reserva 20% de cada período
-  para processos comuns e rebaixa a thread "Pro Audio" nessa janela; com a CPU cheia de processos na
-  prioridade normal, a thread só volta a rodar no próximo período (~10 ms) e perde um de cada dois
-  eventos de 5,3 ms. O `TIME_CRITICAL` aplicado depois do MMCSS funciona como piso durante o
-  rebaixamento. Confirmar exigiria trace (ETW/WPR) da prioridade da thread — não feito.
-  **Decisão:** exceção à invariante 5 documentada no `CLAUDE.md`; registro do sistema não alterado.
+- **ExclusivePro sob carga — causa em aberto, NÃO VERIFICADA:** ~6.000 callbacks/min = 100/s, um a
+  cada ~10 ms, com ou sem TIME_CRITICAL. Hipótese inicial (o MMCSS rebaixando a thread na janela de 20%
+  de `SystemResponsiveness`, com o TIME_CRITICAL como piso) **não se sustenta**: o piso não mudou nada
+  no A/B. Outras candidatas: a cadência dos eventos do `usbaudio.sys` sob carga, a espera de 20 ms do
+  loop exclusive ou o estado do sistema (a única corrida boa sob carga foi às 05h e não se repetiu).
+  Confirmar exige trace (ETW/WPR, perfil `Audio`). Registro do sistema não alterado.
 - **Consequência para o caminho da DAW:** com diferencial de 0,002 ppm, o FIFO de captura não
   precisa de ASRC nem de sample-slip por drift nesta máquina.
 - **C2 → o chip contribui 0,66 ms.** O dossiê v2 (1,2 ms por estágio) estava errado. O resto
@@ -122,7 +121,7 @@ Evidência de execução: `driver_um2.log` da suíte 8/8 de 31/10 e `um2_drift` 
 | Errata | Situação no código |
 |---|---|
 | E5 (QPC→ns estoura `uint64`) | **Não ocorre.** A conversão é em `double` (1771): sem overflow; perde resolução de 1 ns só depois de 2^53 ns ≈ 104 dias de uptime |
-| E2 / invariante 5 (TIME_CRITICAL) | **Exceção documentada desde 2026-11-01** (piso depois do MMCSS; ver "Thread de áudio sob carga"). Pendência: hoje o `TIME_CRITICAL` é aplicado mesmo se o MMCSS falhar, o que a exceção não cobre. Leitura original: **Ocorre, pior que na errata:** `AvSetMmThreadCharacteristicsW(L"Pro Audio")` e, em seguida, `SetThreadPriority(THREAD_PRIORITY_TIME_CRITICAL)` incondicional (1507–1508); retorno do MMCSS não é checado e não há `AvSetMmThreadPriority` |
+| E2 / invariante 5 (TIME_CRITICAL) | **Exceção por decisão do usuário (2026-11-01), evidência contestada pelo A/B** (ver "Thread de áudio sob carga"). Pendência: hoje o `TIME_CRITICAL` é aplicado mesmo se o MMCSS falhar, o que a exceção não cobre. Leitura original: **Ocorre, pior que na errata:** `AvSetMmThreadCharacteristicsW(L"Pro Audio")` e, em seguida, `SetThreadPriority(THREAD_PRIORITY_TIME_CRITICAL)` incondicional (1507–1508); retorno do MMCSS não é checado e não há `AvSetMmThreadPriority` |
 | E6 (`getLatencies` arbitrário) | Parcial: modelo por modo (86–110), não calibrado por RTL medido |
 | Invariante 6 (RAW) | Captura shared sem RAW (1180–1186, 1032–1036) |
 | Invariante 1 (custo variável no callback) | `processOneAsioBlock` roda o DSP do canal inteiro (HPF, gate, preamp, de-esser, compressor, cab sim, master) e grava telemetria do painel na mesma thread — dentro do mesmo bloco cronometrado pelo M5 |
