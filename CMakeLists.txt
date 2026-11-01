@@ -66,3 +66,16 @@ if(MSVC)
     target_compile_options(BehringerUM2Bridge PRIVATE /W4 /EHsc /permissive-)
 endif()
 
+# ---------------------------------------------------------------------------
+# Measurement tools (measure/, docs/MEASUREMENT-PROTOCOL.md). Not shipped.
+# ---------------------------------------------------------------------------
+add_executable(um2_drift measure/tools/um2_drift.cpp)
+target_link_libraries(um2_drift PRIVATE ole32 avrt)
+
+add_executable(raw_capture_test tools/raw_capture_test.cpp)
+target_compile_definitions(raw_capture_test PRIVATE _CRT_SECURE_NO_WARNINGS)
+target_link_libraries(raw_capture_test PRIVATE ole32)
+
+add_executable(um2_asio_probe measure/tools/um2_asio_probe.cpp)
+target_include_directories(um2_asio_probe PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/measure/tools" "${ASIO_SDK_DIR}")
+target_link_libraries(um2_asio_probe PRIVATE ole32)

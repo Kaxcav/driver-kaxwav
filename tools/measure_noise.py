@@ -4,15 +4,10 @@ Uso: python measure_noise.py [segundos] [tag]
 import sys, threading, json, time
 from pathlib import Path
 import numpy as np
-import sounddevice as sd
-import soundfile as sf
 from scipy import signal
 
+# a_weight() and analyze() are also imported by measure/scripts (M2); the capture part only runs as a script.
 SR = 48000
-SECS = float(sys.argv[1]) if len(sys.argv) > 1 else 6.0
-TAG = sys.argv[2] if len(sys.argv) > 2 else time.strftime("%H%M%S")
-OUT = Path(__file__).parent / "measurements"
-OUT.mkdir(exist_ok=True)
 
 def find(name_part, inputs=True):
     for i, d in enumerate(sd.query_devices()):
@@ -21,7 +16,7 @@ def find(name_part, inputs=True):
                 return i
     return None
 
-def rec(dev, store, key):
+def rec(dev, store, key, SECS=6.0):
     try:
         x = sd.rec(int(SECS * SR), samplerate=SR, channels=2, dtype="float32", device=dev, blocking=True)
         store[key] = x
@@ -33,10 +28,10 @@ def a_weight(f):
     ra = (12194 ** 2 * f2 ** 2) / ((f2 + 20.6 ** 2) * np.sqrt((f2 + 107.7 ** 2) * (f2 + 737.9 ** 2)) * (f2 + 12194 ** 2))
     return ra * 10 ** (2.0 / 20)
 
-def analyze(x, SR=SR):
+def analyze(x, SR=SR, nperseg=8192):
     x = x - np.mean(x)
     rms = np.sqrt(np.mean(x ** 2)) + 1e-12
-    f, p = signal.welch(x, SR, nperseg=8192)
+    f, p = signal.welch(x, SR, nperseg=nperseg)
     aw = a_weight(np.maximum(f, 1)) ** 2
     rms_a = np.sqrt(np.sum(p * aw) * (f[1] - f[0])) + 1e-12
     def band(lo, hi):
@@ -58,42 +53,54 @@ def analyze(x, SR=SR):
         "tone_over_floor_db": pk,
     }
 
-raw_dev = find("USB Audio CODEC")
-cab_dev = find("CABLE Output")
-store = {}
-bufs = {}
-rates = {}
-streams = []
-def mk(key, dev):
-    bufs[key] = []
-    def cb(indata, frames, t, status):
-        bufs[key].append(indata.copy())
-    rates[key] = int(sd.query_devices(dev)["default_samplerate"])
-    return sd.InputStream(device=dev, samplerate=rates[key], channels=2, dtype="float32", callback=cb,
-                          extra_settings=sd.WasapiSettings(exclusive=False))
-targets = [("raw", raw_dev)]
-if cab_dev is not None and "--raw-only" not in sys.argv:
-    targets.append(("cable", cab_dev))
-for key, dev in targets:
-    try:
-        st = mk(key, dev); st.start(); streams.append(st)
-    except Exception as e:
-        store[key + "_err"] = str(e)
-time.sleep(SECS + 0.5)
-for st in streams:
-    st.stop(); st.close()
-for key in bufs:
-    if bufs[key]:
-        x = np.concatenate(bufs[key])
-        store[key] = x[int(0.3 * rates[key]):]  # descarta transiente de abertura
-res = {"tag": TAG, "secs": SECS}
-for key in ("raw", "cable"):
-    if key in store:
-        x = store[key]
-        sr_k = rates.get(key, SR)
-        sf.write(OUT / f"{TAG}_{key}.wav", x, sr_k, subtype="FLOAT")
-        res[key] = {"sr": sr_k, "ch1_mic": analyze(x[:, 0], sr_k), "ch2_inst": analyze(x[:, 1], sr_k)}
-    if key + "_err" in store:
-        res[key + "_err"] = store[key + "_err"]
-print(json.dumps(res, indent=1))
-(OUT / f"{TAG}.json").write_text(json.dumps(res, indent=1))
+def main():
+    global sd
+    import sounddevice as sd
+    import soundfile as sf
+    SECS = float(sys.argv[1]) if len(sys.argv) > 1 else 6.0
+    TAG = sys.argv[2] if len(sys.argv) > 2 else time.strftime("%H%M%S")
+    OUT = Path(__file__).parent / "measurements"
+    OUT.mkdir(exist_ok=True)
+    raw_dev = find("USB Audio CODEC")
+    cab_dev = find("CABLE Output")
+    store = {}
+    bufs = {}
+    rates = {}
+    streams = []
+    def mk(key, dev):
+        bufs[key] = []
+        def cb(indata, frames, t, status):
+            bufs[key].append(indata.copy())
+        rates[key] = int(sd.query_devices(dev)["default_samplerate"])
+        return sd.InputStream(device=dev, samplerate=rates[key], channels=2, dtype="float32", callback=cb,
+                              extra_settings=sd.WasapiSettings(exclusive=False))
+    targets = [("raw", raw_dev)]
+    if cab_dev is not None and "--raw-only" not in sys.argv:
+        targets.append(("cable", cab_dev))
+    for key, dev in targets:
+        try:
+            st = mk(key, dev); st.start(); streams.append(st)
+        except Exception as e:
+            store[key + "_err"] = str(e)
+    time.sleep(SECS + 0.5)
+    for st in streams:
+        st.stop(); st.close()
+    for key in bufs:
+        if bufs[key]:
+            x = np.concatenate(bufs[key])
+            store[key] = x[int(0.3 * rates[key]):]  # descarta transiente de abertura
+    res = {"tag": TAG, "secs": SECS}
+    for key in ("raw", "cable"):
+        if key in store:
+            x = store[key]
+            sr_k = rates.get(key, SR)
+            sf.write(OUT / f"{TAG}_{key}.wav", x, sr_k, subtype="FLOAT")
+            res[key] = {"sr": sr_k, "ch1_mic": analyze(x[:, 0], sr_k), "ch2_inst": analyze(x[:, 1], sr_k)}
+        if key + "_err" in store:
+            res[key + "_err"] = store[key + "_err"]
+    print(json.dumps(res, indent=1))
+    (OUT / f"{TAG}.json").write_text(json.dumps(res, indent=1))
+
+
+if __name__ == "__main__":
+    main()
