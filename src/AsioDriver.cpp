@@ -60,6 +60,14 @@ static HRESULT ApplyRawStreamOption(IAudioClient* client, const char* what) {
     return hr;
 }
 
+// Bit-perfect float -> int16 for the DAW path: no dither, no soft-clip. A sample that came from the
+// 16-bit converter (k/32768) maps back to exactly k.
+static inline int16_t ExactToInt16(float x) {
+    const float scaled = x * 32768.0f;
+    const int32_t r = static_cast<int32_t>(scaled >= 0.0f ? scaled + 0.5f : scaled - 0.5f);
+    return static_cast<int16_t>((std::max)(-32768, (std::min)(32767, r)));
+}
+
 // GUIDs
 const GUID IID_IASIO = 
     { 0x933923e0, 0x01fe, 0x11d2, { 0xbc, 0x7b, 0x00, 0x80, 0xc7, 0x79, 0xb4, 0x3e } };
@@ -140,7 +148,17 @@ BehringerUM2AsioDriver::~BehringerUM2AsioDriver() {
     CoUninitialize();
 }
 
+void BehringerUM2AsioDriver::ReadDawDspFlags() {
+    DWORD v1 = 0, v2 = 0, cb = sizeof(DWORD);
+    if (RegGetValueW(HKEY_CURRENT_USER, L"Software\\BehringerUM2\\ASIO", L"DawDspCh1", RRF_RT_REG_DWORD, nullptr, &v1, &cb) != ERROR_SUCCESS) v1 = 0;
+    cb = sizeof(DWORD);
+    if (RegGetValueW(HKEY_CURRENT_USER, L"Software\\BehringerUM2\\ASIO", L"DawDspCh2", RRF_RT_REG_DWORD, nullptr, &v2, &cb) != ERROR_SUCCESS) v2 = 0;
+    m_dawDspCh1.store(v1 != 0, std::memory_order_relaxed);
+    m_dawDspCh2.store(v2 != 0, std::memory_order_relaxed);
+}
+
 void BehringerUM2AsioDriver::LoadSavedSettings() {
+    ReadDawDspFlags();
     HKEY hKey = nullptr;
     if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\BehringerUM2\\ASIO", 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
         DWORD dwMode = 1; // Default: SharedFlex (1)
@@ -288,6 +306,7 @@ void BehringerUM2AsioDriver::IpcWatcherLoop() {
             );
             UpdateLatencyTelemetry();
         }
+        if (licCounter % 14 == 0) ReadDawDspFlags();  // painel liga/desliga DSP na DAW sem reiniciar o stream
         if (++licCounter >= 60) {
             licCounter = 0;
             CheckLicenseStatus();
@@ -1675,6 +1694,8 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
         QueryPerformanceCounter(&qpcStart);
 
         volatile UM2SharedState* pState = m_pSharedState;
+        const bool dawDsp0  = m_dawDspCh1.load(std::memory_order_relaxed);
+        const bool dawDsp1  = m_dawDspCh2.load(std::memory_order_relaxed);
         bool ch1PhaseInv    = (pState && pState->ch1Phase != 0);
         bool ch1HpfOn       = (pState && pState->ch1Hpf != 0);
         bool ch1GateOn      = (pState && pState->ch1Gate != 0);
@@ -1771,17 +1792,31 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
             wet1 = m_compCh2.Process(wet1, ch2CompAmt);
             wet1 = m_cabCh2.Process(wet1, ch2CabSimOn);
 
-            // VB-Cable / Monitor e DAW recebem sempre o sinal colorido (wet)
+            // VB-Cable / bridge, monitor (MON ONLY) e medidores recebem sempre o sinal colorido (wet)
             m_cableIn0[s] = wet0;
             m_cableIn1[s] = wet1;
 
-            // Tanto em PRINT DAW quanto em MON ONLY, envia o sinal processado (wet) para a DAW
-            // (MON ONLY apenas ativa o retorno direto zero-latency nos fones)
-            float daw0 = wet0;
-            float daw1 = wet1;
-
-            pIn0[s] = m_dsp.Quantize16(daw0);
-            pIn1[s] = m_dsp.Quantize16(daw1);
+            // ADR 0004: por padrao a DAW recebe a captura bit-perfect (so fase/PAD/trim/mute do usuario,
+            // sem HPF, gate, preamp, de-esser, compressor, cab sim nem dither). O DSP acima continua
+            // rodando para a bridge/cabo virtual, monitor e medidores; vai para a DAW so se o canal tiver
+            // "DSP na DAW" ligado (DawDspCh1/DawDspCh2).
+            if (dawDsp0) {
+                pIn0[s] = m_dsp.Quantize16(wet0);
+            } else {
+                float raw0 = ch1PhaseInv ? -in0Val : in0Val;
+                raw0 *= ch1Trim;
+                if (ch1Muted || isDriverMuted) raw0 = 0.0f;
+                pIn0[s] = ExactToInt16(raw0);
+            }
+            if (dawDsp1) {
+                pIn1[s] = m_dsp.Quantize16(wet1);
+            } else {
+                float raw1 = ch2PhaseInv ? -in1Val : in1Val;
+                if (ch2PadOn) raw1 *= 0.31622776f;
+                raw1 *= ch2Trim;
+                if (ch2Muted || isDriverMuted) raw1 = 0.0f;
+                pIn1[s] = ExactToInt16(raw1);
+            }
         }
 
         // Loopback Virtual (IN 3-4): Per-App Loopback (Isolate/Exclude PID) ou Mix Interno da DAW

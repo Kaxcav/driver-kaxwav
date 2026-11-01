@@ -197,6 +197,11 @@
               <button class="btn-tactile btn-mute-ch" id="btnMute1" title="Mute Instantâneo deste canal">MUTE</button>
             </div>
 
+            <!-- ADR 0004: DSP no caminho da DAW e opt-in (padrao: DAW recebe a captura bit-perfect) -->
+            <div class="tactile-buttons-row">
+              <button class="btn-tactile" id="btnDawDsp1" title="Desligado (padrão): a DAW grava a entrada limpa, bit-perfect. Ligado: a DAW grava com o DSP deste canal (preamp, gate, HPF, compressor). Discord/bridge e monitor recebem o DSP sempre.">DSP NA DAW</button>
+            </div>
+
             <!-- Barra Utilitária: Smart Auto-Gain -->
             <div class="strip-utility-bar">
               <button class="btn-utility-action" id="btnAutoGain1" title="Calibra automaticamente o Digital Trim para cravar picos vocais em -12 dBFS">AUTO-GAIN (-12dB)</button>
@@ -278,6 +283,11 @@
               <button class="btn-tactile" id="btnPad2" title="Atenuador PAD -10dB (Instrumento Hi-Z)">PAD</button>
               <button class="btn-tactile" id="btnGate2" title="Noise Gate de Estúdio com Histerese (-52dBFS)">GATE</button>
               <button class="btn-tactile btn-mute-ch" id="btnMute2" title="Mute Instantâneo deste canal">MUTE</button>
+            </div>
+
+            <!-- ADR 0004: DSP no caminho da DAW e opt-in (padrao: DAW recebe a captura bit-perfect) -->
+            <div class="tactile-buttons-row">
+              <button class="btn-tactile" id="btnDawDsp2" title="Desligado (padrão): a DAW grava a entrada limpa, bit-perfect. Ligado: a DAW grava com o DSP deste canal (preamp, gate, HPF, compressor). Discord/bridge e monitor recebem o DSP sempre.">DSP NA DAW</button>
             </div>
 
             <!-- Barra Utilitária: Auto-Gain + Cab Sim 4x12 -->
@@ -430,8 +440,8 @@
 
             <!-- Seletor de Roteamento DSP: Print DAW vs Monitor Only -->
             <div class="strip-mode-bar" title="Define se o DSP (Preamp/Comp/De-Ess) é gravado no DAW ou ouvido apenas na monitoração">
-              <button class="btn-strip-mode active" id="btnDspPrint" data-mononly="0" title="Grava o sinal processado pelo DSP diretamente no DAW">PRINT DAW</button>
-              <button class="btn-strip-mode" id="btnDspMonOnly" data-mononly="1" title="Envia sinal limpo (Dry) ao DAW e aplica DSP apenas na monitoração">MON ONLY</button>
+              <button class="btn-strip-mode active" id="btnDspPrint" data-mononly="0" title="Monitor sem o DSP extra nos fones. O que vai para a DAW é definido por canal (DSP NA DAW)">PRINT DAW</button>
+              <button class="btn-strip-mode" id="btnDspMonOnly" data-mononly="1" title="Soma o DSP dos canais nos fones (monitoração). O que vai para a DAW é definido por canal (DSP NA DAW)">MON ONLY</button>
             </div>
 
             <!-- Botões Táticos de Saída -->

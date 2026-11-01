@@ -1,0 +1,504 @@
+{
+ "schema": 1,
+ "run_id": "2026-11-01-s4-m5-carga",
+ "date": "2026-11-01T10:40:59",
+ "commit": "856c96f",
+ "describe": "v0.0.0-baseline-20-g856c96f-dirty",
+ "driver_dll": {
+  "path": "D:\\DEV\\driver-kaxwav\\build\\Release\\BehringerUM2ASIODriver.dll",
+  "md5": "FD8A90A86FE86D52F4C3F385D3D86723",
+  "bytes": 174080
+ },
+ "machine": {
+  "os": "Windows-11-10.0.26300-SP0",
+  "cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"
+ },
+ "conditions": {
+  "gain_ch1": "~60%",
+  "input_connection": "mic dinamico no XLR 1, 48V off; fone no PHONES (usuario acabou de sair de call)",
+  "monitor_switch": "off",
+  "cpu_load": "nenhuma",
+  "gain_ch2": "nao informado",
+  "output_knob": "nao informado"
+ },
+ "registry_before_run": {
+  "DriverMode": 0,
+  "BufferSize": 1024
+ },
+ "dsp_state_shared_memory": {
+  "isLicensed": 1,
+  "softwareMute": 0,
+  "driverMode": 0,
+  "bufferSize": 256,
+  "sampleRate": 48000,
+  "pdcOffsetSamples": 0,
+  "inputLatencySamples": 512,
+  "outputLatencySamples": 512,
+  "hardwareModel": 0,
+  "xruns": 88,
+  "ch1Phase": 0,
+  "ch1Hpf": 0,
+  "ch1Mute": 0,
+  "ch1Trim": 1.0,
+  "ch1Gate": 0,
+  "ch1PreampMode": 0,
+  "ch1CompAmount": 0.0,
+  "ch1DeesserAmount": 0.0,
+  "ch2Phase": 0,
+  "ch2Pad": 0,
+  "ch2Mute": 0,
+  "ch2Trim": 1.0,
+  "ch2Gate": 0,
+  "ch2PreampMode": 0,
+  "ch2CompAmount": 0.0,
+  "ch2CabSim": 0,
+  "gateThresholdDb": 0.0,
+  "dspMonitorOnly": 0,
+  "loopbackEnabled": 0,
+  "loopbackGain": 1.0,
+  "loopbackMono": 0,
+  "loopbackBroadcastMix": 0,
+  "loopbackMode": 0,
+  "masterDim": 0,
+  "masterMono": 0,
+  "masterMute": 0,
+  "masterTrim": 1.0,
+  "monSubCheck": 0,
+  "monPhoneSim": 0,
+  "monCrossfeed": 0
+ },
+ "fixed": {
+  "sample_rate": 48000,
+  "buffers": [
+   64,
+   128,
+   256
+  ],
+  "modes": [
+   "SharedFlex",
+   "ExclusivePro"
+  ]
+ },
+ "protocol": "docs/MEASUREMENT-PROTOCOL.md",
+ "analysis_code": "v0.0.0-baseline-20-g856c96f-dirty",
+ "M8": {
+  "status": "nao executado"
+ },
+ "M2": {
+  "status": "nao executado"
+ },
+ "M5": {
+  "load": "12 processos em busy-loop (prioridade normal)",
+  "definition": "duracao do bloco = QPC na entrada de processOneAsioBlock ate o fim do estagio de saida; miss = duracao > bufferSize/fs. Contador xruns do UM2SharedState e incrementado por amostra faltante no FIFO de captura (nao por evento).",
+  "runs": [
+   {
+    "mode_requested": "SharedFlex",
+    "mode_active": "SharedFlex",
+    "buffer": 64,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 608,
+    "pdc_out": 608,
+    "callbacks": 44993,
+    "expected_callbacks": 45000,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 2988,
+     "buffer": 64,
+     "sample_rate": 48000,
+     "blocks": 44858,
+     "budget_us": 1333.3,
+     "block_us_p50": 10.0,
+     "block_us_p99": 15.0,
+     "block_us_max": 104.6,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 10840.4,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 1.4,
+     "recent_gap_us_p99": 10501.0
+    },
+    "shared_state_xruns_delta": 3,
+    "time_info": {
+     "count": 44993,
+     "first_pos": 0,
+     "last_pos": 2879488,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 5.7
+    },
+    "driver_log": [
+     "[10:40:59.353] IAudioClient3 InitializeSharedAudioStream: SUCESSO (targetPeriod=480 frames)",
+     "[10:40:59.359] Render Shared Buffer Total: 1056 frames",
+     "[10:40:59.471] Capture Shared Initialize: 0x00000000",
+     "[10:40:59.474] createBuffers completado: Mode=SharedFlex, DAW=64 smp, Hardware=64 smp"
+    ],
+    "punctuality": {
+     "callbacks_per_min": 44993.0,
+     "expected_per_min": 45000.0,
+     "ratio": 0.9998,
+     "max_gap_us": 10840.4,
+     "cadence_us": 10000.0,
+     "gap_limit_us": 20000.0,
+     "pass_ratio": true,
+     "pass_gap": true,
+     "pass": true
+    },
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -63.41,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -127.8,
+      "psd_7k5_12k_db_hz": -131.6,
+      "drop_db": 3.8,
+      "valid": true,
+      "step_detected": false
+     }
+    }
+   },
+   {
+    "mode_requested": "SharedFlex",
+    "mode_active": "SharedFlex",
+    "buffer": 128,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 736,
+    "pdc_out": 736,
+    "callbacks": 22508,
+    "expected_callbacks": 22500,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 33340,
+     "buffer": 128,
+     "sample_rate": 48000,
+     "blocks": 22508,
+     "budget_us": 2666.6,
+     "block_us_p50": 15.0,
+     "block_us_p99": 20.0,
+     "block_us_max": 141.0,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 10706.0,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 6.2,
+     "recent_gap_us_p99": 10569.9
+    },
+    "shared_state_xruns_delta": 3,
+    "time_info": {
+     "count": 22508,
+     "first_pos": 0,
+     "last_pos": 2880896,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 5.3
+    },
+    "driver_log": [
+     "[10:42:00.985] IAudioClient3 InitializeSharedAudioStream: SUCESSO (targetPeriod=480 frames)",
+     "[10:42:00.988] Render Shared Buffer Total: 1056 frames",
+     "[10:42:01.064] Capture Shared Initialize: 0x00000000",
+     "[10:42:01.075] createBuffers completado: Mode=SharedFlex, DAW=128 smp, Hardware=128 smp"
+    ],
+    "punctuality": {
+     "callbacks_per_min": 22508.0,
+     "expected_per_min": 22500.0,
+     "ratio": 1.0004,
+     "max_gap_us": 10706.0,
+     "cadence_us": 10000.0,
+     "gap_limit_us": 20000.0,
+     "pass_ratio": true,
+     "pass_gap": true,
+     "pass": true
+    },
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -63.66,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -123.0,
+      "psd_7k5_12k_db_hz": -129.1,
+      "drop_db": 6.1,
+      "valid": true,
+      "step_detected": true
+     }
+    }
+   },
+   {
+    "mode_requested": "SharedFlex",
+    "mode_active": "SharedFlex",
+    "buffer": 256,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 992,
+    "pdc_out": 992,
+    "callbacks": 11252,
+    "expected_callbacks": 11250,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 24064,
+     "buffer": 256,
+     "sample_rate": 48000,
+     "blocks": 11252,
+     "budget_us": 5333.3,
+     "block_us_p50": 25.0,
+     "block_us_p99": 35.0,
+     "block_us_max": 133.1,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 10689.1,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 6.2,
+     "recent_gap_us_p99": 10584.6
+    },
+    "shared_state_xruns_delta": 3,
+    "time_info": {
+     "count": 11252,
+     "first_pos": 0,
+     "last_pos": 2880256,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 1.1
+    },
+    "driver_log": [
+     "[10:43:02.301] IAudioClient3 InitializeSharedAudioStream: SUCESSO (targetPeriod=480 frames)",
+     "[10:43:02.327] Render Shared Buffer Total: 1056 frames",
+     "[10:43:02.459] Capture Shared Initialize: 0x00000000",
+     "[10:43:02.472] createBuffers completado: Mode=SharedFlex, DAW=256 smp, Hardware=256 smp"
+    ],
+    "punctuality": {
+     "callbacks_per_min": 11252.0,
+     "expected_per_min": 11250.0,
+     "ratio": 1.0002,
+     "max_gap_us": 10689.1,
+     "cadence_us": 10000.0,
+     "gap_limit_us": 20000.0,
+     "pass_ratio": true,
+     "pass_gap": true,
+     "pass": true
+    },
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -63.08,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -119.5,
+      "psd_7k5_12k_db_hz": -128.5,
+      "drop_db": 9.0,
+      "valid": true,
+      "step_detected": true
+     }
+    }
+   },
+   {
+    "mode_requested": "ExclusivePro",
+    "mode_active": "unknown",
+    "buffer": 64,
+    "seconds": 60,
+    "ok": false,
+    "pdc_in": 256,
+    "pdc_out": 256,
+    "callbacks": 0,
+    "expected_callbacks": 45000,
+    "telemetry": null,
+    "shared_state_xruns_delta": 0,
+    "time_info": {
+     "count": 0,
+     "first_pos": -1,
+     "last_pos": -1,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 0.0
+    },
+    "driver_log": [
+     "[10:44:03.730] createBuffers: ExclusivePro recusado - buffer 64 (1.33 ms) abaixo do minimo exclusive do device (144 frames). Nao ha fallback para SharedFlex."
+    ],
+    "punctuality": null,
+    "asio_input_ch1_noise": {
+     "rms_dbfs": NaN,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": NaN,
+      "psd_7k5_12k_db_hz": NaN,
+      "drop_db": NaN,
+      "valid": false,
+      "step_detected": false,
+      "reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"
+     }
+    }
+   },
+   {
+    "mode_requested": "ExclusivePro",
+    "mode_active": "unknown",
+    "buffer": 128,
+    "seconds": 60,
+    "ok": false,
+    "pdc_in": 256,
+    "pdc_out": 256,
+    "callbacks": 0,
+    "expected_callbacks": 22500,
+    "telemetry": null,
+    "shared_state_xruns_delta": 0,
+    "time_info": {
+     "count": 0,
+     "first_pos": -1,
+     "last_pos": -1,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 0.0
+    },
+    "driver_log": [
+     "[10:44:04.342] createBuffers: ExclusivePro recusado - buffer 128 (2.67 ms) abaixo do minimo exclusive do device (144 frames). Nao ha fallback para SharedFlex."
+    ],
+    "punctuality": null,
+    "asio_input_ch1_noise": {
+     "rms_dbfs": NaN,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": NaN,
+      "psd_7k5_12k_db_hz": NaN,
+      "drop_db": NaN,
+      "valid": false,
+      "step_detected": false,
+      "reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"
+     }
+    }
+   },
+   {
+    "mode_requested": "ExclusivePro",
+    "mode_active": "ExclusivePro",
+    "buffer": 256,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 512,
+    "pdc_out": 512,
+    "callbacks": 6000,
+    "expected_callbacks": 11250,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 4332,
+     "buffer": 256,
+     "sample_rate": 48000,
+     "blocks": 5986,
+     "budget_us": 5333.3,
+     "block_us_p50": 30.0,
+     "block_us_p99": 35.0,
+     "block_us_max": 38.0,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 10397.5,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 5.8,
+     "recent_gap_us_p99": 10050.5
+    },
+    "shared_state_xruns_delta": 0,
+    "time_info": {
+     "count": 6000,
+     "first_pos": 0,
+     "last_pos": 1535744,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 3.6
+    },
+    "driver_log": [
+     "[10:44:05.110] Render Exclusive Initialize: 0x00000000",
+     "[10:44:05.111] Render Exclusive Real Buffer Size: 256 frames",
+     "[10:44:05.210] Capture Exclusive Initialize (Stereo): 0x00000000",
+     "[10:44:05.211] Capture Exclusive Real Buffer Size: 256 frames (channels=2)",
+     "[10:44:05.211] createBuffers completado: Mode=ExclusivePro, DAW=256 smp, Hardware=256 smp"
+    ],
+    "punctuality": {
+     "callbacks_per_min": 6000.0,
+     "expected_per_min": 11250.0,
+     "ratio": 0.5333,
+     "max_gap_us": 10397.5,
+     "cadence_us": 5333.3,
+     "gap_limit_us": 10666.7,
+     "pass_ratio": false,
+     "pass_gap": true,
+     "pass": false
+    },
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -46.81,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -106.8,
+      "psd_7k5_12k_db_hz": -112.5,
+      "drop_db": 5.7,
+      "valid": true,
+      "step_detected": false
+     }
+    }
+   }
+  ],
+  "_step_seconds": 246.6,
+  "_dsp_state": {
+   "isLicensed": 1,
+   "softwareMute": 0,
+   "driverMode": 0,
+   "bufferSize": 256,
+   "sampleRate": 48000,
+   "pdcOffsetSamples": 0,
+   "inputLatencySamples": 512,
+   "outputLatencySamples": 512,
+   "hardwareModel": 0,
+   "xruns": 97,
+   "ch1Phase": 0,
+   "ch1Hpf": 0,
+   "ch1Mute": 0,
+   "ch1Trim": 1.0,
+   "ch1Gate": 0,
+   "ch1PreampMode": 0,
+   "ch1CompAmount": 0.0,
+   "ch1DeesserAmount": 0.0,
+   "ch2Phase": 0,
+   "ch2Pad": 0,
+   "ch2Mute": 0,
+   "ch2Trim": 1.0,
+   "ch2Gate": 0,
+   "ch2PreampMode": 0,
+   "ch2CompAmount": 0.0,
+   "ch2CabSim": 0,
+   "gateThresholdDb": 0.0,
+   "dspMonitorOnly": 0,
+   "loopbackEnabled": 0,
+   "loopbackGain": 1.0,
+   "loopbackMono": 0,
+   "loopbackBroadcastMix": 0,
+   "loopbackMode": 0,
+   "masterDim": 0,
+   "masterMono": 0,
+   "masterMute": 0,
+   "masterTrim": 1.0,
+   "monSubCheck": 0,
+   "monPhoneSim": 0,
+   "monCrossfeed": 0
+  },
+  "_endpoint_capture_before": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_endpoint_capture_after": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_conditions": {
+   "gain_ch1": "~60%",
+   "input_connection": "mic dinamico no XLR 1, 48V off; fone no PHONES (usuario acabou de sair de call)",
+   "monitor_switch": "off",
+   "cpu_load": "nenhuma",
+   "gain_ch2": "nao informado",
+   "output_knob": "nao informado"
+  },
+  "_measured_at": "2026-11-01T10:45:05"
+ },
+ "M7": {
+  "status": "nao executado"
+ },
+ "M1": {
+  "status": "nao executado"
+ },
+ "M3": {
+  "status": "nao executado"
+ },
+ "M6": {
+  "status": "nao executado"
+ },
+ "M4": {
+  "status": "nao executado",
+  "reason": null,
+  "see": "M3"
+ }
+}

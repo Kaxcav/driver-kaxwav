@@ -183,6 +183,12 @@ private:
 
     // Hot-Reconnect de USB e Otimização de Telemetria
     std::atomic<bool> m_deviceInvalidated{ false };
+
+    // ADR 0004: DSP no caminho da DAW e opt-in por canal (padrao: captura ASIO bit-perfect).
+    // Lido do registro (HKCU\Software\BehringerUM2\ASIO DawDspCh1/DawDspCh2) fora da thread de audio.
+    std::atomic<bool> m_dawDspCh1{ false };
+    std::atomic<bool> m_dawDspCh2{ false };
+    void ReadDawDspFlags();
     uint32_t m_scopeSubsample{ 0 };
 
     // Sistema de Licenciamento & Modo Demo Anti-Pirataria

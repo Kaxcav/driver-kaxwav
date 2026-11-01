@@ -1260,6 +1260,29 @@ if (btnLoopDetect808) {
   });
 }
 
+// ADR 0004: DSP na DAW por canal (padrão desligado = DAW bit-perfect)
+[1, 2].forEach((ch) => {
+  const btn = document.getElementById(`btnDawDsp${ch}`);
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    const enabled = !btn.classList.contains('active-led');
+    try {
+      const r = await fetch('/api/dsp/daw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ channel: ch, enabled })
+      });
+      if (!r.ok) throw new Error(r.status);
+      btn.classList.toggle('active-led', enabled);
+      showToast(enabled
+        ? `CH ${ch}: a DAW grava com o DSP do canal`
+        : `CH ${ch}: a DAW grava a entrada limpa (bit-perfect)`, true);
+    } catch (e) {
+      showToast(`Falha ao mudar DSP na DAW do CH ${ch}`, false);
+    }
+  });
+});
+
 // 7. Master DSP Print vs Monitor Only, Mix Check Matrix & PDC Calibration
 function setDspMonitorOnlyVisuals(monOnly) {
   if (btnDspPrint) btnDspPrint.classList.toggle('active', !monOnly);
@@ -1270,7 +1293,7 @@ if (btnDspPrint) {
   btnDspPrint.addEventListener('click', () => {
     setDspMonitorOnlyVisuals(false);
     sendDspMaster({ dspMonitorOnly: false });
-    showToast('Modo PRINT TO DAW: O FL Studio grava o sinal já processado pelo Unison DSP', true);
+    showToast('PRINT DAW: fones sem o DSP extra. O que vai para a DAW é escolhido por canal (DSP NA DAW)', true);
   });
 }
 
@@ -1278,7 +1301,7 @@ if (btnDspMonOnly) {
   btnDspMonOnly.addEventListener('click', () => {
     setDspMonitorOnlyVisuals(true);
     sendDspMaster({ dspMonitorOnly: true });
-    showToast('Modo MONITOR ONLY: Você ouve o DSP nos fones, mas o FL Studio grava o DI limpo', true);
+    showToast('MON ONLY: você ouve o DSP nos fones. O que vai para a DAW é escolhido por canal (DSP NA DAW)', true);
   });
 }
 
@@ -1703,6 +1726,10 @@ function connectWebSocket() {
         if (typeof data.dspMonitorOnly !== 'undefined') {
           setDspMonitorOnlyVisuals(!!data.dspMonitorOnly);
         }
+        [1, 2].forEach((ch) => {
+          const b = document.getElementById(`btnDawDsp${ch}`);
+          if (b && typeof data[`dawDspCh${ch}`] !== 'undefined') b.classList.toggle('active-led', !!data[`dawDspCh${ch}`]);
+        });
         if (typeof data.monSubCheck !== 'undefined' && btnMonSub) btnMonSub.classList.toggle('active-led', !!data.monSubCheck);
         if (typeof data.monPhoneSim !== 'undefined' && btnMonPhone) btnMonPhone.classList.toggle('active-led', !!data.monPhoneSim);
         if (typeof data.monCrossfeed !== 'undefined' && btnMonXfeed) btnMonXfeed.classList.toggle('active-led', !!data.monCrossfeed);

@@ -271,7 +271,7 @@ def _m5_runs(args, rundir, cond, secs, runs):
 
 
 def step_m7(args, rundir, cond):
-    stim = A.to_i16(A.pseudo_noise(3.0, -20.0))
+    stim = A.to_i16(A.pseudo_noise(3.0, args.m7_stim_db))
     at = 24000
     saved = rundir / "m7_SharedFlex_256.probe.json"
     if args.m7_reuse and saved.exists():  # reanalyse the capture already taken in this run
@@ -281,7 +281,7 @@ def step_m7(args, rundir, cond):
     res = {"mode_requested": "SharedFlex", "mode_active": j.get("mode_active"), "buffer": 256,
            "daw_dsp_registry": daw_dsp_flags(),
            "tap_capture_raw": bool(args.m7_tap_raw),
-           "stimulus": "ruido pseudo-aleatorio -20 dBFS, 3 s, int16, nas duas saidas",
+           "stimulus": f"ruido pseudo-aleatorio {args.m7_stim_db} dBFS, 3 s, int16, nas duas saidas",
            "taps": {"capture": j.get("tap_capture"), "loopback": j.get("tap_loopback")}}
     # output path: int16 the host wrote vs what the engine got (WASAPI loopback of the UM2 render endpoint)
     lp = Path(rundir / "m7_SharedFlex_256.taploop.f32")
@@ -440,6 +440,7 @@ def main():
     ap.add_argument("--m2-seconds", type=int, default=60)
     ap.add_argument("--m7-tap-raw", type=int, default=1,
                     help="M7: tap de captura com AUDCLNT_STREAMOPTIONS_RAW (1, igual ao driver desde o passo 3) ou padrao (0)")
+    ap.add_argument("--m7-stim-db", type=float, default=-20.0, help="M7: nivel do ruido de teste na saida (dBFS)")
     ap.add_argument("--m7-reuse", action="store_true", help="reanalisa a captura M7 ja feita nesta corrida")
     ap.add_argument("--m2-reuse", action="store_true", help="reanalisa m2_apo.wav/m2_raw.wav ja capturados nesta corrida")
     ap.add_argument("--m5-seconds", type=int, default=60)

@@ -1,0 +1,234 @@
+{
+ "schema": 1,
+ "run_id": "2026-11-01-s4-on",
+ "date": "2026-11-01T10:36:35",
+ "commit": "856c96f",
+ "describe": "v0.0.0-baseline-20-g856c96f-dirty",
+ "driver_dll": {
+  "path": "D:\\DEV\\driver-kaxwav\\build\\Release\\BehringerUM2ASIODriver.dll",
+  "md5": "FD8A90A86FE86D52F4C3F385D3D86723",
+  "bytes": 174080
+ },
+ "machine": {
+  "os": "Windows-11-10.0.26300-SP0",
+  "cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"
+ },
+ "conditions": {
+  "gain_ch1": "~60%",
+  "input_connection": "mic dinamico no XLR 1, 48V off; fone no PHONES (usuario acabou de sair de call)",
+  "monitor_switch": "off",
+  "cpu_load": "nenhuma",
+  "gain_ch2": "nao informado",
+  "output_knob": "nao informado"
+ },
+ "registry_before_run": {
+  "DriverMode": 0,
+  "BufferSize": 1024
+ },
+ "dsp_state_shared_memory": {
+  "isLicensed": 1,
+  "softwareMute": 0,
+  "driverMode": 1,
+  "bufferSize": 256,
+  "sampleRate": 48000,
+  "pdcOffsetSamples": 0,
+  "inputLatencySamples": 992,
+  "outputLatencySamples": 992,
+  "hardwareModel": 0,
+  "xruns": 84,
+  "ch1Phase": 0,
+  "ch1Hpf": 0,
+  "ch1Mute": 0,
+  "ch1Trim": 1.0,
+  "ch1Gate": 0,
+  "ch1PreampMode": 0,
+  "ch1CompAmount": 0.0,
+  "ch1DeesserAmount": 0.0,
+  "ch2Phase": 0,
+  "ch2Pad": 0,
+  "ch2Mute": 0,
+  "ch2Trim": 1.0,
+  "ch2Gate": 0,
+  "ch2PreampMode": 0,
+  "ch2CompAmount": 0.0,
+  "ch2CabSim": 0,
+  "gateThresholdDb": 0.0,
+  "dspMonitorOnly": 0,
+  "loopbackEnabled": 0,
+  "loopbackGain": 1.0,
+  "loopbackMono": 0,
+  "loopbackBroadcastMix": 0,
+  "loopbackMode": 0,
+  "masterDim": 0,
+  "masterMono": 0,
+  "masterMute": 0,
+  "masterTrim": 1.0,
+  "monSubCheck": 0,
+  "monPhoneSim": 0,
+  "monCrossfeed": 0
+ },
+ "fixed": {
+  "sample_rate": 48000,
+  "buffers": [
+   64,
+   128,
+   256
+  ],
+  "modes": [
+   "SharedFlex",
+   "ExclusivePro"
+  ]
+ },
+ "protocol": "docs/MEASUREMENT-PROTOCOL.md",
+ "analysis_code": "v0.0.0-baseline-20-g856c96f-dirty",
+ "M8": {
+  "status": "nao executado"
+ },
+ "M2": {
+  "status": "nao executado"
+ },
+ "M5": {
+  "status": "nao executado"
+ },
+ "M7": {
+  "mode_requested": "SharedFlex",
+  "mode_active": "SharedFlex",
+  "buffer": 256,
+  "daw_dsp_registry": {
+   "DawDspCh1": 1,
+   "DawDspCh2": 1
+  },
+  "tap_capture_raw": true,
+  "stimulus": "ruido pseudo-aleatorio -60.0 dBFS, 3 s, int16, nas duas saidas",
+  "taps": {
+   "capture": {
+    "hr": "0x00000000",
+    "channels": 1,
+    "rate": 48000,
+    "frames": 241920,
+    "discontinuities": 1
+   },
+   "loopback": {
+    "hr": "0x00000000",
+    "channels": 2,
+    "rate": 48000,
+    "frames": 242400,
+    "discontinuities": 1
+   }
+  },
+  "output_null": {
+   "aligned": true,
+   "lag_samples": 39936.0,
+   "correlation_quality": 617.9,
+   "compared_samples": 144000,
+   "nonzero_ref_samples": 142254,
+   "residual_max_lsb": 0.0,
+   "residual_rms_lsb": 0.0,
+   "residual_dbfs": -400.0,
+   "best_fit_gain_db": 0.0,
+   "identical_samples_percent": 100.0,
+   "bit_perfect": true,
+   "conclusive": true
+  },
+  "input_null": {
+   "ch1": {
+    "aligned": true,
+    "lag_samples": 36928.17,
+    "correlation_quality": 71.6,
+    "compared_samples": 193088,
+    "nonzero_ref_samples": 184260,
+    "residual_max_lsb": 47.0,
+    "residual_rms_lsb": 3.5437,
+    "residual_dbfs": -79.32,
+    "best_fit_gain_db": -0.3265,
+    "identical_samples_percent": 20.394,
+    "bit_perfect": false,
+    "conclusive": true,
+    "note": "referencia = ASIO in 1 (int16 entregue a DAW); captura = tap shared canal 1 x 32768 (escala exata do conversor de 16 bits)",
+    "input_level_dbfs": -63.8,
+    "asio_level_dbfs": -62.7
+   }
+  },
+  "exclusive_pro": "nao medivel: em exclusive nao existe tap digital do lado WASAPI (loopback e captura compartilhada nao enxergam stream exclusivo)",
+  "driver_log": [
+   "[10:36:36.007] IAudioClient3 InitializeSharedAudioStream: SUCESSO (targetPeriod=480 frames)",
+   "[10:36:36.008] Render Shared Buffer Total: 1056 frames",
+   "[10:36:36.019] Capture Shared Initialize: 0x00000000",
+   "[10:36:36.019] createBuffers completado: Mode=SharedFlex, DAW=256 smp, Hardware=256 smp"
+  ],
+  "_step_seconds": 5.2,
+  "_dsp_state": {
+   "isLicensed": 1,
+   "softwareMute": 0,
+   "driverMode": 1,
+   "bufferSize": 256,
+   "sampleRate": 48000,
+   "pdcOffsetSamples": 0,
+   "inputLatencySamples": 992,
+   "outputLatencySamples": 992,
+   "hardwareModel": 0,
+   "xruns": 85,
+   "ch1Phase": 0,
+   "ch1Hpf": 0,
+   "ch1Mute": 0,
+   "ch1Trim": 1.0,
+   "ch1Gate": 0,
+   "ch1PreampMode": 0,
+   "ch1CompAmount": 0.0,
+   "ch1DeesserAmount": 0.0,
+   "ch2Phase": 0,
+   "ch2Pad": 0,
+   "ch2Mute": 0,
+   "ch2Trim": 1.0,
+   "ch2Gate": 0,
+   "ch2PreampMode": 0,
+   "ch2CompAmount": 0.0,
+   "ch2CabSim": 0,
+   "gateThresholdDb": 0.0,
+   "dspMonitorOnly": 0,
+   "loopbackEnabled": 0,
+   "loopbackGain": 1.0,
+   "loopbackMono": 0,
+   "loopbackBroadcastMix": 0,
+   "loopbackMode": 0,
+   "masterDim": 0,
+   "masterMono": 0,
+   "masterMute": 0,
+   "masterTrim": 1.0,
+   "monSubCheck": 0,
+   "monPhoneSim": 0,
+   "monCrossfeed": 0
+  },
+  "_endpoint_capture_before": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_endpoint_capture_after": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_conditions": {
+   "gain_ch1": "~60%",
+   "input_connection": "mic dinamico no XLR 1, 48V off; fone no PHONES (usuario acabou de sair de call)",
+   "monitor_switch": "off",
+   "cpu_load": "nenhuma",
+   "gain_ch2": "nao informado",
+   "output_knob": "nao informado"
+  },
+  "_measured_at": "2026-11-01T10:36:41"
+ },
+ "M1": {
+  "status": "nao executado"
+ },
+ "M3": {
+  "status": "nao executado"
+ },
+ "M6": {
+  "status": "nao executado"
+ },
+ "M4": {
+  "status": "nao executado",
+  "reason": null,
+  "see": "M3"
+ }
+}

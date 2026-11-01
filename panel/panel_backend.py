@@ -935,6 +935,8 @@ class UM2Manager:
             "ch1DeesserAmount": 0.0,
             "ch2CabSim": False,
             "dspMonitorOnly": False,
+            "dawDspCh1": False,  # ADR 0004: DSP no caminho da DAW e opt-in por canal
+            "dawDspCh2": False,
             "monSubCheck": False,
             "monPhoneSim": False,
             "monCrossfeed": False,
@@ -990,6 +992,10 @@ class UM2Manager:
                     winreg.SetValueEx(key, "DriverMode", 0, winreg.REG_DWORD, dm_val)
                 if "loopbackEnabled" in self.config:
                     winreg.SetValueEx(key, "LoopbackEnabled", 0, winreg.REG_DWORD, 1 if self.config["loopbackEnabled"] else 0)
+                # ADR 0004: o driver le DawDspCh1/DawDspCh2 a cada ~200 ms (padrao 0 = DAW bit-perfect)
+                for ch in (1, 2):
+                    winreg.SetValueEx(key, f"DawDspCh{ch}", 0, winreg.REG_DWORD,
+                                      1 if self.config.get(f"dawDspCh{ch}", False) else 0)
         except Exception as e:
             print(f"[UM2] Erro Registro: {e}")
 
@@ -1321,6 +1327,8 @@ class UM2Manager:
             "ch1DeEsserAmount": round(float(self.state.ch1DeesserAmount), 3),
             "ch2CabSim": bool(self.state.ch2CabSim),
             "dspMonitorOnly": bool(self.state.dspMonitorOnly),
+            "dawDspCh1": bool(self.config.get("dawDspCh1", False)),
+            "dawDspCh2": bool(self.config.get("dawDspCh2", False)),
             "monSubCheck": bool(self.state.monSubCheck),
             "monPhoneSim": bool(self.state.monPhoneSim),
             "monCrossfeed": bool(self.state.monCrossfeed),
@@ -1593,6 +1601,17 @@ def set_dsp_ch2(req: DspCh2Request):
         updates["ch2CabSim"] = req.cabSim
     um2.save_config(**updates)
     return {"status": "ok"}
+
+class DawDspRequest(BaseModel):
+    channel: int
+    enabled: bool
+
+@app.post("/api/dsp/daw")
+def set_daw_dsp(req: DawDspRequest):
+    """ADR 0004: liga/desliga o DSP do canal no caminho da DAW (desligado = captura bit-perfect)."""
+    ch = 1 if int(req.channel) != 2 else 2
+    um2.save_config(**{f"dawDspCh{ch}": bool(req.enabled)})
+    return {"status": "ok", "channel": ch, "enabled": bool(req.enabled)}
 
 @app.post("/api/dsp/loopback")
 def set_dsp_loopback(req: LoopbackRequest):
