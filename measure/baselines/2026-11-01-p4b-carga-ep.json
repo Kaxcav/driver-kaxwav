@@ -1,0 +1,300 @@
+{
+ "schema": 1,
+ "run_id": "2026-11-01-p4b-carga-ep",
+ "date": "2026-11-01T05:12:31",
+ "commit": "fb9e525",
+ "describe": "v0.0.0-baseline-13-gfb9e525-dirty",
+ "driver_dll": {
+  "path": "D:\\DEV\\driver-kaxwav\\build\\Release\\BehringerUM2ASIODriver.dll",
+  "md5": "190DC3AAEB8751E02529D45ADEFD69D0",
+  "bytes": 173056
+ },
+ "machine": {
+  "os": "Windows-11-10.0.26300-SP0",
+  "cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"
+ },
+ "conditions": {
+  "gain_ch1": "~60% (usuario: 'metade pra cima, uns 60 por cento')",
+  "gain_ch2": "nao informado",
+  "output_knob": "nao informado",
+  "monitor_switch": "off",
+  "input_connection": "nada ligado nas duas entradas (sem terminador)",
+  "ch1_gate": "desligado no painel so para a medicao (estava ligado com limiar 0 dB); HPF ch1 tambem apareceu desligado",
+  "cpu_load": "nenhuma (maquina ociosa)",
+  "m6_note": "drift medido antes (00:07-01:07), UM2 sem nada ligado no render/captura, render em silencio digital"
+ },
+ "registry_before_run": {
+  "DriverMode": 0,
+  "BufferSize": 1024
+ },
+ "dsp_state_shared_memory": {
+  "isLicensed": 1,
+  "softwareMute": 0,
+  "driverMode": 0,
+  "bufferSize": 256,
+  "sampleRate": 48000,
+  "pdcOffsetSamples": 0,
+  "inputLatencySamples": 512,
+  "outputLatencySamples": 512,
+  "hardwareModel": 0,
+  "xruns": 68,
+  "ch1Phase": 0,
+  "ch1Hpf": 0,
+  "ch1Mute": 0,
+  "ch1Trim": 1.0,
+  "ch1Gate": 0,
+  "ch1PreampMode": 0,
+  "ch1CompAmount": 0.0,
+  "ch1DeesserAmount": 0.0,
+  "ch2Phase": 0,
+  "ch2Pad": 0,
+  "ch2Mute": 0,
+  "ch2Trim": 1.0,
+  "ch2Gate": 0,
+  "ch2PreampMode": 0,
+  "ch2CompAmount": 0.0,
+  "ch2CabSim": 0,
+  "gateThresholdDb": 0.0,
+  "dspMonitorOnly": 0,
+  "loopbackEnabled": 1,
+  "loopbackGain": 1.0,
+  "loopbackMono": 0,
+  "loopbackBroadcastMix": 0,
+  "loopbackMode": 0,
+  "masterDim": 0,
+  "masterMono": 0,
+  "masterMute": 0,
+  "masterTrim": 1.0,
+  "monSubCheck": 0,
+  "monPhoneSim": 0,
+  "monCrossfeed": 0
+ },
+ "fixed": {
+  "sample_rate": 48000,
+  "buffers": [
+   64,
+   128,
+   256
+  ],
+  "modes": [
+   "SharedFlex",
+   "ExclusivePro"
+  ]
+ },
+ "protocol": "docs/MEASUREMENT-PROTOCOL.md",
+ "analysis_code": "v0.0.0-baseline-13-gfb9e525-dirty",
+ "M8": {
+  "status": "nao executado"
+ },
+ "M2": {
+  "status": "nao executado"
+ },
+ "M5": {
+  "load": "12 processos em busy-loop (prioridade normal)",
+  "definition": "duracao do bloco = QPC na entrada de processOneAsioBlock ate o fim do estagio de saida; miss = duracao > bufferSize/fs. Contador xruns do UM2SharedState e incrementado por amostra faltante no FIFO de captura (nao por evento).",
+  "runs": [
+   {
+    "mode_requested": "ExclusivePro",
+    "mode_active": "unknown",
+    "buffer": 64,
+    "seconds": 60,
+    "ok": false,
+    "pdc_in": 256,
+    "pdc_out": 256,
+    "callbacks": 0,
+    "expected_callbacks": 45000,
+    "telemetry": null,
+    "shared_state_xruns_delta": 0,
+    "time_info": {
+     "count": 0,
+     "first_pos": -1,
+     "last_pos": -1,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 0.0
+    },
+    "driver_log": [
+     "[05:12:31.294] createBuffers: ExclusivePro recusado - buffer 64 (1.33 ms) abaixo do minimo exclusive do device (144 frames). Nao ha fallback para SharedFlex."
+    ],
+    "asio_input_ch1_noise": {
+     "rms_dbfs": NaN,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": NaN,
+      "psd_7k5_12k_db_hz": NaN,
+      "drop_db": NaN,
+      "valid": false,
+      "step_detected": false,
+      "reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"
+     }
+    }
+   },
+   {
+    "mode_requested": "ExclusivePro",
+    "mode_active": "unknown",
+    "buffer": 128,
+    "seconds": 60,
+    "ok": false,
+    "pdc_in": 256,
+    "pdc_out": 256,
+    "callbacks": 0,
+    "expected_callbacks": 22500,
+    "telemetry": null,
+    "shared_state_xruns_delta": 0,
+    "time_info": {
+     "count": 0,
+     "first_pos": -1,
+     "last_pos": -1,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 0.0
+    },
+    "driver_log": [
+     "[05:12:32.202] createBuffers: ExclusivePro recusado - buffer 128 (2.67 ms) abaixo do minimo exclusive do device (144 frames). Nao ha fallback para SharedFlex."
+    ],
+    "asio_input_ch1_noise": {
+     "rms_dbfs": NaN,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": NaN,
+      "psd_7k5_12k_db_hz": NaN,
+      "drop_db": NaN,
+      "valid": false,
+      "step_detected": false,
+      "reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"
+     }
+    }
+   },
+   {
+    "mode_requested": "ExclusivePro",
+    "mode_active": "ExclusivePro",
+    "buffer": 256,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 512,
+    "pdc_out": 512,
+    "callbacks": 6001,
+    "expected_callbacks": 11250,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 33772,
+     "buffer": 256,
+     "sample_rate": 48000,
+     "blocks": 5991,
+     "budget_us": 5333.3,
+     "block_us_p50": 35.0,
+     "block_us_p99": 40.0,
+     "block_us_max": 53.1,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 11057.3,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 5.4,
+     "recent_gap_us_p99": 10042.0
+    },
+    "shared_state_xruns_delta": 0,
+    "time_info": {
+     "count": 6001,
+     "first_pos": 0,
+     "last_pos": 1536000,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 4.8
+    },
+    "driver_log": [
+     "[05:12:32.947] Render Exclusive Initialize: 0x00000000",
+     "[05:12:32.947] Render Exclusive Real Buffer Size: 256 frames",
+     "[05:12:33.032] Capture Exclusive Initialize (Stereo): 0x00000000",
+     "[05:12:33.032] Capture Exclusive Real Buffer Size: 256 frames (channels=2)",
+     "[05:12:33.033] createBuffers completado: Mode=ExclusivePro, DAW=256 smp, Hardware=256 smp"
+    ],
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -70.0,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -113.7,
+      "psd_7k5_12k_db_hz": -113.4,
+      "drop_db": -0.3,
+      "valid": true,
+      "step_detected": false
+     }
+    }
+   }
+  ],
+  "_step_seconds": 63.0,
+  "_dsp_state": {
+   "isLicensed": 1,
+   "softwareMute": 0,
+   "driverMode": 0,
+   "bufferSize": 256,
+   "sampleRate": 48000,
+   "pdcOffsetSamples": 0,
+   "inputLatencySamples": 512,
+   "outputLatencySamples": 512,
+   "hardwareModel": 0,
+   "xruns": 68,
+   "ch1Phase": 0,
+   "ch1Hpf": 0,
+   "ch1Mute": 0,
+   "ch1Trim": 1.0,
+   "ch1Gate": 0,
+   "ch1PreampMode": 0,
+   "ch1CompAmount": 0.0,
+   "ch1DeesserAmount": 0.0,
+   "ch2Phase": 0,
+   "ch2Pad": 0,
+   "ch2Mute": 0,
+   "ch2Trim": 1.0,
+   "ch2Gate": 0,
+   "ch2PreampMode": 0,
+   "ch2CompAmount": 0.0,
+   "ch2CabSim": 0,
+   "gateThresholdDb": 0.0,
+   "dspMonitorOnly": 0,
+   "loopbackEnabled": 1,
+   "loopbackGain": 1.0,
+   "loopbackMono": 0,
+   "loopbackBroadcastMix": 0,
+   "loopbackMode": 0,
+   "masterDim": 0,
+   "masterMono": 0,
+   "masterMute": 0,
+   "masterTrim": 1.0,
+   "monSubCheck": 0,
+   "monPhoneSim": 0,
+   "monCrossfeed": 0
+  },
+  "_endpoint_capture_before": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_endpoint_capture_after": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_conditions": {
+   "gain_ch1": "~60% (usuario: 'metade pra cima, uns 60 por cento')",
+   "gain_ch2": "nao informado",
+   "output_knob": "nao informado",
+   "monitor_switch": "off",
+   "input_connection": "nada ligado nas duas entradas (sem terminador)",
+   "ch1_gate": "desligado no painel so para a medicao (estava ligado com limiar 0 dB); HPF ch1 tambem apareceu desligado",
+   "cpu_load": "nenhuma (maquina ociosa)",
+   "m6_note": "drift medido antes (00:07-01:07), UM2 sem nada ligado no render/captura, render em silencio digital"
+  },
+  "_measured_at": "2026-11-01T05:13:34"
+ },
+ "M7": {
+  "status": "nao executado"
+ },
+ "M1": {
+  "status": "nao executado"
+ },
+ "M3": {
+  "status": "nao executado"
+ },
+ "M6": {
+  "status": "nao executado"
+ },
+ "M4": {
+  "status": "nao executado",
+  "reason": null,
+  "see": "M3"
+ }
+}
