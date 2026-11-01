@@ -1,0 +1,557 @@
+{
+ "schema": 1,
+ "run_id": "2026-11-01-m5-com-instalado-carga",
+ "date": "2026-11-01T12:16:27",
+ "commit": "6428843",
+ "describe": "v0.0.0-baseline-26-g6428843-dirty",
+ "driver_dll": {
+  "path": "C:\\Program Files\\KaxWav\\Behringer UM2 ASIO\\BehringerUM2ASIODriver.dll",
+  "md5": "FD8A90A86FE86D52F4C3F385D3D86723",
+  "bytes": 174080,
+  "load": "com (InprocServer32)"
+ },
+ "machine": {
+  "os": "Windows-11-10.0.26300-SP0",
+  "cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"
+ },
+ "conditions": {
+  "cpu_load": "12-busy-loops",
+  "gain_ch1": "nao informado",
+  "gain_ch2": "nao informado",
+  "output_knob": "nao informado",
+  "monitor_switch": "nao informado"
+ },
+ "registry_before_run": {
+  "DriverMode": 0,
+  "BufferSize": 1024,
+  "DiagCounters": null
+ },
+ "dsp_state_shared_memory": {
+  "isLicensed": 1,
+  "softwareMute": 0,
+  "driverMode": 0,
+  "bufferSize": 256,
+  "sampleRate": 48000,
+  "pdcOffsetSamples": -256,
+  "inputLatencySamples": 256,
+  "outputLatencySamples": 512,
+  "hardwareModel": 0,
+  "xruns": 9,
+  "ch1Phase": 0,
+  "ch1Hpf": 0,
+  "ch1Mute": 0,
+  "ch1Trim": 0.084963,
+  "ch1Gate": 0,
+  "ch1PreampMode": 0,
+  "ch1CompAmount": 0.0,
+  "ch1DeesserAmount": 0.35,
+  "ch2Phase": 0,
+  "ch2Pad": 0,
+  "ch2Mute": 0,
+  "ch2Trim": 1.0,
+  "ch2Gate": 0,
+  "ch2PreampMode": 0,
+  "ch2CompAmount": 0.0,
+  "ch2CabSim": 0,
+  "gateThresholdDb": -54.299999,
+  "dspMonitorOnly": 0,
+  "loopbackEnabled": 0,
+  "loopbackGain": 1.0,
+  "loopbackMono": 0,
+  "loopbackBroadcastMix": 0,
+  "loopbackMode": 0,
+  "masterDim": 0,
+  "masterMono": 0,
+  "masterMute": 0,
+  "masterTrim": 2.34008,
+  "monSubCheck": 0,
+  "monPhoneSim": 0,
+  "monCrossfeed": 0
+ },
+ "fixed": {
+  "sample_rate": 48000,
+  "buffers": [
+   64,
+   128,
+   256
+  ],
+  "modes": [
+   "SharedFlex",
+   "ExclusivePro"
+  ]
+ },
+ "protocol": "docs/MEASUREMENT-PROTOCOL.md",
+ "analysis_code": "v0.0.0-baseline-26-g6428843-dirty",
+ "M8": {
+  "status": "nao executado"
+ },
+ "M2": {
+  "status": "nao executado"
+ },
+ "M5": {
+  "load": "12 processos em busy-loop (prioridade normal)",
+  "definition": "duracao do bloco = QPC na entrada de processOneAsioBlock ate o fim do estagio de saida; miss = duracao > bufferSize/fs. Contador xruns do UM2SharedState e incrementado por amostra faltante no FIFO de captura (nao por evento).",
+  "runs": [
+   {
+    "mode_requested": "SharedFlex",
+    "mode_active": "SharedFlex",
+    "buffer": 64,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 352,
+    "pdc_out": 608,
+    "callbacks": 44978,
+    "expected_callbacks": 45000,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 35204,
+     "buffer": 64,
+     "sample_rate": 48000,
+     "blocks": 44970,
+     "budget_us": 1333.3,
+     "block_us_p50": 10.0,
+     "block_us_p99": 20.0,
+     "block_us_max": 289.1,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 11144.7,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 1.6,
+     "recent_gap_us_p99": 10502.6
+    },
+    "shared_state_xruns_delta": 3,
+    "time_info": {
+     "count": 44978,
+     "first_pos": 0,
+     "last_pos": 2878528,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 5.7
+    },
+    "driver_log": [
+     "[12:16:27.935] IAudioClient3 InitializeSharedAudioStream: SUCESSO (targetPeriod=480 frames)",
+     "[12:16:27.936] Render Shared Buffer Total: 1056 frames",
+     "[12:16:28.105] Capture Shared Initialize: 0x00000000",
+     "[12:16:28.112] createBuffers completado: Mode=SharedFlex, DAW=64 smp, Hardware=64 smp"
+    ],
+    "load": "com",
+    "loaded_path": "C:\\Program Files\\KaxWav\\Behringer UM2 ASIO\\BehringerUM2ASIODriver.dll",
+    "driver_version": 300,
+    "punctuality": {
+     "callbacks_per_min": 44978.0,
+     "expected_per_min": 45000.0,
+     "ratio": 0.9995,
+     "max_gap_us": 11144.7,
+     "cadence_us": 10000.0,
+     "gap_limit_us": 20000.0,
+     "pass_ratio": true,
+     "pass_gap": true,
+     "pass": true
+    },
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -120.46,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -164.3,
+      "psd_7k5_12k_db_hz": -164.3,
+      "drop_db": -0.0,
+      "valid": false,
+      "step_detected": false,
+      "reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"
+     }
+    }
+   },
+   {
+    "mode_requested": "SharedFlex",
+    "mode_active": "SharedFlex",
+    "buffer": 144,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 512,
+    "pdc_out": 768,
+    "callbacks": 19990,
+    "expected_callbacks": 20000,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 37872,
+     "buffer": 144,
+     "sample_rate": 48000,
+     "blocks": 19877,
+     "budget_us": 3000.0,
+     "block_us_p50": 20.0,
+     "block_us_p99": 30.0,
+     "block_us_max": 206.3,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 11985.1,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 1.8,
+     "recent_gap_us_p99": 10536.5
+    },
+    "shared_state_xruns_delta": 3,
+    "time_info": {
+     "count": 19990,
+     "first_pos": 0,
+     "last_pos": 2878416,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 5.8
+    },
+    "driver_log": [
+     "[12:17:29.801] IAudioClient3 InitializeSharedAudioStream: SUCESSO (targetPeriod=480 frames)",
+     "[12:17:29.810] Render Shared Buffer Total: 1056 frames",
+     "[12:17:29.833] Capture Shared Initialize: 0x00000000",
+     "[12:17:29.836] createBuffers completado: Mode=SharedFlex, DAW=144 smp, Hardware=144 smp"
+    ],
+    "load": "com",
+    "loaded_path": "C:\\Program Files\\KaxWav\\Behringer UM2 ASIO\\BehringerUM2ASIODriver.dll",
+    "driver_version": 300,
+    "punctuality": {
+     "callbacks_per_min": 19990.0,
+     "expected_per_min": 20000.0,
+     "ratio": 0.9995,
+     "max_gap_us": 11985.1,
+     "cadence_us": 10000.0,
+     "gap_limit_us": 20000.0,
+     "pass_ratio": true,
+     "pass_gap": true,
+     "pass": true
+    },
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -120.51,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -164.4,
+      "psd_7k5_12k_db_hz": -164.4,
+      "drop_db": 0.0,
+      "valid": false,
+      "step_detected": false,
+      "reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"
+     }
+    }
+   },
+   {
+    "mode_requested": "SharedFlex",
+    "mode_active": "SharedFlex",
+    "buffer": 256,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 736,
+    "pdc_out": 992,
+    "callbacks": 11247,
+    "expected_callbacks": 11250,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 3692,
+     "buffer": 256,
+     "sample_rate": 48000,
+     "blocks": 11243,
+     "budget_us": 5333.3,
+     "block_us_p50": 35.0,
+     "block_us_p99": 40.0,
+     "block_us_max": 208.9,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 11713.1,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 6.0,
+     "recent_gap_us_p99": 10559.7
+    },
+    "shared_state_xruns_delta": 3,
+    "time_info": {
+     "count": 11247,
+     "first_pos": 0,
+     "last_pos": 2878976,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 1.0
+    },
+    "driver_log": [
+     "[12:18:30.506] IAudioClient3 InitializeSharedAudioStream: SUCESSO (targetPeriod=480 frames)",
+     "[12:18:30.510] Render Shared Buffer Total: 1056 frames",
+     "[12:18:30.535] Capture Shared Initialize: 0x00000000",
+     "[12:18:30.535] createBuffers completado: Mode=SharedFlex, DAW=256 smp, Hardware=256 smp"
+    ],
+    "load": "com",
+    "loaded_path": "C:\\Program Files\\KaxWav\\Behringer UM2 ASIO\\BehringerUM2ASIODriver.dll",
+    "driver_version": 300,
+    "punctuality": {
+     "callbacks_per_min": 11247.0,
+     "expected_per_min": 11250.0,
+     "ratio": 0.9997,
+     "max_gap_us": 11713.1,
+     "cadence_us": 10000.0,
+     "gap_limit_us": 20000.0,
+     "pass_ratio": true,
+     "pass_gap": true,
+     "pass": true
+    },
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -120.52,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -164.4,
+      "psd_7k5_12k_db_hz": -164.3,
+      "drop_db": -0.0,
+      "valid": false,
+      "step_detected": false,
+      "reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"
+     }
+    }
+   },
+   {
+    "mode_requested": "ExclusivePro",
+    "mode_active": "unknown",
+    "buffer": 64,
+    "seconds": 60,
+    "ok": false,
+    "pdc_in": 32,
+    "pdc_out": 256,
+    "callbacks": 0,
+    "expected_callbacks": 45000,
+    "telemetry": null,
+    "shared_state_xruns_delta": 0,
+    "time_info": {
+     "count": 0,
+     "first_pos": -1,
+     "last_pos": -1,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 0.0
+    },
+    "driver_log": [
+     "[12:19:31.475] createBuffers: ExclusivePro recusado - buffer 64 (1.33 ms) abaixo do minimo exclusive do device (144 frames). Nao ha fallback para SharedFlex."
+    ],
+    "load": "com",
+    "loaded_path": "C:\\Program Files\\KaxWav\\Behringer UM2 ASIO\\BehringerUM2ASIODriver.dll",
+    "driver_version": 300,
+    "punctuality": null,
+    "asio_input_ch1_noise": {
+     "rms_dbfs": NaN,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": NaN,
+      "psd_7k5_12k_db_hz": NaN,
+      "drop_db": NaN,
+      "valid": false,
+      "step_detected": false,
+      "reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"
+     }
+    }
+   },
+   {
+    "mode_requested": "ExclusivePro",
+    "mode_active": "ExclusivePro",
+    "buffer": 144,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 32,
+    "pdc_out": 288,
+    "callbacks": 7501,
+    "expected_callbacks": 20000,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 35936,
+     "buffer": 144,
+     "sample_rate": 48000,
+     "blocks": 7493,
+     "budget_us": 3000.0,
+     "block_us_p50": 25.0,
+     "block_us_p99": 30.0,
+     "block_us_max": 32.6,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 8390.2,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 2.2,
+     "recent_gap_us_p99": 8081.3
+    },
+    "shared_state_xruns_delta": 0,
+    "time_info": {
+     "count": 7501,
+     "first_pos": 0,
+     "last_pos": 1080000,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 6.4
+    },
+    "driver_log": [
+     "[12:19:32.252] Render Exclusive Initialize: 0x00000000",
+     "[12:19:32.252] Render Exclusive Real Buffer Size: 144 frames",
+     "[12:19:32.317] Capture Exclusive Initialize (Stereo): 0x00000000",
+     "[12:19:32.318] Capture Exclusive Real Buffer Size: 144 frames (channels=2)",
+     "[12:19:32.318] createBuffers completado: Mode=ExclusivePro, DAW=144 smp, Hardware=144 smp"
+    ],
+    "load": "com",
+    "loaded_path": "C:\\Program Files\\KaxWav\\Behringer UM2 ASIO\\BehringerUM2ASIODriver.dll",
+    "driver_version": 300,
+    "punctuality": {
+     "callbacks_per_min": 7501.0,
+     "expected_per_min": 20000.0,
+     "ratio": 0.375,
+     "max_gap_us": 8390.2,
+     "cadence_us": 3000.0,
+     "gap_limit_us": 6000.0,
+     "pass_ratio": false,
+     "pass_gap": false,
+     "pass": false
+    },
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -117.6,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -161.4,
+      "psd_7k5_12k_db_hz": -161.4,
+      "drop_db": -0.0,
+      "valid": false,
+      "step_detected": false,
+      "reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"
+     }
+    }
+   },
+   {
+    "mode_requested": "ExclusivePro",
+    "mode_active": "ExclusivePro",
+    "buffer": 256,
+    "seconds": 60,
+    "ok": true,
+    "pdc_in": 256,
+    "pdc_out": 512,
+    "callbacks": 6002,
+    "expected_callbacks": 11250,
+    "telemetry": {
+     "session": 1,
+     "owner_pid": 37580,
+     "buffer": 256,
+     "sample_rate": 48000,
+     "blocks": 6002,
+     "budget_us": 5333.3,
+     "block_us_p50": 40.0,
+     "block_us_p99": 45.0,
+     "block_us_max": 61.8,
+     "deadline_misses": 0,
+     "miss_rate": 0.0,
+     "max_gap_between_blocks_us": 10390.0,
+     "hist_bin_us": 5.0,
+     "overflow_bin_count": 0,
+     "recent_window_blocks": 4096,
+     "recent_daw_callback_us_max": 19.9,
+     "recent_gap_us_p99": 10095.1
+    },
+    "shared_state_xruns_delta": 0,
+    "time_info": {
+     "count": 6002,
+     "first_pos": 0,
+     "last_pos": 1536256,
+     "non_monotonic": 0,
+     "max_abs_systemtime_minus_qpc_us": 5.6
+    },
+    "driver_log": [
+     "[12:20:33.110] Render Exclusive Initialize: 0x00000000",
+     "[12:20:33.110] Render Exclusive Real Buffer Size: 256 frames",
+     "[12:20:33.145] Capture Exclusive Initialize (Stereo): 0x00000000",
+     "[12:20:33.145] Capture Exclusive Real Buffer Size: 256 frames (channels=2)",
+     "[12:20:33.146] createBuffers completado: Mode=ExclusivePro, DAW=256 smp, Hardware=256 smp"
+    ],
+    "load": "com",
+    "loaded_path": "C:\\Program Files\\KaxWav\\Behringer UM2 ASIO\\BehringerUM2ASIODriver.dll",
+    "driver_version": 300,
+    "punctuality": {
+     "callbacks_per_min": 6002.0,
+     "expected_per_min": 11250.0,
+     "ratio": 0.5335,
+     "max_gap_us": 10390.0,
+     "cadence_us": 5333.3,
+     "gap_limit_us": 10666.7,
+     "pass_ratio": false,
+     "pass_gap": true,
+     "pass": false
+    },
+    "asio_input_ch1_noise": {
+     "rms_dbfs": -114.79,
+     "step_7k": {
+      "psd_4k_6k5_db_hz": -158.5,
+      "psd_7k5_12k_db_hz": -158.5,
+      "drop_db": 0.0,
+      "valid": true,
+      "step_detected": false
+     }
+    }
+   }
+  ],
+  "_step_seconds": 306.1,
+  "_dsp_state": {
+   "isLicensed": 1,
+   "softwareMute": 0,
+   "driverMode": 0,
+   "bufferSize": 256,
+   "sampleRate": 48000,
+   "pdcOffsetSamples": -256,
+   "inputLatencySamples": 256,
+   "outputLatencySamples": 512,
+   "hardwareModel": 0,
+   "xruns": 18,
+   "ch1Phase": 0,
+   "ch1Hpf": 0,
+   "ch1Mute": 0,
+   "ch1Trim": 0.084963,
+   "ch1Gate": 0,
+   "ch1PreampMode": 0,
+   "ch1CompAmount": 0.0,
+   "ch1DeesserAmount": 0.35,
+   "ch2Phase": 0,
+   "ch2Pad": 0,
+   "ch2Mute": 0,
+   "ch2Trim": 1.0,
+   "ch2Gate": 0,
+   "ch2PreampMode": 0,
+   "ch2CompAmount": 0.0,
+   "ch2CabSim": 0,
+   "gateThresholdDb": -54.299999,
+   "dspMonitorOnly": 0,
+   "loopbackEnabled": 0,
+   "loopbackGain": 1.0,
+   "loopbackMono": 0,
+   "loopbackBroadcastMix": 0,
+   "loopbackMode": 0,
+   "masterDim": 0,
+   "masterMono": 0,
+   "masterMute": 0,
+   "masterTrim": 2.34008,
+   "monSubCheck": 0,
+   "monPhoneSim": 0,
+   "monCrossfeed": 0
+  },
+  "_endpoint_capture_before": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_endpoint_capture_after": {
+   "db": 0.0,
+   "scalar": 0.54
+  },
+  "_conditions": {
+   "cpu_load": "12-busy-loops",
+   "gain_ch1": "nao informado",
+   "gain_ch2": "nao informado",
+   "output_knob": "nao informado",
+   "monitor_switch": "nao informado"
+  },
+  "_measured_at": "2026-11-01T12:21:33"
+ },
+ "M7": {
+  "status": "nao executado"
+ },
+ "M1": {
+  "status": "nao executado"
+ },
+ "M3": {
+  "status": "nao executado"
+ },
+ "M6": {
+  "status": "nao executado"
+ },
+ "M4": {
+  "status": "nao executado",
+  "reason": null,
+  "see": "M3"
+ }
+}

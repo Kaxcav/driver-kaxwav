@@ -78,3 +78,5 @@ panel/*.dll
 # --- Logs e medições brutas do projeto antigo ---
 driver_um2.log
 tools/measurements/*.wav
+
+build-*/

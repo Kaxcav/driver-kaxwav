@@ -1,0 +1,2400 @@
+{
+ "run_id": "2026-11-01-diag-ep",
+ "date": "2026-11-01T11:42:27",
+ "commit": "29671d3",
+ "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\C_diag_BehringerUM2ASIODriver.dll",
+ "dll_md5": "7543291C8ED408DBE6F5B03873172A7B",
+ "note": "diagnostico (DiagCounters=1); nao e baseline de desempenho",
+ "runs": [
+  {
+   "case": "idle:256",
+   "load": "ociosa",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "pdc_in": 256,
+   "pdc_out": 512,
+   "callbacks": 11251,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 36792,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 11225,
+    "budget_us": 5333.3,
+    "block_us_p50": 25.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 242.0,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 7780.8,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 35.8,
+    "recent_gap_us_p99": 6021.6
+   },
+   "diag": {
+    "ownerPid": 36792,
+    "audioThreadId": 700,
+    "mode": 0,
+    "bufferSize": 256,
+    "renderPeriodFrames": 256,
+    "capturePeriodFrames": 256,
+    "wakes": 22451,
+    "waitTimeouts": 0,
+    "wakeRenderOnly": 11225,
+    "wakeCaptureOnly": 11226,
+    "wakeBoth": 0,
+    "renderServiced": 11225,
+    "captureServiced": 11226,
+    "capPacketsMain": 11226,
+    "capPacketsOpportunistic": 0,
+    "capEmptyOnEvent": 0,
+    "capGetBufferFail": 0,
+    "capFramesIn": 2873856,
+    "capDropFrames": 0,
+    "capUnderflowFrames": 0,
+    "capUnderflowBlocks": 0,
+    "capDiscontinuity": 0,
+    "capSilentFlag": 0,
+    "renWrites": 11225,
+    "renGetBufferFail": 0,
+    "renSkipNoData": 0,
+    "renPaddingFail": 0,
+    "bufferSwitches": 11225,
+    "lastCapHr": "0x00000000",
+    "lastRenHr": "0x00000000",
+    "max_wake_interval_us": 5118.3,
+    "max_render_interval_us": 7780.8,
+    "max_capture_packet_age_us": 0.0,
+    "blocks_per_wake_hist": [
+     11226,
+     11225,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cap_pending_hist_quarter_periods": {
+     "4": 11226
+    },
+    "ren_padding_hist_quarter_periods": {
+     "4": 11225
+    },
+    "wakeIntervalHist": {
+     "bin_us": 250,
+     "p50_us": 3000,
+     "p99_us": 5250,
+     "nonzero": {
+      "0": 2122,
+      "250": 4,
+      "500": 121,
+      "750": 1494,
+      "1000": 2239,
+      "1250": 5,
+      "1500": 5,
+      "1750": 2242,
+      "2000": 2242,
+      "2250": 3,
+      "2500": 4,
+      "2750": 2241,
+      "3000": 2239,
+      "3250": 8,
+      "3500": 4,
+      "3750": 2239,
+      "4000": 1495,
+      "4250": 80,
+      "4500": 45,
+      "4750": 2647,
+      "5000": 971
+     }
+    },
+    "renderIntervalHist": {
+     "bin_us": 250,
+     "p50_us": 5250,
+     "p99_us": 6250,
+     "nonzero": {
+      "4750": 3652,
+      "5000": 3830,
+      "5750": 1800,
+      "6000": 1941,
+      "7750": 1
+     }
+    },
+    "capAgeHist": {
+     "bin_us": 250,
+     "p50_us": 250,
+     "p99_us": 250,
+     "nonzero": {
+      "0": 11226
+     }
+    },
+    "recent_wakes": 4096,
+    "recent_tail": [
+     {
+      "t_us": 10794969.8,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10795096.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10800095.9,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10800970.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10805098.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10805966.3,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10810969.6,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10815107.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10816967.9,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10820099.2,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10821964.1,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10825106.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10826965.9,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10830103.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10832971.2,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10835096.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10837967.1,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10840104.9,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10842973.3,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10845104.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10848969.6,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10850101.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10853963.0,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10855099.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10858974.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10860103.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10864984.7,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10865107.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10869987.2,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10870099.2,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10874981.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10875107.4,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10880113.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10880973.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10885112.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10885975.6,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10890981.7,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10895107.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10896979.6,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10900109.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10901977.8,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10905102.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10906978.9,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10910109.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10912972.8,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10915110.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 10917977.3,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 256,
+      "blocks": 1
+     },
+     {
+      "t_us": 10920101.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     }
+    ]
+   },
+   "driver_log": [
+    "[11:38:09.835] Render Exclusive Initialize: 0x00000000",
+    "[11:38:09.836] Render Exclusive Real Buffer Size: 256 frames",
+    "[11:38:09.882] Capture Exclusive Initialize (Stereo): 0x00000000",
+    "[11:38:09.883] Capture Exclusive Real Buffer Size: 256 frames (channels=2)",
+    "[11:38:09.884] createBuffers completado: Mode=ExclusivePro, DAW=256 smp, Hardware=256 smp"
+   ],
+   "punctuality": {
+    "callbacks_per_min": 11251.0,
+    "expected_per_min": 11250.0,
+    "ratio": 1.0001,
+    "max_gap_us": 7780.8,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  },
+  {
+   "case": "load:256",
+   "load": "12 busy-loops",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "pdc_in": 256,
+   "pdc_out": 512,
+   "callbacks": 5997,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 704,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5997,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 46.5,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 10062.5,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 6.9,
+    "recent_gap_us_p99": 10003.3
+   },
+   "diag": {
+    "ownerPid": 704,
+    "audioThreadId": 35068,
+    "mode": 0,
+    "bufferSize": 256,
+    "renderPeriodFrames": 256,
+    "capturePeriodFrames": 256,
+    "wakes": 17243,
+    "waitTimeouts": 0,
+    "wakeRenderOnly": 5996,
+    "wakeCaptureOnly": 11245,
+    "wakeBoth": 2,
+    "renderServiced": 5998,
+    "captureServiced": 11247,
+    "capPacketsMain": 11247,
+    "capPacketsOpportunistic": 0,
+    "capEmptyOnEvent": 0,
+    "capGetBufferFail": 0,
+    "capFramesIn": 2879232,
+    "capDropFrames": 1328129,
+    "capUnderflowFrames": 0,
+    "capUnderflowBlocks": 0,
+    "capDiscontinuity": 2,
+    "capSilentFlag": 0,
+    "renWrites": 5997,
+    "renGetBufferFail": 0,
+    "renSkipNoData": 1,
+    "renPaddingFail": 0,
+    "bufferSwitches": 5997,
+    "lastCapHr": "0x00000000",
+    "lastRenHr": "0x00000000",
+    "max_wake_interval_us": 7959.7,
+    "max_render_interval_us": 10581.8,
+    "max_capture_packet_age_us": 0.0,
+    "blocks_per_wake_hist": [
+     11246,
+     5997,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cap_pending_hist_quarter_periods": {
+     "4": 11247
+    },
+    "ren_padding_hist_quarter_periods": {
+     "0": 5997,
+     "4": 1
+    },
+    "wakeIntervalHist": {
+     "bin_us": 250,
+     "p50_us": 3000,
+     "p99_us": 8000,
+     "nonzero": {
+      "1000": 1,
+      "1250": 2,
+      "1750": 3,
+      "2000": 5991,
+      "2250": 2,
+      "2500": 5,
+      "2750": 5238,
+      "3000": 3,
+      "4500": 2,
+      "4750": 2346,
+      "5000": 2898,
+      "5250": 1,
+      "6500": 1,
+      "7750": 749
+     }
+    },
+    "renderIntervalHist": {
+     "bin_us": 250,
+     "p50_us": 10000,
+     "p99_us": 10250,
+     "nonzero": {
+      "6750": 1,
+      "9500": 1,
+      "9750": 3010,
+      "10000": 2983,
+      "10250": 1,
+      "10500": 1
+     }
+    },
+    "capAgeHist": {
+     "bin_us": 250,
+     "p50_us": 250,
+     "p99_us": 250,
+     "nonzero": {
+      "0": 11247
+     }
+    },
+    "recent_wakes": 4096,
+    "recent_tail": [
+     {
+      "t_us": 14080138.3,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14085139.4,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14088010.1,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14090139.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14095133.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14098000.1,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14100136.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14108001.1,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14110136.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14115133.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14118009.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14120135.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14125137.3,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14128000.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14130140.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14135135.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14138011.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14140137.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14145140.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14148009.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14150140.4,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14155134.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14158006.6,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14160138.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14165135.4,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14168005.0,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14170139.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14175137.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14178003.0,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14180146.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14188013.3,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14190154.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14195139.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14198005.8,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14200140.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14205132.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14208004.8,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14210168.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14215133.3,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14218010.3,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14220137.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14225144.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14228003.7,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14230189.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14235133.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14238009.2,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 14240135.9,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 14244808.6,
+      "flags": [
+       "render",
+       "capture"
+      ],
+      "cap_pending": 256,
+      "ren_padding": 256,
+      "blocks": 0
+     }
+    ]
+   },
+   "driver_log": [
+    "[11:39:16.053] Render Exclusive Initialize: 0x00000000",
+    "[11:39:16.053] Render Exclusive Real Buffer Size: 256 frames",
+    "[11:39:16.183] Capture Exclusive Initialize (Stereo): 0x00000000",
+    "[11:39:16.184] Capture Exclusive Real Buffer Size: 256 frames (channels=2)",
+    "[11:39:16.184] createBuffers completado: Mode=ExclusivePro, DAW=256 smp, Hardware=256 smp"
+   ],
+   "punctuality": {
+    "callbacks_per_min": 5997.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.5331,
+    "max_gap_us": 10062.5,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": false,
+    "pass_gap": true,
+    "pass": false
+   }
+  },
+  {
+   "case": "idle:144",
+   "load": "ociosa",
+   "buffer": 144,
+   "seconds": 60,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "pdc_in": 32,
+   "pdc_out": 288,
+   "callbacks": 20003,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 11956,
+    "buffer": 144,
+    "sample_rate": 48000,
+    "blocks": 19965,
+    "budget_us": 3000.0,
+    "block_us_p50": 15.0,
+    "block_us_p99": 30.0,
+    "block_us_max": 98.5,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 5453.3,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 2.7,
+    "recent_gap_us_p99": 3085.7
+   },
+   "diag": {
+    "ownerPid": 11956,
+    "audioThreadId": 33812,
+    "mode": 0,
+    "bufferSize": 144,
+    "renderPeriodFrames": 144,
+    "capturePeriodFrames": 144,
+    "wakes": 39923,
+    "waitTimeouts": 0,
+    "wakeRenderOnly": 19956,
+    "wakeCaptureOnly": 19958,
+    "wakeBoth": 9,
+    "renderServiced": 19965,
+    "captureServiced": 19967,
+    "capPacketsMain": 19967,
+    "capPacketsOpportunistic": 0,
+    "capEmptyOnEvent": 0,
+    "capGetBufferFail": 0,
+    "capFramesIn": 2875248,
+    "capDropFrames": 0,
+    "capUnderflowFrames": 0,
+    "capUnderflowBlocks": 0,
+    "capDiscontinuity": 1,
+    "capSilentFlag": 0,
+    "renWrites": 19965,
+    "renGetBufferFail": 0,
+    "renSkipNoData": 0,
+    "renPaddingFail": 0,
+    "bufferSwitches": 19965,
+    "lastCapHr": "0x00000000",
+    "lastRenHr": "0x00000000",
+    "max_wake_interval_us": 5322.4,
+    "max_render_interval_us": 5451.2,
+    "max_capture_packet_age_us": 0.0,
+    "blocks_per_wake_hist": [
+     19958,
+     19965,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cap_pending_hist_quarter_periods": {
+     "4": 19967
+    },
+    "ren_padding_hist_quarter_periods": {
+     "4": 19965
+    },
+    "wakeIntervalHist": {
+     "bin_us": 250,
+     "p50_us": 2500,
+     "p99_us": 3000,
+     "nonzero": {
+      "0": 19303,
+      "250": 69,
+      "500": 585,
+      "1000": 1,
+      "1250": 1,
+      "2250": 585,
+      "2500": 63,
+      "2750": 19276,
+      "3000": 38,
+      "5250": 1
+     }
+    },
+    "renderIntervalHist": {
+     "bin_us": 250,
+     "p50_us": 3000,
+     "p99_us": 3250,
+     "nonzero": {
+      "500": 1,
+      "2500": 1,
+      "2750": 10005,
+      "3000": 9954,
+      "3250": 1,
+      "5250": 2
+     }
+    },
+    "capAgeHist": {
+     "bin_us": 250,
+     "p50_us": 250,
+     "p99_us": 250,
+     "nonzero": {
+      "0": 19967
+     }
+    },
+    "recent_wakes": 4096,
+    "recent_tail": [
+     {
+      "t_us": 6072066.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6072187.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6075061.2,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6075285.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6078053.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6078195.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6081054.2,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6081176.9,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6084064.9,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6084190.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6087051.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6087187.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6090051.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6090187.4,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6093059.9,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6093187.9,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6096055.3,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6096185.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6099057.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6099192.9,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6102062.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6102238.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6105054.0,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6105186.3,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6108055.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6108183.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6111054.7,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6111211.2,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6114068.6,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6114189.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6117068.6,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6117191.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6120054.1,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6120186.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6123052.8,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6123180.2,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6126059.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6126189.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6129059.6,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6129183.2,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6132058.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6132187.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6135062.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6135182.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6138058.0,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6138188.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 6141072.1,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 144,
+      "blocks": 1
+     },
+     {
+      "t_us": 6141186.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     }
+    ]
+   },
+   "driver_log": [
+    "[11:40:19.148] Render Exclusive Initialize: 0x00000000",
+    "[11:40:19.148] Render Exclusive Real Buffer Size: 144 frames",
+    "[11:40:19.187] Capture Exclusive Initialize (Stereo): 0x00000000",
+    "[11:40:19.187] Capture Exclusive Real Buffer Size: 144 frames (channels=2)",
+    "[11:40:19.188] createBuffers completado: Mode=ExclusivePro, DAW=144 smp, Hardware=144 smp"
+   ],
+   "punctuality": {
+    "callbacks_per_min": 20003.0,
+    "expected_per_min": 20000.0,
+    "ratio": 1.0002,
+    "max_gap_us": 5453.3,
+    "cadence_us": 3000.0,
+    "gap_limit_us": 6000.0,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  },
+  {
+   "case": "load:144",
+   "load": "12 busy-loops",
+   "buffer": 144,
+   "seconds": 60,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "pdc_in": 32,
+   "pdc_out": 288,
+   "callbacks": 7496,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 32592,
+    "buffer": 144,
+    "sample_rate": 48000,
+    "blocks": 7450,
+    "budget_us": 3000.0,
+    "block_us_p50": 25.0,
+    "block_us_p99": 30.0,
+    "block_us_max": 47.5,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 8089.2,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 5.1,
+    "recent_gap_us_p99": 8003.3
+   },
+   "diag": {
+    "ownerPid": 32592,
+    "audioThreadId": 31816,
+    "mode": 0,
+    "bufferSize": 144,
+    "renderPeriodFrames": 144,
+    "capturePeriodFrames": 144,
+    "wakes": 27315,
+    "waitTimeouts": 0,
+    "wakeRenderOnly": 7447,
+    "wakeCaptureOnly": 19865,
+    "wakeBoth": 3,
+    "renderServiced": 7450,
+    "captureServiced": 19868,
+    "capPacketsMain": 19868,
+    "capPacketsOpportunistic": 0,
+    "capEmptyOnEvent": 0,
+    "capGetBufferFail": 0,
+    "capFramesIn": 2860992,
+    "capDropFrames": 1772097,
+    "capUnderflowFrames": 0,
+    "capUnderflowBlocks": 0,
+    "capDiscontinuity": 5,
+    "capSilentFlag": 0,
+    "renWrites": 7450,
+    "renGetBufferFail": 0,
+    "renSkipNoData": 0,
+    "renPaddingFail": 0,
+    "bufferSwitches": 7450,
+    "lastCapHr": "0x00000000",
+    "lastRenHr": "0x00000000",
+    "max_wake_interval_us": 8138.1,
+    "max_render_interval_us": 8569.5,
+    "max_capture_packet_age_us": 0.0,
+    "blocks_per_wake_hist": [
+     19865,
+     7450,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cap_pending_hist_quarter_periods": {
+     "4": 19868
+    },
+    "ren_padding_hist_quarter_periods": {
+     "0": 7450
+    },
+    "wakeIntervalHist": {
+     "bin_us": 250,
+     "p50_us": 2500,
+     "p99_us": 3250,
+     "nonzero": {
+      "0": 4,
+      "250": 6,
+      "500": 2487,
+      "750": 2478,
+      "1000": 2469,
+      "1250": 13,
+      "1500": 10,
+      "1750": 2470,
+      "2000": 2470,
+      "2250": 1335,
+      "2500": 1170,
+      "2750": 7891,
+      "3000": 4502,
+      "3250": 2,
+      "3750": 1,
+      "4000": 1,
+      "4250": 1,
+      "4500": 1,
+      "5500": 1,
+      "8000": 2
+     }
+    },
+    "renderIntervalHist": {
+     "bin_us": 250,
+     "p50_us": 8250,
+     "p99_us": 8250,
+     "nonzero": {
+      "7500": 2,
+      "7750": 3500,
+      "8000": 3944,
+      "8250": 2,
+      "8500": 1
+     }
+    },
+    "capAgeHist": {
+     "bin_us": 250,
+     "p50_us": 250,
+     "p99_us": 250,
+     "nonzero": {
+      "0": 19868
+     }
+    },
+    "recent_wakes": 4096,
+    "recent_tail": [
+     {
+      "t_us": 8832085.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8833950.8,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8835089.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8838087.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8841112.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8841951.1,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8844082.9,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8847087.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8849951.2,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8850586.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8853087.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8856081.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8857951.7,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8859084.2,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8862085.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8865079.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8865953.2,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8868085.3,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8871086.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8873952.0,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8874587.2,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8877084.3,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8880081.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8881954.1,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8883082.9,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8886083.4,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8889092.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8889948.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8892083.5,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8895081.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8897956.0,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8898586.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8901098.6,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8904085.4,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8905954.4,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8907086.3,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8910085.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8913166.7,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8913957.0,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8916085.4,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8919083.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8922031.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8922587.8,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8925086.0,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8928084.1,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8929950.5,
+      "flags": [
+       "render",
+       "ren_write"
+      ],
+      "cap_pending": 0,
+      "ren_padding": 0,
+      "blocks": 1
+     },
+     {
+      "t_us": 8931084.3,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     },
+     {
+      "t_us": 8934087.4,
+      "flags": [
+       "capture"
+      ],
+      "cap_pending": 144,
+      "ren_padding": 0,
+      "blocks": 0
+     }
+    ]
+   },
+   "driver_log": [
+    "[11:41:25.016] Render Exclusive Initialize: 0x00000000",
+    "[11:41:25.017] Render Exclusive Real Buffer Size: 144 frames",
+    "[11:41:25.105] Capture Exclusive Initialize (Stereo): 0x00000000",
+    "[11:41:25.106] Capture Exclusive Real Buffer Size: 144 frames (channels=2)",
+    "[11:41:25.107] createBuffers completado: Mode=ExclusivePro, DAW=144 smp, Hardware=144 smp"
+   ],
+   "punctuality": {
+    "callbacks_per_min": 7496.0,
+    "expected_per_min": 20000.0,
+    "ratio": 0.3748,
+    "max_gap_us": 8089.2,
+    "cadence_us": 3000.0,
+    "gap_limit_us": 6000.0,
+    "pass_ratio": false,
+    "pass_gap": false,
+    "pass": false
+   }
+  }
+ ]
+}

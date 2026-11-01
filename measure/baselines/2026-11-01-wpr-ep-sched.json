@@ -1,0 +1,36 @@
+{
+ "tid": 3656,
+ "kernel_records_seen": 4367124,
+ "readies": 22875,
+ "switch_ins": 22939,
+ "span_s": 60.003049,
+ "ready_to_run_us": {
+  "n": 22875,
+  "p50": 3.7,
+  "p99": 6.6000000000000005,
+  "p999": 27.8,
+  "max": 27493.600000000002
+ },
+ "gap_between_switch_ins_us": {
+  "p50": 2808.0,
+  "p99": 7133.8,
+  "max": 7271.700000000001
+ },
+ "gap_between_readies_us": {
+  "p50": 2808.1000000000004,
+  "p99": 7133.700000000001,
+  "max": 27545.100000000002
+ },
+ "ready_to_run_over_1ms": 2,
+ "priority_at_switch_in": {
+  "15": 22935,
+  "8": 4
+ },
+ "switch_out_wait_reason": {
+  "UserRequest": 22873,
+  "31": 61,
+  "32": 3,
+  "Executive": 1,
+  "22": 1
+ }
+}

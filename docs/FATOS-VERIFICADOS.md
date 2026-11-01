@@ -44,12 +44,32 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
 - **Consequência para a bridge:** a UM2 inteira está ~11 ppm abaixo do QPC. Qualquer consumidor em
   outro domínio de clock (cabo virtual, Discord) continua precisando de **ASRC contínuo com
   controlador PI**, dimensionado para ~11 ppm de offset com faixa de **±50 ppm**.
-- **ExclusivePro sob carga — causa em aberto, NÃO VERIFICADA:** ~6.000 callbacks/min = 100/s, um a
-  cada ~10 ms, com ou sem TIME_CRITICAL. Hipótese inicial (o MMCSS rebaixando a thread na janela de 20%
-  de `SystemResponsiveness`, com o TIME_CRITICAL como piso) **não se sustenta**: o piso não mudou nada
-  no A/B. Outras candidatas: a cadência dos eventos do `usbaudio.sys` sob carga, a espera de 20 ms do
-  loop exclusive ou o estado do sistema (a única corrida boa sob carga foi às 05h e não se repetiu).
-  Confirmar exige trace (ETW/WPR, perfil `Audio`). Registro do sistema não alterado.
+- **ExclusivePro sob carga — diagnóstico de 01/11 (contadores do loop + WPR), causa raiz ainda
+  NÃO VERIFICADA.** Fatos medidos (`measure/baselines/2026-11-01-diag-ep.json`, `2026-11-01-wpr-ep*.json`,
+  `2026-11-01-wpr-ep*-sched.json`, `2026-11-01-wpr-ep*-etw-summary.txt`, 12 busy-loops; driver com os
+  contadores do branch `diag/ep-cadence`):
+  - Os eventos de **captura** chegam no ritmo do período sob carga (11.247/min @256, 19.868/min @144).
+    Os de **render** caem para um a cada **10,0 ms** @256 (5.998/min) e **8,0 ms** @144 (7.450/min).
+    Os dois eventos são atendidos pela mesma thread, no mesmo `WaitForMultipleObjects`.
+  - A thread acorda na hora: do *ready* ao *run* (CSwitch/ReadyThread) dá p50 3,7 µs, p99 6,6 µs sob
+    carga, contra 4,9/9,8 µs ociosa. Prioridade na troca de contexto = 15 nas duas, que é o valor
+    do `THREAD_PRIORITY_TIME_CRITICAL` numa classe normal. **A conferir:** o piso pode estar
+    *substituindo* o boost do MMCSS em vez de somar a ele. Falta um trace sem o piso para comparar.
+  - No render sob carga, o padding na hora do evento é **0** (o device já consumiu tudo). Ociosa, ainda
+    há 1 buffer na fila. O loop só despacha o `bufferSwitch` no evento de render, então o relógio ASIO
+    cai para 53%/37% e o FIFO de captura descarta 1,33 M/1,77 M amostras por minuto. Não houve
+    underflow de captura e só 2/5 descontinuidades vieram do device.
+  - ETW (`Microsoft-Windows-Audio`, emitidos no processo do host e na thread de áudio): sob carga, em
+    60 s, KS Endpoint Glitch **STREN Device Starved 12.000**, **IOMGR No Outstanding Packets 11.626**,
+    BASE Input Buffer Index Mismatch 11.250 e STCAP Device Starved 5.625. **Ociosa: 0** desses
+    (só 1 "STREN EXCL PULL Invalid Buffer Count" no início).
+  - Hipótese (**NÃO VERIFICADA**): sob carga, a notificação de render do caminho exclusive por pacotes
+    (KS/IOMGR do AudioSes sobre o `usbaudio.sys` UAC1) chega atrasada ou agrupada. Como o loop dá
+    exatamente um pacote de render por evento e amarra o ASIO a esse evento, ele nunca recupera. O
+    porquê do lado do render (o que atrasa a conclusão dos pacotes) ainda não está provado: falta
+    olhar DPC/ISR e as conclusões de IRP no mesmo trace.
+  - A hipótese anterior (throttle do MMCSS via `SystemResponsiveness` = 20) foi descartada. Registro do
+    sistema não alterado.
 - **Consequência para o caminho da DAW:** com diferencial de 0,002 ppm, o FIFO de captura não
   precisa de ASRC nem de sample-slip por drift nesta máquina.
 - **C2 → o chip contribui 0,66 ms.** O dossiê v2 (1,2 ms por estágio) estava errado. O resto

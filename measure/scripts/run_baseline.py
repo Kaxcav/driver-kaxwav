@@ -230,8 +230,9 @@ def punctuality(r, j):
     expected = secs * 48000 / buf
     tel = r.get("telemetry") or {}
     gap = tel.get("max_gap_between_blocks_us")
-    if r.get("mode_active") == "SharedFlex" and r.get("pdc_in"):
-        cadence_us = (r["pdc_in"] - 2 * buf) / 48000 * 1e6
+    # pdc_out, not pdc_in: the panel's pdcOffsetSamples shifts only the input latency (UpdateLatencyTelemetry)
+    if r.get("mode_active") == "SharedFlex" and r.get("pdc_out"):
+        cadence_us = (r["pdc_out"] - 2 * buf) / 48000 * 1e6
     else:
         cadence_us = buf / 48000 * 1e6
     ratio = cb / expected if expected else None
