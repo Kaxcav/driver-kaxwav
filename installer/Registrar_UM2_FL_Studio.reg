@@ -1,27 +1,26 @@
 Windows Registry Editor Version 5.00
 
+; Registro manual equivalente ao DllRegisterServer, apontando para a DLL instalada em Program Files.
+; DLL x64: sem entrada em WOW6432Node (host 32-bit nao carrega DLL 64-bit).
+
 [HKEY_LOCAL_MACHINE\SOFTWARE\ASIO\Behringer UM2 ASIO]
 "CLSID"="{77DBBCCD-91C6-4856-A900-FC8D007D161C}"
-"Description"="Behringer UM2 ASIO"
-
-[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\ASIO\Behringer UM2 ASIO]
-"CLSID"="{77DBBCCD-91C6-4856-A900-FC8D007D161C}"
-"Description"="Behringer UM2 ASIO"
+"Description"="Behringer U-Phoria Low Latency ASIO Driver"
 
 [HKEY_CURRENT_USER\SOFTWARE\ASIO\Behringer UM2 ASIO]
 "CLSID"="{77DBBCCD-91C6-4856-A900-FC8D007D161C}"
-"Description"="Behringer UM2 ASIO"
+"Description"="Behringer U-Phoria Low Latency ASIO Driver"
 
 [HKEY_CLASSES_ROOT\CLSID\{77DBBCCD-91C6-4856-A900-FC8D007D161C}]
-@="Behringer UM2 ASIO"
+@="Behringer U-Phoria Low Latency ASIO Driver"
 
 [HKEY_CLASSES_ROOT\CLSID\{77DBBCCD-91C6-4856-A900-FC8D007D161C}\InprocServer32]
-@="C:\\driver xd\\behringer-um2\\build\\Release\\BehringerUM2ASIODriver.dll"
+@="C:\\Program Files\\KaxWav\\Behringer UM2 ASIO\\BehringerUM2ASIODriver.dll"
 "ThreadingModel"="Both"
 
 [HKEY_CURRENT_USER\Software\Classes\CLSID\{77DBBCCD-91C6-4856-A900-FC8D007D161C}]
-@="Behringer UM2 ASIO"
+@="Behringer U-Phoria Low Latency ASIO Driver"
 
 [HKEY_CURRENT_USER\Software\Classes\CLSID\{77DBBCCD-91C6-4856-A900-FC8D007D161C}\InprocServer32]
-@="C:\\driver xd\\behringer-um2\\build\\Release\\BehringerUM2ASIODriver.dll"
+@="C:\\Program Files\\KaxWav\\Behringer UM2 ASIO\\BehringerUM2ASIODriver.dll"
 "ThreadingModel"="Both"

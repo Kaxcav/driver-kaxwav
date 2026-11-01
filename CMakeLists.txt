@@ -83,3 +83,8 @@ target_link_libraries(um2_asio_probe PRIVATE ole32)
 # Diagnostico: quem muda o volume do endpoint de captura da UM2 (so leitura)
 add_executable(volume_watch tools/volume_watch.cpp)
 target_link_libraries(volume_watch PRIVATE ole32)
+
+# Verificacao do instalador: o que o COM carrega quando um host ASIO pede o CLSID
+add_executable(test_com_reg test_com_reg.cpp)
+target_include_directories(test_com_reg PRIVATE "${ASIO_SDK_DIR}")
+target_link_libraries(test_com_reg PRIVATE ole32)

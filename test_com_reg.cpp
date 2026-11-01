@@ -1,30 +1,39 @@
+// Verifies what a DAW would load: instantiates the driver through COM by CLSID the way ASIO hosts do
+// (CoCreateInstance with the CLSID also as the IID) and prints the DLL that Windows actually loaded.
+// Exit code 0 = loaded; prints "LOADED_PATH=<path>" for scripts (installer verification).
 #include <windows.h>
 #include <iostream>
+#include <string>
 #include "asiosys.h"
 #include "asio.h"
 #include "iasiodrv.h"
 
 #pragma comment(lib, "ole32.lib")
 
-static const GUID CLSID_BehringerUM2AsioDriver = 
+static const GUID CLSID_BehringerUM2AsioDriver =
     { 0x77dbbccd, 0x91c6, 0x4856, { 0xa9, 0x00, 0xfc, 0x8d, 0x00, 0x7d, 0x16, 0x1c } };
-
-static const GUID IID_IASIO = 
-    { 0x933923e0, 0x01fe, 0x11d2, { 0xbc, 0x7b, 0x00, 0x80, 0xc7, 0x79, 0xb4, 0x3e } };
 
 int main() {
     CoInitialize(nullptr);
     IASIO* pAsio = nullptr;
-    HRESULT hr = CoCreateInstance(CLSID_BehringerUM2AsioDriver, nullptr, CLSCTX_INPROC_SERVER, IID_IASIO, (void**)&pAsio);
+    // ASIO hosts (asiolist.cpp in the SDK) pass the CLSID as the interface id too
+    HRESULT hr = CoCreateInstance(CLSID_BehringerUM2AsioDriver, nullptr, CLSCTX_INPROC_SERVER,
+                                  CLSID_BehringerUM2AsioDriver, reinterpret_cast<void**>(&pAsio));
+    int rc = 1;
     if (SUCCEEDED(hr) && pAsio) {
-        std::cout << "[SUCESSO] Driver instanciado diretamente pelo Windows COM via CLSID!\n";
         char name[64]{};
         pAsio->getDriverName(name);
-        std::cout << "Nome do Driver: " << name << "\n";
+        wchar_t path[MAX_PATH]{};
+        HMODULE mod = GetModuleHandleW(L"BehringerUM2ASIODriver.dll");
+        if (mod) GetModuleFileNameW(mod, path, MAX_PATH);
+        std::cout << "[SUCESSO] Driver instanciado pelo COM via CLSID. Nome: " << name << "\n";
+        std::wcout << L"LOADED_PATH=" << path << L"\n";
+        std::cout << "DRIVER_VERSION=" << pAsio->getDriverVersion() << "\n";
         pAsio->Release();
+        rc = 0;
     } else {
         std::cout << "[ERRO] CoCreateInstance falhou: 0x" << std::hex << hr << std::dec << "\n";
     }
     CoUninitialize();
-    return 0;
+    return rc;
 }
