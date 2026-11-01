@@ -122,6 +122,29 @@ def step_7k(f, p, drop_db=6.0):
             **({} if valid else {"reason": "sinal ~ silencio digital nas duas bandas; detector nao se aplica"})}
 
 
+def hum_analysis(f, p, lines=(60, 120, 180, 240, 300), halfwidth_hz=1.5):
+    """Separates mains hum lines from the white floor. White floor = median PSD 1-10 kHz."""
+    df = f[1] - f[0]
+    band = (f >= 1000) & (f <= 10000)
+    floor = float(np.median(p[band]))
+    out = {"white_floor_db_hz": round(10 * np.log10(floor + 1e-30), 1),
+           "white_floor_20_20k_dbfs": round(10 * np.log10(floor * (20000 - 20) + 1e-30), 2)}
+    total_hum = 0.0
+    for h in lines:
+        m = np.abs(f - h) <= halfwidth_hz
+        excess = float(np.sum(np.maximum(p[m] - floor, 0.0)) * df)
+        total_hum += excess
+        peak = float(np.max(p[m])) if m.any() else 0.0
+        out[f"hum_{h}hz_dbfs"] = round(10 * np.log10(excess + 1e-30), 1) if excess > 0 else None
+        out[f"hum_{h}hz_over_floor_db"] = round(10 * np.log10(peak / (floor + 1e-30) + 1e-30), 1)
+    out["hum_total_dbfs"] = round(10 * np.log10(total_hum + 1e-30), 1) if total_hum > 0 else None
+    m = (f >= 20) & (f <= 20000)
+    total = float(np.sum(p[m]) * df)
+    out["total_20_20k_dbfs"] = round(10 * np.log10(total + 1e-30), 2)
+    out["hum_share_percent"] = round(100.0 * total_hum / (total + 1e-30), 1)
+    return out
+
+
 def noise_floor(x, fs=FS):
     """M2 metrics: broadband dBFS RMS, PSD (Welch, FFT 65536) in dB/Hz, legacy band metrics."""
     x = np.asarray(x, dtype=np.float64)
@@ -133,6 +156,7 @@ def noise_floor(x, fs=FS):
         "psd_bands_db_hz": {f"{lo}-{hi}": round(band_mean_db(f, p, lo, hi), 1)
                             for lo, hi in [(20, 200), (200, 2000), (2000, 8000), (8000, 12000), (12000, 20000)]},
         "step_7k": step_7k(f, p),
+        "hum": hum_analysis(f, p),
         "legacy": legacy_noise_analyze(x.astype(np.float32), fs, nperseg=65536),
     }
     return out

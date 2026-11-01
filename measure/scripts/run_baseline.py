@@ -173,10 +173,24 @@ def step_m2(args, rundir, cond):
     return res
 
 
+def cpu_burners(n):
+    """N busy-loop processes at normal priority (synthetic load for M5)."""
+    return [subprocess.Popen([sys.executable, "-c", "while True: pass"]) for _ in range(n)]
+
+
 def step_m5(args, rundir, cond):
     secs = args.m5_seconds
     runs = []
-    for mode in (1, 0):
+    burners = cpu_burners(args.cpu_load)
+    try:
+        return _m5_runs(args, rundir, cond, secs, runs)
+    finally:
+        for b in burners:
+            b.kill()
+
+
+def _m5_runs(args, rundir, cond, secs, runs):
+    for mode in [int(m) for m in args.m5_modes.split(",")]:
         for buf in BUFFERS:
             before = (um2_ipc.read_shared_state(["xruns"]) or {}).get("xruns")
             j = probe(mode, buf, secs, rundir, f"m5_{MODES[mode]}_{buf}", poll_telemetry=True)
@@ -197,7 +211,8 @@ def step_m5(args, rundir, cond):
             runs.append(r)
             print(f"  M5 {MODES[mode]}@{buf}: active={r['mode_active']} misses="
                   f"{(r['telemetry'] or {}).get('deadline_misses')} p99={(r['telemetry'] or {}).get('block_us_p99')}us")
-    return {"load": cond.get("cpu_load", "nenhuma (ociosa)"),
+    return {"load": (f"{args.cpu_load} processos em busy-loop (prioridade normal)" if args.cpu_load
+                     else cond.get("cpu_load", "nenhuma (ociosa)")),
             "definition": "duracao do bloco = QPC na entrada de processOneAsioBlock ate o fim do estagio de saida; "
                           "miss = duracao > bufferSize/fs. Contador xruns do UM2SharedState e incrementado por amostra "
                           "faltante no FIFO de captura (nao por evento).",
@@ -370,6 +385,8 @@ def main():
     ap.add_argument("--m7-reuse", action="store_true", help="reanalisa a captura M7 ja feita nesta corrida")
     ap.add_argument("--m2-reuse", action="store_true", help="reanalisa m2_apo.wav/m2_raw.wav ja capturados nesta corrida")
     ap.add_argument("--m5-seconds", type=int, default=60)
+    ap.add_argument("--cpu-load", type=int, default=0, help="M5: N processos em busy-loop durante a medicao")
+    ap.add_argument("--m5-modes", default="1,0", help="M5: modos (1=SharedFlex, 0=ExclusivePro)")
     ap.add_argument("--drift-seconds", type=int, default=3600)
     ap.add_argument("--drift-csv", help="importa uma corrida de um2_drift ja feita em vez de rodar de novo")
     args = ap.parse_args()
