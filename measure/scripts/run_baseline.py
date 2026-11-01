@@ -82,6 +82,21 @@ def reg_read():
     return out
 
 
+def daw_dsp_flags():
+    """ADR 0004: DawDspCh1/DawDspCh2 (ausente = 0 = DAW bit-perfect)."""
+    out = {}
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, REG) as k:
+            for n in ("DawDspCh1", "DawDspCh2"):
+                try:
+                    out[n] = winreg.QueryValueEx(k, n)[0]
+                except FileNotFoundError:
+                    out[n] = None
+    except FileNotFoundError:
+        pass
+    return out
+
+
 def reg_restore(vals):
     with winreg.CreateKey(winreg.HKEY_CURRENT_USER, REG) as k:
         for name, v in vals.items():
@@ -264,6 +279,7 @@ def step_m7(args, rundir, cond):
     else:
         j = probe(1, 256, 4.5, rundir, "m7_SharedFlex_256", stim=stim, stim_at=at, taps="raw" if args.m7_tap_raw else True)
     res = {"mode_requested": "SharedFlex", "mode_active": j.get("mode_active"), "buffer": 256,
+           "daw_dsp_registry": daw_dsp_flags(),
            "tap_capture_raw": bool(args.m7_tap_raw),
            "stimulus": "ruido pseudo-aleatorio -20 dBFS, 3 s, int16, nas duas saidas",
            "taps": {"capture": j.get("tap_capture"), "loopback": j.get("tap_loopback")}}
@@ -285,9 +301,9 @@ def step_m7(args, rundir, cond):
         res["input_null"] = {}
         for c in range(min(2, caps.shape[1])):
             cap = caps[:, c]
-            r = A.null_test(asio[24000:, c], cap, scale=32767.0)
+            r = A.null_test(asio[24000:, c], cap, scale=32768.0)
             r["note"] = (f"referencia = ASIO in {c + 1} (int16 entregue a DAW); captura = tap shared canal {c + 1} "
-                         "x 32767 (escala do Quantize16)")
+                         "x 32768 (escala exata do conversor de 16 bits)")
             r["input_level_dbfs"] = round(A.dbfs(cap), 1)
             r["asio_level_dbfs"] = round(A.dbfs(asio[24000:, c] / 32768.0), 1)
             res["input_null"][f"ch{c + 1}"] = r
