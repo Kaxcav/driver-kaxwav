@@ -1,0 +1,59 @@
+{
+ "run_id": "2026-11-01-metaestavel-load-idle-3",
+ "date": "2026-11-01T20:56:18",
+ "pattern": "load-idle",
+ "switch_at_s": 15.0,
+ "buffer": 256,
+ "dll": "build\\ab\\C_diag_BehringerUM2ASIODriver.dll",
+ "snapshots": [
+  {
+   "t_s": 5.0,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 900,
+   "bufferSwitches": 900
+  },
+  {
+   "t_s": 10.0,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 1839,
+   "bufferSwitches": 1839
+  },
+  {
+   "t_s": 15.0,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 2781,
+   "bufferSwitches": 2781
+  },
+  {
+   "t_s": 20.0,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 3720,
+   "bufferSwitches": 3720
+  },
+  {
+   "t_s": 25.0,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 4658,
+   "bufferSwitches": 4658
+  },
+  {
+   "t_s": 30.1,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 5596,
+   "bufferSwitches": 5596
+  },
+  {
+   "t_s": 35.1,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 6535,
+   "bufferSwitches": 6535
+  }
+ ]
+}

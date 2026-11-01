@@ -1,0 +1,2950 @@
+[
+ {
+  "tid": 3040,
+  "pid": 24740,
+  "proc": "Antigravity.exe",
+  "switch_ins_per_s": 18.5,
+  "prio": {
+   "5": 1008,
+   "4": 253,
+   "12": 2
+  },
+  "ready_to_run_us_p50": 10.1,
+  "p99": 2124338.6,
+  "max": 4530233.2,
+  "over_1ms": 169,
+  "total_ready_ms": 61807.3
+ },
+ {
+  "tid": 1364,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 117.0,
+  "prio": {
+   "8": 8008
+  },
+  "ready_to_run_us_p50": 1658.2,
+  "p99": 34962.0,
+  "max": 74430.2,
+  "over_1ms": 4091,
+  "total_ready_ms": 55987.4
+ },
+ {
+  "tid": 3920,
+  "pid": 3880,
+  "proc": "MemCompression",
+  "switch_ins_per_s": 145.4,
+  "prio": {
+   "7": 9882,
+   "25": 39,
+   "4": 27
+  },
+  "ready_to_run_us_p50": 2.8,
+  "p99": 7147.8,
+  "max": 4507356.8,
+  "over_1ms": 646,
+  "total_ready_ms": 50310.4
+ },
+ {
+  "tid": 14320,
+  "pid": 14316,
+  "proc": "ADU.exe",
+  "switch_ins_per_s": 50.8,
+  "prio": {
+   "8": 3476
+  },
+  "ready_to_run_us_p50": 11609.2,
+  "p99": 37987.1,
+  "max": 67313.8,
+  "over_1ms": 2727,
+  "total_ready_ms": 39866.4
+ },
+ {
+  "tid": 33672,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 46.5,
+  "prio": {
+   "8": 3181
+  },
+  "ready_to_run_us_p50": 10477.3,
+  "p99": 37863.0,
+  "max": 80839.0,
+  "over_1ms": 2568,
+  "total_ready_ms": 38191.0
+ },
+ {
+  "tid": 10280,
+  "pid": 5176,
+  "proc": "HapticService.exe",
+  "switch_ins_per_s": 33.9,
+  "prio": {
+   "8": 2318
+  },
+  "ready_to_run_us_p50": 13813.8,
+  "p99": 36374.2,
+  "max": 67628.4,
+  "over_1ms": 1974,
+  "total_ready_ms": 30998.6
+ },
+ {
+  "tid": 17552,
+  "pid": 6436,
+  "proc": "Antigravity.exe",
+  "switch_ins_per_s": 34.6,
+  "prio": {
+   "8": 2369
+  },
+  "ready_to_run_us_p50": 13802.3,
+  "p99": 36391.6,
+  "max": 67646.2,
+  "over_1ms": 1975,
+  "total_ready_ms": 30996.7
+ },
+ {
+  "tid": 34744,
+  "pid": 32912,
+  "proc": "SnippingTool.exe",
+  "switch_ins_per_s": 34.8,
+  "prio": {
+   "8": 2384
+  },
+  "ready_to_run_us_p50": 13778.8,
+  "p99": 36386.6,
+  "max": 67640.2,
+  "over_1ms": 1974,
+  "total_ready_ms": 30978.4
+ },
+ {
+  "tid": 25336,
+  "pid": 25472,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 34.8,
+  "prio": {
+   "8": 2384
+  },
+  "ready_to_run_us_p50": 13810.2,
+  "p99": 36380.1,
+  "max": 67633.6,
+  "over_1ms": 1973,
+  "total_ready_ms": 30978.0
+ },
+ {
+  "tid": 37544,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 57.5,
+  "prio": {
+   "8": 3939
+  },
+  "ready_to_run_us_p50": 6092.3,
+  "p99": 27648.1,
+  "max": 35955.1,
+  "over_1ms": 3094,
+  "total_ready_ms": 29811.3
+ },
+ {
+  "tid": 2752,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 58.2,
+  "prio": {
+   "8": 3985
+  },
+  "ready_to_run_us_p50": 5918.6,
+  "p99": 26220.5,
+  "max": 36713.1,
+  "over_1ms": 3098,
+  "total_ready_ms": 29262.3
+ },
+ {
+  "tid": 22592,
+  "pid": 17292,
+  "proc": "MicroSIP.exe",
+  "switch_ins_per_s": 56.9,
+  "prio": {
+   "8": 3894
+  },
+  "ready_to_run_us_p50": 5580.5,
+  "p99": 26021.9,
+  "max": 35697.0,
+  "over_1ms": 3039,
+  "total_ready_ms": 27798.2
+ },
+ {
+  "tid": 736,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 75.5,
+  "prio": {
+   "8": 5167
+  },
+  "ready_to_run_us_p50": 5.4,
+  "p99": 34120.5,
+  "max": 66041.1,
+  "over_1ms": 2028,
+  "total_ready_ms": 25643.7
+ },
+ {
+  "tid": 11516,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 39.5,
+  "prio": {
+   "8": 2701
+  },
+  "ready_to_run_us_p50": 6571.4,
+  "p99": 26786.0,
+  "max": 36460.0,
+  "over_1ms": 2079,
+  "total_ready_ms": 23873.8
+ },
+ {
+  "tid": 16272,
+  "pid": 13088,
+  "proc": "wallpaper64.exe",
+  "switch_ins_per_s": 40.9,
+  "prio": {
+   "8": 2802
+  },
+  "ready_to_run_us_p50": 7184.5,
+  "p99": 26837.9,
+  "max": 33547.9,
+  "over_1ms": 2205,
+  "total_ready_ms": 23523.3
+ },
+ {
+  "tid": 36424,
+  "pid": 13384,
+  "proc": "Discord.exe",
+  "switch_ins_per_s": 41.1,
+  "prio": {
+   "8": 2813
+  },
+  "ready_to_run_us_p50": 7172.1,
+  "p99": 26846.0,
+  "max": 33555.4,
+  "over_1ms": 2203,
+  "total_ready_ms": 23522.2
+ },
+ {
+  "tid": 36504,
+  "pid": 32876,
+  "proc": "Telegram.exe",
+  "switch_ins_per_s": 41.1,
+  "prio": {
+   "8": 2812
+  },
+  "ready_to_run_us_p50": 7163.7,
+  "p99": 26852.2,
+  "max": 33552.1,
+  "over_1ms": 2204,
+  "total_ready_ms": 23516.3
+ },
+ {
+  "tid": 20108,
+  "pid": 16204,
+  "proc": "NVIDIA Overlay.exe",
+  "switch_ins_per_s": 41.2,
+  "prio": {
+   "8": 2817
+  },
+  "ready_to_run_us_p50": 7163.2,
+  "p99": 26842.5,
+  "max": 33542.0,
+  "over_1ms": 2204,
+  "total_ready_ms": 23500.9
+ },
+ {
+  "tid": 16352,
+  "pid": 13088,
+  "proc": "wallpaper64.exe",
+  "switch_ins_per_s": 42.0,
+  "prio": {
+   "8": 2872
+  },
+  "ready_to_run_us_p50": 7032.1,
+  "p99": 25172.7,
+  "max": 34176.8,
+  "over_1ms": 2239,
+  "total_ready_ms": 23154.2
+ },
+ {
+  "tid": 19468,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 72.9,
+  "prio": {
+   "12": 3538,
+   "13": 1217,
+   "14": 84
+  },
+  "ready_to_run_us_p50": 4.3,
+  "p99": 21.2,
+  "max": 6662243.0,
+  "over_1ms": 9,
+  "total_ready_ms": 22597.2
+ },
+ {
+  "tid": 32260,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 58.9,
+  "prio": {
+   "12": 2383,
+   "13": 1093,
+   "14": 62
+  },
+  "ready_to_run_us_p50": 4.1,
+  "p99": 38.9,
+  "max": 5756563.1,
+  "over_1ms": 4,
+  "total_ready_ms": 21067.3
+ },
+ {
+  "tid": 30932,
+  "pid": 32108,
+  "proc": "BehringerUM2Panel.exe",
+  "switch_ins_per_s": 114.0,
+  "prio": {
+   "8": 7758,
+   "9": 48
+  },
+  "ready_to_run_us_p50": 9483.3,
+  "p99": 32403.1,
+  "max": 66160.8,
+  "over_1ms": 1661,
+  "total_ready_ms": 19117.0
+ },
+ {
+  "tid": 33964,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 37.1,
+  "prio": {
+   "12": 1530,
+   "13": 636,
+   "7": 182
+  },
+  "ready_to_run_us_p50": 4.3,
+  "p99": 27.4,
+  "max": 6646970.3,
+  "over_1ms": 3,
+  "total_ready_ms": 17139.7
+ },
+ {
+  "tid": 22136,
+  "pid": 12972,
+  "proc": "um2_asio_probe.exe",
+  "switch_ins_per_s": 32.3,
+  "prio": {
+   "8": 1955,
+   "9": 2,
+   "13": 2
+  },
+  "ready_to_run_us_p50": 8308.7,
+  "p99": 25273.8,
+  "max": 32162.7,
+  "over_1ms": 1710,
+  "total_ready_ms": 17089.4
+ },
+ {
+  "tid": 6384,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 29.7,
+  "prio": {
+   "12": 1359,
+   "13": 519,
+   "14": 40
+  },
+  "ready_to_run_us_p50": 4.2,
+  "p99": 23.4,
+  "max": 5865982.1,
+  "over_1ms": 3,
+  "total_ready_ms": 15626.3
+ },
+ {
+  "tid": 9084,
+  "pid": 24740,
+  "proc": "Antigravity.exe",
+  "switch_ins_per_s": 17.6,
+  "prio": {
+   "5": 1138,
+   "4": 70
+  },
+  "ready_to_run_us_p50": 6.9,
+  "p99": 814884.2,
+  "max": 3200344.8,
+  "over_1ms": 17,
+  "total_ready_ms": 15361.0
+ },
+ {
+  "tid": 34536,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 16.3,
+  "prio": {
+   "8": 1114
+  },
+  "ready_to_run_us_p50": 15161.6,
+  "p99": 41352.1,
+  "max": 70723.4,
+  "over_1ms": 939,
+  "total_ready_ms": 15157.2
+ },
+ {
+  "tid": 34072,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 83.9,
+  "prio": {
+   "8": 3534,
+   "9": 2207
+  },
+  "ready_to_run_us_p50": 1.8,
+  "p99": 30163.8,
+  "max": 70471.6,
+  "over_1ms": 933,
+  "total_ready_ms": 15066.5
+ },
+ {
+  "tid": 31900,
+  "pid": 23772,
+  "proc": "agy.exe",
+  "switch_ins_per_s": 21.6,
+  "prio": {
+   "8": 1475
+  },
+  "ready_to_run_us_p50": 7743.3,
+  "p99": 37865.9,
+  "max": 75045.0,
+  "over_1ms": 1132,
+  "total_ready_ms": 14763.1
+ },
+ {
+  "tid": 10056,
+  "pid": 5268,
+  "proc": "GameManagerService3.exe",
+  "switch_ins_per_s": 19.0,
+  "prio": {
+   "8": 1282,
+   "9": 15
+  },
+  "ready_to_run_us_p50": 8238.6,
+  "p99": 39764.7,
+  "max": 74393.5,
+  "over_1ms": 1082,
+  "total_ready_ms": 14119.7
+ },
+ {
+  "tid": 36820,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 19.6,
+  "prio": {
+   "8": 1333
+  },
+  "ready_to_run_us_p50": 5892.5,
+  "p99": 31231.6,
+  "max": 38994.9,
+  "over_1ms": 1064,
+  "total_ready_ms": 10927.7
+ },
+ {
+  "tid": 36568,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 17.2,
+  "prio": {
+   "8": 1177
+  },
+  "ready_to_run_us_p50": 6642.6,
+  "p99": 40465.0,
+  "max": 65929.4,
+  "over_1ms": 943,
+  "total_ready_ms": 10306.1
+ },
+ {
+  "tid": 9872,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 49.6,
+  "prio": {
+   "12": 2011,
+   "13": 1117,
+   "14": 92
+  },
+  "ready_to_run_us_p50": 4.3,
+  "p99": 47.7,
+  "max": 4930226.0,
+  "over_1ms": 13,
+  "total_ready_ms": 9786.0
+ },
+ {
+  "tid": 5688,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 90.7,
+  "prio": {
+   "12": 3128,
+   "13": 1449,
+   "15": 89
+  },
+  "ready_to_run_us_p50": 3.5,
+  "p99": 8.8,
+  "max": 2261647.6,
+  "over_1ms": 19,
+  "total_ready_ms": 7727.6
+ },
+ {
+  "tid": 5644,
+  "pid": 9712,
+  "proc": "vctip.exe",
+  "switch_ins_per_s": 18.5,
+  "prio": {
+   "8": 956,
+   "9": 124,
+   "13": 111
+  },
+  "ready_to_run_us_p50": 3419.8,
+  "p99": 27786.8,
+  "max": 36853.0,
+  "over_1ms": 794,
+  "total_ready_ms": 7395.2
+ },
+ {
+  "tid": 17692,
+  "pid": 26996,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 21.9,
+  "prio": {
+   "8": 1466,
+   "9": 25,
+   "10": 2
+  },
+  "ready_to_run_us_p50": 9380.8,
+  "p99": 41436.0,
+  "max": 63116.0,
+  "over_1ms": 555,
+  "total_ready_ms": 7246.6
+ },
+ {
+  "tid": 10512,
+  "pid": 5176,
+  "proc": "HapticService.exe",
+  "switch_ins_per_s": 15.4,
+  "prio": {
+   "8": 1053,
+   "11": 2
+  },
+  "ready_to_run_us_p50": 5257.9,
+  "p99": 27964.0,
+  "max": 36819.6,
+  "over_1ms": 748,
+  "total_ready_ms": 6272.1
+ },
+ {
+  "tid": 11572,
+  "pid": 10652,
+  "proc": "warp-svc.exe",
+  "switch_ins_per_s": 16.6,
+  "prio": {
+   "8": 696,
+   "9": 439
+  },
+  "ready_to_run_us_p50": 915.6,
+  "p99": 32554.9,
+  "max": 67641.6,
+  "over_1ms": 441,
+  "total_ready_ms": 6044.6
+ },
+ {
+  "tid": 31732,
+  "pid": 31216,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 15.2,
+  "prio": {
+   "8": 1023,
+   "9": 18
+  },
+  "ready_to_run_us_p50": 10169.9,
+  "p99": 41540.5,
+  "max": 65781.4,
+  "over_1ms": 412,
+  "total_ready_ms": 5965.3
+ },
+ {
+  "tid": 36920,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 87.6,
+  "prio": {
+   "12": 3517,
+   "13": 1853,
+   "15": 131
+  },
+  "ready_to_run_us_p50": 3.5,
+  "p99": 6.9,
+  "max": 3256158.7,
+  "over_1ms": 16,
+  "total_ready_ms": 5667.6
+ },
+ {
+  "tid": 16456,
+  "pid": 5100,
+  "proc": "MsMpEng.exe",
+  "switch_ins_per_s": 26.6,
+  "prio": {
+   "8": 1484,
+   "9": 328
+  },
+  "ready_to_run_us_p50": 4.6,
+  "p99": 32632.3,
+  "max": 51580.3,
+  "over_1ms": 362,
+  "total_ready_ms": 5618.1
+ },
+ {
+  "tid": 460,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 67.1,
+  "prio": {
+   "8": 2985,
+   "9": 1583
+  },
+  "ready_to_run_us_p50": 5.3,
+  "p99": 20305.7,
+  "max": 34897.4,
+  "over_1ms": 490,
+  "total_ready_ms": 4535.2
+ },
+ {
+  "tid": 29424,
+  "pid": 10088,
+  "proc": "nvcontainer.exe",
+  "switch_ins_per_s": 58.5,
+  "prio": {
+   "8": 2170,
+   "9": 1831
+  },
+  "ready_to_run_us_p50": 0.8,
+  "p99": 20200.0,
+  "max": 36880.4,
+  "over_1ms": 488,
+  "total_ready_ms": 4193.8
+ },
+ {
+  "tid": 20636,
+  "pid": 5100,
+  "proc": "MsMpEng.exe",
+  "switch_ins_per_s": 15.9,
+  "prio": {
+   "8": 859,
+   "9": 197
+  },
+  "ready_to_run_us_p50": 43.2,
+  "p99": 27611.3,
+  "max": 31617.5,
+  "over_1ms": 413,
+  "total_ready_ms": 3981.8
+ },
+ {
+  "tid": 16400,
+  "pid": 6300,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 22.1,
+  "prio": {
+   "9": 893,
+   "8": 545,
+   "10": 72
+  },
+  "ready_to_run_us_p50": 5.4,
+  "p99": 23110.6,
+  "max": 33554.0,
+  "over_1ms": 406,
+  "total_ready_ms": 3775.2
+ },
+ {
+  "tid": 10756,
+  "pid": 5100,
+  "proc": "MsMpEng.exe",
+  "switch_ins_per_s": 17.3,
+  "prio": {
+   "8": 607,
+   "9": 560
+  },
+  "ready_to_run_us_p50": 5.3,
+  "p99": 35978.9,
+  "max": 75336.5,
+  "over_1ms": 262,
+  "total_ready_ms": 3766.3
+ },
+ {
+  "tid": 17364,
+  "pid": 832,
+  "proc": "nvcontainer.exe",
+  "switch_ins_per_s": 25.3,
+  "prio": {
+   "8": 1728
+  },
+  "ready_to_run_us_p50": 3857.8,
+  "p99": 26686.8,
+  "max": 29797.4,
+  "over_1ms": 489,
+  "total_ready_ms": 3754.4
+ },
+ {
+  "tid": 3128,
+  "pid": 2188,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 16.4,
+  "prio": {
+   "9": 573,
+   "8": 363,
+   "10": 171
+  },
+  "ready_to_run_us_p50": 5.2,
+  "p99": 24449.4,
+  "max": 31217.3,
+  "over_1ms": 310,
+  "total_ready_ms": 2763.8
+ },
+ {
+  "tid": 27816,
+  "pid": 5100,
+  "proc": "MsMpEng.exe",
+  "switch_ins_per_s": 20.3,
+  "prio": {
+   "8": 696,
+   "9": 688
+  },
+  "ready_to_run_us_p50": 5.2,
+  "p99": 31075.9,
+  "max": 37962.4,
+  "over_1ms": 189,
+  "total_ready_ms": 2716.7
+ },
+ {
+  "tid": 35224,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 60.2,
+  "prio": {
+   "12": 2227,
+   "13": 865,
+   "15": 87
+  },
+  "ready_to_run_us_p50": 3.4,
+  "p99": 9.8,
+  "max": 1608648.8,
+  "over_1ms": 17,
+  "total_ready_ms": 2326.4
+ },
+ {
+  "tid": 33832,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 67.3,
+  "prio": {
+   "12": 2989,
+   "13": 1262,
+   "14": 97
+  },
+  "ready_to_run_us_p50": 3.6,
+  "p99": 10.4,
+  "max": 755314.6,
+  "over_1ms": 11,
+  "total_ready_ms": 2031.4
+ },
+ {
+  "tid": 36520,
+  "pid": 1928,
+  "proc": "svchost.exe",
+  "switch_ins_per_s": 72.3,
+  "prio": {
+   "9": 653,
+   "8": 339,
+   "15": 29
+  },
+  "ready_to_run_us_p50": 3.1,
+  "p99": 25448.0,
+  "max": 38825.8,
+  "over_1ms": 190,
+  "total_ready_ms": 1910.9
+ },
+ {
+  "tid": 14668,
+  "pid": 30884,
+  "proc": "python.exe",
+  "switch_ins_per_s": 32.4,
+  "prio": {
+   "9": 1167,
+   "8": 999,
+   "10": 34
+  },
+  "ready_to_run_us_p50": 6.1,
+  "p99": 23404.8,
+  "max": 66792.9,
+  "over_1ms": 116,
+  "total_ready_ms": 1752.2
+ },
+ {
+  "tid": 33492,
+  "pid": 1928,
+  "proc": "svchost.exe",
+  "switch_ins_per_s": 19.2,
+  "prio": {
+   "9": 559,
+   "8": 391,
+   "10": 58
+  },
+  "ready_to_run_us_p50": 3.4,
+  "p99": 19821.2,
+  "max": 31911.3,
+  "over_1ms": 156,
+  "total_ready_ms": 1421.4
+ },
+ {
+  "tid": 35576,
+  "pid": 32780,
+  "proc": "WmiPrvSE.exe",
+  "switch_ins_per_s": 358.6,
+  "prio": {
+   "9": 24138,
+   "8": 105,
+   "10": 6
+  },
+  "ready_to_run_us_p50": 3.7,
+  "p99": 29.4,
+  "max": 46465.6,
+  "over_1ms": 92,
+  "total_ready_ms": 1354.4
+ },
+ {
+  "tid": 22556,
+  "pid": 5100,
+  "proc": "MsMpEng.exe",
+  "switch_ins_per_s": 21.2,
+  "prio": {
+   "9": 996,
+   "8": 449
+  },
+  "ready_to_run_us_p50": 5.2,
+  "p99": 15789.4,
+  "max": 32639.5,
+  "over_1ms": 119,
+  "total_ready_ms": 1152.3
+ },
+ {
+  "tid": 33572,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 265.3,
+  "prio": {
+   "12": 8380,
+   "13": 3432,
+   "15": 2127
+  },
+  "ready_to_run_us_p50": 3.2,
+  "p99": 21.8,
+  "max": 25793.7,
+  "over_1ms": 108,
+  "total_ready_ms": 1061.1
+ },
+ {
+  "tid": 37204,
+  "pid": 5268,
+  "proc": "GameManagerService3.exe",
+  "switch_ins_per_s": 41.7,
+  "prio": {
+   "8": 2843,
+   "9": 1
+  },
+  "ready_to_run_us_p50": 10509.4,
+  "p99": 29872.4,
+  "max": 59759.8,
+  "over_1ms": 80,
+  "total_ready_ms": 1050.0
+ },
+ {
+  "tid": 32556,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 326.6,
+  "prio": {
+   "12": 11666,
+   "13": 4881,
+   "15": 2929
+  },
+  "ready_to_run_us_p50": 3.4,
+  "p99": 8.6,
+  "max": 28287.8,
+  "over_1ms": 100,
+  "total_ready_ms": 998.6
+ },
+ {
+  "tid": 32472,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 79.7,
+  "prio": {
+   "12": 3493,
+   "13": 1553,
+   "15": 144
+  },
+  "ready_to_run_us_p50": 3.5,
+  "p99": 8.5,
+  "max": 881895.6,
+  "over_1ms": 8,
+  "total_ready_ms": 983.0
+ },
+ {
+  "tid": 21436,
+  "pid": 31708,
+  "proc": "Antigravity IDE.exe",
+  "switch_ins_per_s": 22.1,
+  "prio": {
+   "8": 1317,
+   "9": 194
+  },
+  "ready_to_run_us_p50": 4.7,
+  "p99": 31895.9,
+  "max": 36872.4,
+  "over_1ms": 60,
+  "total_ready_ms": 934.7
+ },
+ {
+  "tid": 3676,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 56.0,
+  "prio": {
+   "12": 2616,
+   "13": 876,
+   "7": 101
+  },
+  "ready_to_run_us_p50": 3.4,
+  "p99": 9.1,
+  "max": 449725.5,
+  "over_1ms": 11,
+  "total_ready_ms": 828.5
+ },
+ {
+  "tid": 35384,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 231.3,
+  "prio": {
+   "12": 8538,
+   "13": 3231,
+   "15": 2117
+  },
+  "ready_to_run_us_p50": 3.6,
+  "p99": 22.5,
+  "max": 33828.9,
+  "over_1ms": 49,
+  "total_ready_ms": 760.2
+ },
+ {
+  "tid": 21480,
+  "pid": 3004,
+  "proc": "svchost.exe",
+  "switch_ins_per_s": 19.3,
+  "prio": {
+   "8": 651,
+   "9": 498,
+   "10": 1
+  },
+  "ready_to_run_us_p50": 1.9,
+  "p99": 19060.3,
+  "max": 24013.9,
+  "over_1ms": 73,
+  "total_ready_ms": 640.4
+ },
+ {
+  "tid": 3956,
+  "pid": 16196,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 712.7,
+  "prio": {
+   "15": 33116,
+   "14": 15677
+  },
+  "ready_to_run_us_p50": 7.5,
+  "p99": 64.2,
+  "max": 337.3,
+  "over_1ms": 0,
+  "total_ready_ms": 576.8
+ },
+ {
+  "tid": 34820,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 80.7,
+  "prio": {
+   "8": 5098,
+   "9": 300,
+   "10": 10
+  },
+  "ready_to_run_us_p50": 1.7,
+  "p99": 28144.6,
+  "max": 40407.2,
+  "over_1ms": 39,
+  "total_ready_ms": 561.8
+ },
+ {
+  "tid": 10648,
+  "pid": 5268,
+  "proc": "GameManagerService3.exe",
+  "switch_ins_per_s": 16.0,
+  "prio": {
+   "8": 1083
+  },
+  "ready_to_run_us_p50": 5834.3,
+  "p99": 25806.3,
+  "max": 26759.8,
+  "over_1ms": 44,
+  "total_ready_ms": 434.5
+ },
+ {
+  "tid": 36132,
+  "pid": 32780,
+  "proc": "WmiPrvSE.exe",
+  "switch_ins_per_s": 378.3,
+  "prio": {
+   "9": 25546,
+   "8": 33
+  },
+  "ready_to_run_us_p50": 3.7,
+  "p99": 8.1,
+  "max": 24249.3,
+  "over_1ms": 29,
+  "total_ready_ms": 349.0
+ },
+ {
+  "tid": 2344,
+  "pid": 21216,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 687.4,
+  "prio": {
+   "13": 47062
+  },
+  "ready_to_run_us_p50": 4.9,
+  "p99": 18.2,
+  "max": 6946.9,
+  "over_1ms": 26,
+  "total_ready_ms": 345.0
+ },
+ {
+  "tid": 23192,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 50.4,
+  "prio": {
+   "8": 3085,
+   "9": 318,
+   "10": 31
+  },
+  "ready_to_run_us_p50": 1.7,
+  "p99": 21996.3,
+  "max": 66130.3,
+  "over_1ms": 21,
+  "total_ready_ms": 338.5
+ },
+ {
+  "tid": 35704,
+  "pid": 3004,
+  "proc": "svchost.exe",
+  "switch_ins_per_s": 28.0,
+  "prio": {
+   "9": 1461,
+   "8": 428,
+   "10": 4
+  },
+  "ready_to_run_us_p50": 2.3,
+  "p99": 14286.6,
+  "max": 22856.4,
+  "over_1ms": 24,
+  "total_ready_ms": 293.4
+ },
+ {
+  "tid": 2956,
+  "pid": 3004,
+  "proc": "svchost.exe",
+  "switch_ins_per_s": 35.4,
+  "prio": {
+   "9": 995,
+   "8": 782,
+   "10": 3
+  },
+  "ready_to_run_us_p50": 2.3,
+  "p99": 13665.7,
+  "max": 22012.0,
+  "over_1ms": 31,
+  "total_ready_ms": 288.4
+ },
+ {
+  "tid": 11512,
+  "pid": 832,
+  "proc": "nvcontainer.exe",
+  "switch_ins_per_s": 133.6,
+  "prio": {
+   "15": 9143,
+   "16": 2
+  },
+  "ready_to_run_us_p50": 34.3,
+  "p99": 82.2,
+  "max": 247.7,
+  "over_1ms": 0,
+  "total_ready_ms": 261.9
+ },
+ {
+  "tid": 11160,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 882.0,
+  "prio": {
+   "13": 59651,
+   "15": 486,
+   "14": 218
+  },
+  "ready_to_run_us_p50": 4.0,
+  "p99": 10.4,
+  "max": 1069.0,
+  "over_1ms": 1,
+  "total_ready_ms": 261.5
+ },
+ {
+  "tid": 32724,
+  "pid": 36620,
+  "proc": "TunelSplit.exe",
+  "switch_ins_per_s": 904.9,
+  "prio": {
+   "10": 38146,
+   "13": 20104,
+   "9": 2463
+  },
+  "ready_to_run_us_p50": 3.7,
+  "p99": 15.7,
+  "max": 1207.2,
+  "over_1ms": 1,
+  "total_ready_ms": 257.6
+ },
+ {
+  "tid": 37760,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 77.4,
+  "prio": {
+   "12": 2271,
+   "13": 929,
+   "15": 605
+  },
+  "ready_to_run_us_p50": 3.3,
+  "p99": 20.7,
+  "max": 14499.1,
+  "over_1ms": 36,
+  "total_ready_ms": 253.5
+ },
+ {
+  "tid": 31700,
+  "pid": 31708,
+  "proc": "Antigravity IDE.exe",
+  "switch_ins_per_s": 20.6,
+  "prio": {
+   "9": 1388,
+   "8": 19
+  },
+  "ready_to_run_us_p50": 0.5,
+  "p99": 6043.0,
+  "max": 34946.0,
+  "over_1ms": 16,
+  "total_ready_ms": 244.3
+ },
+ {
+  "tid": 4808,
+  "pid": 36620,
+  "proc": "TunelSplit.exe",
+  "switch_ins_per_s": 121.6,
+  "prio": {
+   "9": 4692,
+   "13": 2538,
+   "10": 1026
+  },
+  "ready_to_run_us_p50": 4.0,
+  "p99": 11.5,
+  "max": 22926.4,
+  "over_1ms": 21,
+  "total_ready_ms": 242.2
+ },
+ {
+  "tid": 34656,
+  "pid": 3004,
+  "proc": "svchost.exe",
+  "switch_ins_per_s": 20.4,
+  "prio": {
+   "9": 1114,
+   "8": 218,
+   "10": 1
+  },
+  "ready_to_run_us_p50": 2.2,
+  "p99": 9926.3,
+  "max": 22939.5,
+  "over_1ms": 25,
+  "total_ready_ms": 212.7
+ },
+ {
+  "tid": 34880,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 357.9,
+  "prio": {
+   "12": 1848,
+   "13": 522,
+   "15": 476
+  },
+  "ready_to_run_us_p50": 3.9,
+  "p99": 21.0,
+  "max": 30415.9,
+  "over_1ms": 10,
+  "total_ready_ms": 189.5
+ },
+ {
+  "tid": 4576,
+  "pid": 23152,
+  "proc": "vmmemWSL",
+  "switch_ins_per_s": 181.6,
+  "prio": {
+   "15": 9983,
+   "1": 2198,
+   "8": 226
+  },
+  "ready_to_run_us_p50": 4.1,
+  "p99": 22.3,
+  "max": 14249.1,
+  "over_1ms": 21,
+  "total_ready_ms": 167.4
+ },
+ {
+  "tid": 23624,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 31.3,
+  "prio": {
+   "8": 1254,
+   "9": 108,
+   "10": 10
+  },
+  "ready_to_run_us_p50": 1.6,
+  "p99": 22322.3,
+  "max": 37178.2,
+  "over_1ms": 11,
+  "total_ready_ms": 151.6
+ },
+ {
+  "tid": 34140,
+  "pid": 832,
+  "proc": "nvcontainer.exe",
+  "switch_ins_per_s": 123.7,
+  "prio": {
+   "9": 8458,
+   "8": 13
+  },
+  "ready_to_run_us_p50": 4.3,
+  "p99": 23.1,
+  "max": 17302.2,
+  "over_1ms": 23,
+  "total_ready_ms": 142.8
+ },
+ {
+  "tid": 6504,
+  "pid": 5404,
+  "proc": "RGSUpdater.exe",
+  "switch_ins_per_s": 65.8,
+  "prio": {
+   "10": 4501
+  },
+  "ready_to_run_us_p50": 3.5,
+  "p99": 563.3,
+  "max": 10808.8,
+  "over_1ms": 31,
+  "total_ready_ms": 137.2
+ },
+ {
+  "tid": 22600,
+  "pid": 23152,
+  "proc": "vmmemWSL",
+  "switch_ins_per_s": 184.7,
+  "prio": {
+   "15": 9164,
+   "1": 3169,
+   "8": 270
+  },
+  "ready_to_run_us_p50": 4.2,
+  "p99": 25.5,
+  "max": 13996.2,
+  "over_1ms": 22,
+  "total_ready_ms": 135.0
+ },
+ {
+  "tid": 3656,
+  "pid": 12972,
+  "proc": "um2_asio_probe.exe",
+  "switch_ins_per_s": 382.3,
+  "prio": {
+   "15": 22935,
+   "8": 4
+  },
+  "ready_to_run_us_p50": 3.7,
+  "p99": 6.6,
+  "max": 27493.6,
+  "over_1ms": 2,
+  "total_ready_ms": 122.8
+ },
+ {
+  "tid": 1372,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 387.9,
+  "prio": {
+   "16": 26559
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 9.5,
+  "max": 186.5,
+  "over_1ms": 0,
+  "total_ready_ms": 121.9
+ },
+ {
+  "tid": 4240,
+  "pid": 23152,
+  "proc": "vmmemWSL",
+  "switch_ins_per_s": 167.7,
+  "prio": {
+   "15": 9012,
+   "1": 2036,
+   "8": 141
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 23.5,
+  "max": 14603.0,
+  "over_1ms": 15,
+  "total_ready_ms": 121.2
+ },
+ {
+  "tid": 21728,
+  "pid": 23884,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 409.2,
+  "prio": {
+   "11": 27823,
+   "10": 192
+  },
+  "ready_to_run_us_p50": 5.4,
+  "p99": 13.5,
+  "max": 181.7,
+  "over_1ms": 0,
+  "total_ready_ms": 121.0
+ },
+ {
+  "tid": 6272,
+  "pid": 14628,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 357.1,
+  "prio": {
+   "12": 24274,
+   "11": 135,
+   "13": 39
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 12.7,
+  "max": 444.0,
+  "over_1ms": 0,
+  "total_ready_ms": 115.9
+ },
+ {
+  "tid": 10312,
+  "pid": 4064,
+  "proc": "svchost.exe",
+  "switch_ins_per_s": 50.3,
+  "prio": {
+   "9": 2776,
+   "24": 180,
+   "8": 107
+  },
+  "ready_to_run_us_p50": 1.9,
+  "p99": 5.2,
+  "max": 32719.8,
+  "over_1ms": 6,
+  "total_ready_ms": 113.9
+ },
+ {
+  "tid": 4852,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 44.5,
+  "prio": {
+   "12": 1758,
+   "13": 442,
+   "14": 113
+  },
+  "ready_to_run_us_p50": 3.5,
+  "p99": 14.0,
+  "max": 23428.2,
+  "over_1ms": 8,
+  "total_ready_ms": 108.0
+ },
+ {
+  "tid": 204,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 471.1,
+  "prio": {
+   "23": 32241
+  },
+  "ready_to_run_us_p50": 3.3,
+  "p99": 7.0,
+  "max": 221.4,
+  "over_1ms": 0,
+  "total_ready_ms": 107.6
+ },
+ {
+  "tid": 13764,
+  "pid": 12972,
+  "proc": "um2_asio_probe.exe",
+  "switch_ins_per_s": 200.3,
+  "prio": {
+   "25": 12078,
+   "8": 3
+  },
+  "ready_to_run_us_p50": 4.2,
+  "p99": 31.8,
+  "max": 30221.0,
+  "over_1ms": 2,
+  "total_ready_ms": 106.7
+ },
+ {
+  "tid": 8456,
+  "pid": 23152,
+  "proc": "vmmemWSL",
+  "switch_ins_per_s": 188.6,
+  "prio": {
+   "15": 10547,
+   "1": 1979,
+   "8": 380
+  },
+  "ready_to_run_us_p50": 4.3,
+  "p99": 21.8,
+  "max": 8810.2,
+  "over_1ms": 15,
+  "total_ready_ms": 103.0
+ },
+ {
+  "tid": 36456,
+  "pid": 12972,
+  "proc": "um2_asio_probe.exe",
+  "switch_ins_per_s": 373.2,
+  "prio": {
+   "25": 22495,
+   "8": 3
+  },
+  "ready_to_run_us_p50": 3.6,
+  "p99": 8.2,
+  "max": 12303.3,
+  "over_1ms": 1,
+  "total_ready_ms": 99.6
+ },
+ {
+  "tid": 23612,
+  "pid": 14628,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 364.5,
+  "prio": {
+   "13": 24919,
+   "12": 37
+  },
+  "ready_to_run_us_p50": 3.2,
+  "p99": 10.0,
+  "max": 259.8,
+  "over_1ms": 0,
+  "total_ready_ms": 96.7
+ },
+ {
+  "tid": 12520,
+  "pid": 23152,
+  "proc": "vmmemWSL",
+  "switch_ins_per_s": 144.5,
+  "prio": {
+   "15": 9557,
+   "8": 317
+  },
+  "ready_to_run_us_p50": 4.6,
+  "p99": 29.7,
+  "max": 24263.4,
+  "over_1ms": 2,
+  "total_ready_ms": 89.1
+ },
+ {
+  "tid": 33600,
+  "pid": 4064,
+  "proc": "svchost.exe",
+  "switch_ins_per_s": 37.3,
+  "prio": {
+   "9": 1939,
+   "8": 450,
+   "24": 112
+  },
+  "ready_to_run_us_p50": 2.0,
+  "p99": 7.1,
+  "max": 19427.1,
+  "over_1ms": 11,
+  "total_ready_ms": 83.2
+ },
+ {
+  "tid": 18324,
+  "pid": 21216,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 97.4,
+  "prio": {
+   "13": 6559,
+   "14": 106
+  },
+  "ready_to_run_us_p50": 6.9,
+  "p99": 68.5,
+  "max": 1121.4,
+  "over_1ms": 1,
+  "total_ready_ms": 78.2
+ },
+ {
+  "tid": 20680,
+  "pid": 14628,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 223.8,
+  "prio": {
+   "12": 15189,
+   "11": 132,
+   "13": 2
+  },
+  "ready_to_run_us_p50": 4.2,
+  "p99": 31.2,
+  "max": 217.0,
+  "over_1ms": 0,
+  "total_ready_ms": 75.7
+ },
+ {
+  "tid": 14928,
+  "pid": 23884,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 180.2,
+  "prio": {
+   "11": 12328,
+   "10": 10
+  },
+  "ready_to_run_us_p50": 4.8,
+  "p99": 11.3,
+  "max": 7631.0,
+  "over_1ms": 4,
+  "total_ready_ms": 74.7
+ },
+ {
+  "tid": 9372,
+  "pid": 1304,
+  "proc": "dwm.exe",
+  "switch_ins_per_s": 117.6,
+  "prio": {
+   "14": 7985,
+   "13": 54,
+   "15": 9
+  },
+  "ready_to_run_us_p50": 4.9,
+  "p99": 10.6,
+  "max": 4689.8,
+  "over_1ms": 10,
+  "total_ready_ms": 70.7
+ },
+ {
+  "tid": 23972,
+  "pid": 14628,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 136.1,
+  "prio": {
+   "12": 5789,
+   "11": 3004,
+   "13": 443
+  },
+  "ready_to_run_us_p50": 4.2,
+  "p99": 14.7,
+  "max": 3364.5,
+  "over_1ms": 10,
+  "total_ready_ms": 68.6
+ },
+ {
+  "tid": 35764,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 17.5,
+  "prio": {
+   "12": 895,
+   "13": 208,
+   "15": 21
+  },
+  "ready_to_run_us_p50": 5.0,
+  "p99": 14.5,
+  "max": 15417.1,
+  "over_1ms": 7,
+  "total_ready_ms": 61.5
+ },
+ {
+  "tid": 19392,
+  "pid": 14628,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 161.8,
+  "prio": {
+   "11": 6478,
+   "12": 2486,
+   "16": 2088
+  },
+  "ready_to_run_us_p50": 4.8,
+  "p99": 10.8,
+  "max": 2037.4,
+  "over_1ms": 1,
+  "total_ready_ms": 60.8
+ },
+ {
+  "tid": 696,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 60.6,
+  "prio": {
+   "12": 2080,
+   "13": 997,
+   "7": 147
+  },
+  "ready_to_run_us_p50": 3.6,
+  "p99": 8.3,
+  "max": 15415.0,
+  "over_1ms": 5,
+  "total_ready_ms": 58.4
+ },
+ {
+  "tid": 35024,
+  "pid": 832,
+  "proc": "nvcontainer.exe",
+  "switch_ins_per_s": 100.0,
+  "prio": {
+   "15": 6849
+  },
+  "ready_to_run_us_p50": 5.7,
+  "p99": 53.4,
+  "max": 142.7,
+  "over_1ms": 0,
+  "total_ready_ms": 58.4
+ },
+ {
+  "tid": 13864,
+  "pid": 23884,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 151.3,
+  "prio": {
+   "10": 9476,
+   "9": 878,
+   "11": 1
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 45.0,
+  "max": 825.3,
+  "over_1ms": 0,
+  "total_ready_ms": 55.1
+ },
+ {
+  "tid": 22744,
+  "pid": 16196,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 95.9,
+  "prio": {
+   "13": 6566
+  },
+  "ready_to_run_us_p50": 5.1,
+  "p99": 15.7,
+  "max": 3496.9,
+  "over_1ms": 7,
+  "total_ready_ms": 55.1
+ },
+ {
+  "tid": 36944,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 28.2,
+  "prio": {
+   "12": 1497,
+   "13": 320,
+   "15": 54
+  },
+  "ready_to_run_us_p50": 3.9,
+  "p99": 26.6,
+  "max": 27943.3,
+  "over_1ms": 3,
+  "total_ready_ms": 52.5
+ },
+ {
+  "tid": 2204,
+  "pid": 14628,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 192.3,
+  "prio": {
+   "12": 12718,
+   "13": 261,
+   "11": 137
+  },
+  "ready_to_run_us_p50": 5.6,
+  "p99": 11.1,
+  "max": 561.1,
+  "over_1ms": 0,
+  "total_ready_ms": 51.8
+ },
+ {
+  "tid": 3100,
+  "pid": 23152,
+  "proc": "vmmemWSL",
+  "switch_ins_per_s": 132.1,
+  "prio": {
+   "15": 8666,
+   "8": 312
+  },
+  "ready_to_run_us_p50": 4.5,
+  "p99": 28.6,
+  "max": 9250.5,
+  "over_1ms": 2,
+  "total_ready_ms": 51.7
+ },
+ {
+  "tid": 29380,
+  "pid": 3880,
+  "proc": "MemCompression",
+  "switch_ins_per_s": 182.4,
+  "prio": {
+   "7": 2954
+  },
+  "ready_to_run_us_p50": 2.0,
+  "p99": 771.9,
+  "max": 36739.9,
+  "over_1ms": 6,
+  "total_ready_ms": 51.3
+ },
+ {
+  "tid": 1684,
+  "pid": 1304,
+  "proc": "dwm.exe",
+  "switch_ins_per_s": 195.2,
+  "prio": {
+   "15": 13363,
+   "16": 1
+  },
+  "ready_to_run_us_p50": 3.3,
+  "p99": 7.8,
+  "max": 135.0,
+  "over_1ms": 0,
+  "total_ready_ms": 48.1
+ },
+ {
+  "tid": 28980,
+  "pid": 12732,
+  "proc": "Gemini.exe",
+  "switch_ins_per_s": 65.8,
+  "prio": {
+   "10": 4505
+  },
+  "ready_to_run_us_p50": 9.0,
+  "p99": 35.1,
+  "max": 441.9,
+  "over_1ms": 0,
+  "total_ready_ms": 46.3
+ },
+ {
+  "tid": 7684,
+  "pid": 16172,
+  "proc": "NVIDIA Overlay.exe",
+  "switch_ins_per_s": 66.1,
+  "prio": {
+   "10": 4525
+  },
+  "ready_to_run_us_p50": 7.2,
+  "p99": 57.3,
+  "max": 3193.9,
+  "over_1ms": 2,
+  "total_ready_ms": 45.8
+ },
+ {
+  "tid": 19672,
+  "pid": 16172,
+  "proc": "NVIDIA Overlay.exe",
+  "switch_ins_per_s": 66.3,
+  "prio": {
+   "10": 4540
+  },
+  "ready_to_run_us_p50": 7.2,
+  "p99": 53.4,
+  "max": 3187.4,
+  "over_1ms": 2,
+  "total_ready_ms": 45.7
+ },
+ {
+  "tid": 6472,
+  "pid": 14628,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 65.7,
+  "prio": {
+   "10": 4494
+  },
+  "ready_to_run_us_p50": 9.0,
+  "p99": 35.5,
+  "max": 216.3,
+  "over_1ms": 0,
+  "total_ready_ms": 45.7
+ },
+ {
+  "tid": 36104,
+  "pid": 32876,
+  "proc": "Telegram.exe",
+  "switch_ins_per_s": 153.4,
+  "prio": {
+   "13": 5345,
+   "10": 5050,
+   "14": 36
+  },
+  "ready_to_run_us_p50": 4.0,
+  "p99": 12.3,
+  "max": 283.9,
+  "over_1ms": 0,
+  "total_ready_ms": 45.0
+ },
+ {
+  "tid": 14224,
+  "pid": 14200,
+  "proc": "Antigravity IDE.exe",
+  "switch_ins_per_s": 66.8,
+  "prio": {
+   "10": 4570
+  },
+  "ready_to_run_us_p50": 9.1,
+  "p99": 30.6,
+  "max": 233.8,
+  "over_1ms": 0,
+  "total_ready_ms": 45.0
+ },
+ {
+  "tid": 22576,
+  "pid": 7296,
+  "proc": "Antigravity.exe",
+  "switch_ins_per_s": 66.6,
+  "prio": {
+   "10": 4555
+  },
+  "ready_to_run_us_p50": 9.1,
+  "p99": 31.4,
+  "max": 239.8,
+  "over_1ms": 0,
+  "total_ready_ms": 44.7
+ },
+ {
+  "tid": 35160,
+  "pid": 12732,
+  "proc": "Gemini.exe",
+  "switch_ins_per_s": 66.7,
+  "prio": {
+   "10": 4562
+  },
+  "ready_to_run_us_p50": 7.4,
+  "p99": 44.4,
+  "max": 1226.5,
+  "over_1ms": 1,
+  "total_ready_ms": 43.0
+ },
+ {
+  "tid": 21212,
+  "pid": 16196,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 76.7,
+  "prio": {
+   "14": 3657,
+   "13": 1565,
+   "16": 17
+  },
+  "ready_to_run_us_p50": 5.2,
+  "p99": 43.7,
+  "max": 316.8,
+  "over_1ms": 0,
+  "total_ready_ms": 39.6
+ },
+ {
+  "tid": 2372,
+  "pid": 21216,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 64.2,
+  "prio": {
+   "13": 4391
+  },
+  "ready_to_run_us_p50": 4.9,
+  "p99": 16.7,
+  "max": 4527.2,
+  "over_1ms": 4,
+  "total_ready_ms": 38.8
+ },
+ {
+  "tid": 10672,
+  "pid": 31768,
+  "proc": "powershell.exe",
+  "switch_ins_per_s": 17.8,
+  "prio": {
+   "22": 1067,
+   "9": 15,
+   "8": 11
+  },
+  "ready_to_run_us_p50": 4.2,
+  "p99": 26.0,
+  "max": 6762.4,
+  "over_1ms": 7,
+  "total_ready_ms": 38.5
+ },
+ {
+  "tid": 1568,
+  "pid": 1432,
+  "proc": "csrss.exe",
+  "switch_ins_per_s": 68.9,
+  "prio": {
+   "16": 4715
+  },
+  "ready_to_run_us_p50": 6.9,
+  "p99": 33.6,
+  "max": 97.3,
+  "over_1ms": 0,
+  "total_ready_ms": 37.9
+ },
+ {
+  "tid": 25880,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 121.0,
+  "prio": {
+   "9": 4628,
+   "13": 2802,
+   "10": 803
+  },
+  "ready_to_run_us_p50": 4.0,
+  "p99": 10.5,
+  "max": 1106.1,
+  "over_1ms": 1,
+  "total_ready_ms": 37.8
+ },
+ {
+  "tid": 4988,
+  "pid": 21216,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 76.5,
+  "prio": {
+   "14": 2748,
+   "13": 2452,
+   "16": 25
+  },
+  "ready_to_run_us_p50": 5.1,
+  "p99": 42.4,
+  "max": 171.6,
+  "over_1ms": 0,
+  "total_ready_ms": 37.1
+ },
+ {
+  "tid": 10508,
+  "pid": 5176,
+  "proc": "HapticService.exe",
+  "switch_ins_per_s": 78.1,
+  "prio": {
+   "11": 5194,
+   "10": 151
+  },
+  "ready_to_run_us_p50": 4.0,
+  "p99": 40.3,
+  "max": 3192.6,
+  "over_1ms": 3,
+  "total_ready_ms": 36.3
+ },
+ {
+  "tid": 4212,
+  "pid": 2952,
+  "proc": "Antigravity IDE.exe",
+  "switch_ins_per_s": 95.3,
+  "prio": {
+   "11": 6490,
+   "13": 24,
+   "10": 3
+  },
+  "ready_to_run_us_p50": 4.6,
+  "p99": 14.8,
+  "max": 180.3,
+  "over_1ms": 0,
+  "total_ready_ms": 32.7
+ },
+ {
+  "tid": 2432,
+  "pid": 1304,
+  "proc": "dwm.exe",
+  "switch_ins_per_s": 107.9,
+  "prio": {
+   "15": 7389
+  },
+  "ready_to_run_us_p50": 3.8,
+  "p99": 10.2,
+  "max": 91.3,
+  "over_1ms": 0,
+  "total_ready_ms": 30.7
+ },
+ {
+  "tid": 33532,
+  "pid": 4552,
+  "proc": "audiodg.exe",
+  "switch_ins_per_s": 100.1,
+  "prio": {
+   "22": 4646,
+   "16": 1366,
+   "10": 2
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 11.7,
+  "max": 456.7,
+  "over_1ms": 0,
+  "total_ready_ms": 30.2
+ },
+ {
+  "tid": 34512,
+  "pid": 832,
+  "proc": "nvcontainer.exe",
+  "switch_ins_per_s": 60.0,
+  "prio": {
+   "15": 4108
+  },
+  "ready_to_run_us_p50": 4.1,
+  "p99": 9.5,
+  "max": 4435.9,
+  "over_1ms": 3,
+  "total_ready_ms": 28.9
+ },
+ {
+  "tid": 20748,
+  "pid": 21216,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 48.5,
+  "prio": {
+   "13": 3316
+  },
+  "ready_to_run_us_p50": 4.8,
+  "p99": 17.5,
+  "max": 3381.7,
+  "over_1ms": 4,
+  "total_ready_ms": 28.8
+ },
+ {
+  "tid": 3036,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 106.0,
+  "prio": {
+   "27": 7255
+  },
+  "ready_to_run_us_p50": 3.5,
+  "p99": 8.7,
+  "max": 59.6,
+  "over_1ms": 0,
+  "total_ready_ms": 28.5
+ },
+ {
+  "tid": 2520,
+  "pid": 6300,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 72.9,
+  "prio": {
+   "11": 2531,
+   "10": 1366,
+   "15": 498
+  },
+  "ready_to_run_us_p50": 4.7,
+  "p99": 14.5,
+  "max": 514.4,
+  "over_1ms": 0,
+  "total_ready_ms": 26.5
+ },
+ {
+  "tid": 5588,
+  "pid": 17292,
+  "proc": "MicroSIP.exe",
+  "switch_ins_per_s": 101.9,
+  "prio": {
+   "10": 6969,
+   "9": 3
+  },
+  "ready_to_run_us_p50": 3.4,
+  "p99": 11.1,
+  "max": 335.5,
+  "over_1ms": 0,
+  "total_ready_ms": 26.5
+ },
+ {
+  "tid": 29448,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 165.8,
+  "prio": {
+   "9": 5269,
+   "10": 19,
+   "8": 13
+  },
+  "ready_to_run_us_p50": 3.8,
+  "p99": 11.2,
+  "max": 112.6,
+  "over_1ms": 0,
+  "total_ready_ms": 20.1
+ },
+ {
+  "tid": 12136,
+  "pid": 5100,
+  "proc": "MsMpEng.exe",
+  "switch_ins_per_s": 65.5,
+  "prio": {
+   "14": 3724,
+   "8": 530,
+   "9": 81
+  },
+  "ready_to_run_us_p50": 4.7,
+  "p99": 10.4,
+  "max": 560.2,
+  "over_1ms": 0,
+  "total_ready_ms": 19.7
+ },
+ {
+  "tid": 22004,
+  "pid": 832,
+  "proc": "nvcontainer.exe",
+  "switch_ins_per_s": 46.9,
+  "prio": {
+   "15": 3209
+  },
+  "ready_to_run_us_p50": 5.2,
+  "p99": 27.4,
+  "max": 199.2,
+  "over_1ms": 0,
+  "total_ready_ms": 19.3
+ },
+ {
+  "tid": 30540,
+  "pid": 832,
+  "proc": "nvcontainer.exe",
+  "switch_ins_per_s": 60.0,
+  "prio": {
+   "15": 4108
+  },
+  "ready_to_run_us_p50": 4.1,
+  "p99": 8.6,
+  "max": 161.0,
+  "over_1ms": 0,
+  "total_ready_ms": 18.2
+ },
+ {
+  "tid": 3916,
+  "pid": 3880,
+  "proc": "MemCompression",
+  "switch_ins_per_s": 92.0,
+  "prio": {
+   "13": 3391,
+   "12": 1202
+  },
+  "ready_to_run_us_p50": 3.7,
+  "p99": 10.2,
+  "max": 87.5,
+  "over_1ms": 0,
+  "total_ready_ms": 17.5
+ },
+ {
+  "tid": 17944,
+  "pid": 13384,
+  "proc": "Discord.exe",
+  "switch_ins_per_s": 56.9,
+  "prio": {
+   "10": 2271,
+   "13": 1530,
+   "11": 41
+  },
+  "ready_to_run_us_p50": 4.0,
+  "p99": 13.2,
+  "max": 151.2,
+  "over_1ms": 0,
+  "total_ready_ms": 17.2
+ },
+ {
+  "tid": 16460,
+  "pid": 23884,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 18.3,
+  "prio": {
+   "9": 893,
+   "8": 342,
+   "11": 5
+  },
+  "ready_to_run_us_p50": 5.4,
+  "p99": 208.9,
+  "max": 5963.0,
+  "over_1ms": 4,
+  "total_ready_ms": 16.4
+ },
+ {
+  "tid": 21160,
+  "pid": 2952,
+  "proc": "Antigravity IDE.exe",
+  "switch_ins_per_s": 50.7,
+  "prio": {
+   "11": 3108,
+   "13": 242,
+   "10": 98
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 11.4,
+  "max": 116.8,
+  "over_1ms": 0,
+  "total_ready_ms": 16.0
+ },
+ {
+  "tid": 3620,
+  "pid": 30436,
+  "proc": "Antigravity IDE.exe",
+  "switch_ins_per_s": 37.2,
+  "prio": {
+   "11": 2089,
+   "10": 459
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 9.9,
+  "max": 1715.4,
+  "over_1ms": 1,
+  "total_ready_ms": 13.5
+ },
+ {
+  "tid": 1796,
+  "pid": 21216,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 44.5,
+  "prio": {
+   "15": 3042
+  },
+  "ready_to_run_us_p50": 3.8,
+  "p99": 8.6,
+  "max": 112.9,
+  "over_1ms": 0,
+  "total_ready_ms": 12.9
+ },
+ {
+  "tid": 3908,
+  "pid": 3880,
+  "proc": "MemCompression",
+  "switch_ins_per_s": 176.6,
+  "prio": {
+   "25": 4743
+  },
+  "ready_to_run_us_p50": 2.7,
+  "p99": 7.2,
+  "max": 17.3,
+  "over_1ms": 0,
+  "total_ready_ms": 12.9
+ },
+ {
+  "tid": 3868,
+  "pid": 16196,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 31.1,
+  "prio": {
+   "13": 2131
+  },
+  "ready_to_run_us_p50": 5.6,
+  "p99": 15.1,
+  "max": 85.5,
+  "over_1ms": 0,
+  "total_ready_ms": 12.8
+ },
+ {
+  "tid": 23380,
+  "pid": 21216,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 31.0,
+  "prio": {
+   "13": 2121
+  },
+  "ready_to_run_us_p50": 5.6,
+  "p99": 14.5,
+  "max": 86.7,
+  "over_1ms": 0,
+  "total_ready_ms": 12.7
+ },
+ {
+  "tid": 37044,
+  "pid": 32108,
+  "proc": "BehringerUM2Panel.exe",
+  "switch_ins_per_s": 30.5,
+  "prio": {
+   "24": 2086
+  },
+  "ready_to_run_us_p50": 5.3,
+  "p99": 13.3,
+  "max": 103.3,
+  "over_1ms": 0,
+  "total_ready_ms": 12.1
+ },
+ {
+  "tid": 1544,
+  "pid": 16196,
+  "proc": "parsecd.exe",
+  "switch_ins_per_s": 21.4,
+  "prio": {
+   "15": 752,
+   "14": 705,
+   "16": 2
+  },
+  "ready_to_run_us_p50": 5.1,
+  "p99": 16.9,
+  "max": 2175.2,
+  "over_1ms": 1,
+  "total_ready_ms": 11.4
+ },
+ {
+  "tid": 35432,
+  "pid": 10108,
+  "proc": "wiresock-connect-service.exe",
+  "switch_ins_per_s": 17.7,
+  "prio": {
+   "14": 1212
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 9.4,
+  "max": 3428.3,
+  "over_1ms": 2,
+  "total_ready_ms": 11.4
+ },
+ {
+  "tid": 35392,
+  "pid": 16808,
+  "proc": "CamoStudio.exe",
+  "switch_ins_per_s": 56.1,
+  "prio": {
+   "13": 3839
+  },
+  "ready_to_run_us_p50": 4.9,
+  "p99": 14.4,
+  "max": 48.3,
+  "over_1ms": 0,
+  "total_ready_ms": 11.0
+ },
+ {
+  "tid": 26628,
+  "pid": 20732,
+  "proc": "chrome.exe",
+  "switch_ins_per_s": 21.7,
+  "prio": {
+   "10": 789,
+   "13": 344,
+   "9": 304
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 71.9,
+  "max": 1877.7,
+  "over_1ms": 1,
+  "total_ready_ms": 10.3
+ },
+ {
+  "tid": 32812,
+  "pid": 8012,
+  "proc": "svchost.exe",
+  "switch_ins_per_s": 24.1,
+  "prio": {
+   "22": 1088,
+   "8": 2
+  },
+  "ready_to_run_us_p50": 5.0,
+  "p99": 10.4,
+  "max": 3615.6,
+  "over_1ms": 1,
+  "total_ready_ms": 10.2
+ },
+ {
+  "tid": 10748,
+  "pid": 10108,
+  "proc": "wiresock-connect-service.exe",
+  "switch_ins_per_s": 16.3,
+  "prio": {
+   "13": 1113
+  },
+  "ready_to_run_us_p50": 4.7,
+  "p99": 33.2,
+  "max": 3141.2,
+  "over_1ms": 1,
+  "total_ready_ms": 9.5
+ },
+ {
+  "tid": 15056,
+  "pid": 13384,
+  "proc": "Discord.exe",
+  "switch_ins_per_s": 57.3,
+  "prio": {
+   "9": 2878,
+   "10": 1005,
+   "11": 30
+  },
+  "ready_to_run_us_p50": 4.3,
+  "p99": 46.7,
+  "max": 640.6,
+  "over_1ms": 0,
+  "total_ready_ms": 9.2
+ },
+ {
+  "tid": 29844,
+  "pid": 32876,
+  "proc": "Telegram.exe",
+  "switch_ins_per_s": 18.4,
+  "prio": {
+   "15": 1244,
+   "16": 14
+  },
+  "ready_to_run_us_p50": 4.9,
+  "p99": 18.8,
+  "max": 89.1,
+  "over_1ms": 0,
+  "total_ready_ms": 7.7
+ },
+ {
+  "tid": 26748,
+  "pid": 20732,
+  "proc": "chrome.exe",
+  "switch_ins_per_s": 18.5,
+  "prio": {
+   "11": 1092,
+   "10": 156,
+   "9": 4
+  },
+  "ready_to_run_us_p50": 4.0,
+  "p99": 38.4,
+  "max": 622.6,
+  "over_1ms": 0,
+  "total_ready_ms": 7.6
+ },
+ {
+  "tid": 24564,
+  "pid": 6300,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 21.7,
+  "prio": {
+   "10": 719,
+   "11": 561,
+   "13": 76
+  },
+  "ready_to_run_us_p50": 4.7,
+  "p99": 14.2,
+  "max": 84.6,
+  "over_1ms": 0,
+  "total_ready_ms": 7.4
+ },
+ {
+  "tid": 16108,
+  "pid": 16392,
+  "proc": "Discord.exe",
+  "switch_ins_per_s": 21.5,
+  "prio": {
+   "10": 986,
+   "11": 295,
+   "13": 70
+  },
+  "ready_to_run_us_p50": 4.6,
+  "p99": 12.0,
+  "max": 79.5,
+  "over_1ms": 0,
+  "total_ready_ms": 7.3
+ },
+ {
+  "tid": 13092,
+  "pid": 13088,
+  "proc": "wallpaper64.exe",
+  "switch_ins_per_s": 21.2,
+  "prio": {
+   "10": 704,
+   "13": 346,
+   "11": 320
+  },
+  "ready_to_run_us_p50": 4.5,
+  "p99": 13.2,
+  "max": 118.9,
+  "over_1ms": 0,
+  "total_ready_ms": 7.1
+ },
+ {
+  "tid": 23456,
+  "pid": 23292,
+  "proc": "Antigravity.exe",
+  "switch_ins_per_s": 21.5,
+  "prio": {
+   "10": 734,
+   "11": 537,
+   "13": 71
+  },
+  "ready_to_run_us_p50": 4.6,
+  "p99": 11.7,
+  "max": 51.9,
+  "over_1ms": 0,
+  "total_ready_ms": 7.1
+ },
+ {
+  "tid": 4260,
+  "pid": 13680,
+  "proc": "Antigravity IDE.exe",
+  "switch_ins_per_s": 21.2,
+  "prio": {
+   "10": 1438,
+   "9": 9,
+   "11": 1
+  },
+  "ready_to_run_us_p50": 5.3,
+  "p99": 41.1,
+  "max": 148.6,
+  "over_1ms": 0,
+  "total_ready_ms": 6.9
+ },
+ {
+  "tid": 15100,
+  "pid": 30436,
+  "proc": "Antigravity IDE.exe",
+  "switch_ins_per_s": 33.1,
+  "prio": {
+   "9": 1801,
+   "10": 461,
+   "11": 2
+  },
+  "ready_to_run_us_p50": 5.3,
+  "p99": 51.3,
+  "max": 1070.0,
+  "over_1ms": 1,
+  "total_ready_ms": 6.8
+ },
+ {
+  "tid": 21692,
+  "pid": 6300,
+  "proc": "claude.exe",
+  "switch_ins_per_s": 17.4,
+  "prio": {
+   "11": 1142,
+   "10": 40,
+   "9": 1
+  },
+  "ready_to_run_us_p50": 4.9,
+  "p99": 12.6,
+  "max": 187.5,
+  "over_1ms": 0,
+  "total_ready_ms": 6.7
+ },
+ {
+  "tid": 11780,
+  "pid": 14680,
+  "proc": "explorer.exe",
+  "switch_ins_per_s": 20.1,
+  "prio": {
+   "10": 777,
+   "13": 255,
+   "9": 215
+  },
+  "ready_to_run_us_p50": 4.5,
+  "p99": 8.8,
+  "max": 304.1,
+  "over_1ms": 0,
+  "total_ready_ms": 6.3
+ },
+ {
+  "tid": 32016,
+  "pid": 24064,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1196.6,
+  "prio": {
+   "8": 76505,
+   "9": 268,
+   "10": 258
+  },
+  "ready_to_run_us_p50": 5.4,
+  "p99": 217.5,
+  "max": 985.5,
+  "over_1ms": 0,
+  "total_ready_ms": 6.2
+ },
+ {
+  "tid": 3912,
+  "pid": 3880,
+  "proc": "MemCompression",
+  "switch_ins_per_s": 141.5,
+  "prio": {
+   "25": 2291
+  },
+  "ready_to_run_us_p50": 2.5,
+  "p99": 5.9,
+  "max": 13.5,
+  "over_1ms": 0,
+  "total_ready_ms": 6.2
+ },
+ {
+  "tid": 21876,
+  "pid": 21716,
+  "proc": "ShellExperienceHost.exe",
+  "switch_ins_per_s": 32.0,
+  "prio": {
+   "11": 500,
+   "13": 405,
+   "10": 164
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 22.9,
+  "max": 363.8,
+  "over_1ms": 0,
+  "total_ready_ms": 5.5
+ },
+ {
+  "tid": 928,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 17.5,
+  "prio": {
+   "16": 1199
+  },
+  "ready_to_run_us_p50": 4.1,
+  "p99": 8.6,
+  "max": 47.8,
+  "over_1ms": 0,
+  "total_ready_ms": 5.4
+ },
+ {
+  "tid": 136,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 15.7,
+  "prio": {
+   "15": 1073
+  },
+  "ready_to_run_us_p50": 4.1,
+  "p99": 19.4,
+  "max": 54.3,
+  "over_1ms": 0,
+  "total_ready_ms": 5.0
+ },
+ {
+  "tid": 9944,
+  "pid": 13384,
+  "proc": "Discord.exe",
+  "switch_ins_per_s": 15.9,
+  "prio": {
+   "11": 858,
+   "10": 197,
+   "9": 17
+  },
+  "ready_to_run_us_p50": 4.0,
+  "p99": 23.1,
+  "max": 127.2,
+  "over_1ms": 0,
+  "total_ready_ms": 4.7
+ },
+ {
+  "tid": 22284,
+  "pid": 35056,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1146.5,
+  "prio": {
+   "8": 73261,
+   "9": 284,
+   "10": 250
+  },
+  "ready_to_run_us_p50": 5.4,
+  "p99": 57.5,
+  "max": 715.7,
+  "over_1ms": 0,
+  "total_ready_ms": 4.7
+ },
+ {
+  "tid": 1036,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 16.1,
+  "prio": {
+   "31": 1095
+  },
+  "ready_to_run_us_p50": 3.7,
+  "p99": 21.6,
+  "max": 33.9,
+  "over_1ms": 0,
+  "total_ready_ms": 4.5
+ },
+ {
+  "tid": 28008,
+  "pid": 32476,
+  "proc": "Antigravity IDE.exe",
+  "switch_ins_per_s": 15.2,
+  "prio": {
+   "9": 1036,
+   "10": 2
+  },
+  "ready_to_run_us_p50": 7.1,
+  "p99": 46.7,
+  "max": 753.7,
+  "over_1ms": 0,
+  "total_ready_ms": 4.2
+ },
+ {
+  "tid": 37616,
+  "pid": 37156,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1116.7,
+  "prio": {
+   "8": 71424,
+   "9": 225,
+   "10": 213
+  },
+  "ready_to_run_us_p50": 5.5,
+  "p99": 82.4,
+  "max": 868.2,
+  "over_1ms": 0,
+  "total_ready_ms": 4.2
+ },
+ {
+  "tid": 12040,
+  "pid": 10652,
+  "proc": "warp-svc.exe",
+  "switch_ins_per_s": 41.1,
+  "prio": {
+   "8": 2216,
+   "9": 594
+  },
+  "ready_to_run_us_p50": 4.4,
+  "p99": 25.0,
+  "max": 595.0,
+  "over_1ms": 0,
+  "total_ready_ms": 4.1
+ },
+ {
+  "tid": 34380,
+  "pid": 32276,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1102.5,
+  "prio": {
+   "8": 70499,
+   "10": 224,
+   "9": 221
+  },
+  "ready_to_run_us_p50": 5.5,
+  "p99": 157.3,
+  "max": 311.6,
+  "over_1ms": 0,
+  "total_ready_ms": 4.1
+ },
+ {
+  "tid": 32900,
+  "pid": 13708,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1070.5,
+  "prio": {
+   "8": 68461,
+   "10": 216,
+   "9": 208
+  },
+  "ready_to_run_us_p50": 5.5,
+  "p99": 82.4,
+  "max": 1023.2,
+  "over_1ms": 1,
+  "total_ready_ms": 4.1
+ },
+ {
+  "tid": 28480,
+  "pid": 2920,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1065.1,
+  "prio": {
+   "8": 68170,
+   "9": 216,
+   "10": 186
+  },
+  "ready_to_run_us_p50": 5.2,
+  "p99": 132.3,
+  "max": 394.6,
+  "over_1ms": 0,
+  "total_ready_ms": 4.0
+ },
+ {
+  "tid": 10296,
+  "pid": 17580,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1103.8,
+  "prio": {
+   "8": 70617,
+   "9": 216,
+   "10": 213
+  },
+  "ready_to_run_us_p50": 5.5,
+  "p99": 113.4,
+  "max": 286.8,
+  "over_1ms": 0,
+  "total_ready_ms": 3.8
+ },
+ {
+  "tid": 36988,
+  "pid": 35836,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1216.2,
+  "prio": {
+   "8": 77781,
+   "9": 259,
+   "10": 246
+  },
+  "ready_to_run_us_p50": 5.5,
+  "p99": 127.9,
+  "max": 258.8,
+  "over_1ms": 0,
+  "total_ready_ms": 3.8
+ },
+ {
+  "tid": 4508,
+  "pid": 15280,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1082.9,
+  "prio": {
+   "8": 69197,
+   "9": 276,
+   "10": 228
+  },
+  "ready_to_run_us_p50": 5.6,
+  "p99": 69.9,
+  "max": 131.6,
+  "over_1ms": 0,
+  "total_ready_ms": 3.6
+ },
+ {
+  "tid": 33588,
+  "pid": 37200,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1172.6,
+  "prio": {
+   "8": 74966,
+   "10": 259,
+   "9": 243
+  },
+  "ready_to_run_us_p50": 5.3,
+  "p99": 59.1,
+  "max": 101.4,
+  "over_1ms": 0,
+  "total_ready_ms": 3.3
+ },
+ {
+  "tid": 21040,
+  "pid": 25584,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1125.0,
+  "prio": {
+   "8": 72037,
+   "10": 187,
+   "9": 184
+  },
+  "ready_to_run_us_p50": 5.2,
+  "p99": 62.1,
+  "max": 102.6,
+  "over_1ms": 0,
+  "total_ready_ms": 2.9
+ },
+ {
+  "tid": 32832,
+  "pid": 20236,
+  "proc": "python.exe",
+  "switch_ins_per_s": 1032.1,
+  "prio": {
+   "8": 66030,
+   "9": 200,
+   "10": 182
+  },
+  "ready_to_run_us_p50": 5.2,
+  "p99": 78.0,
+  "max": 551.1,
+  "over_1ms": 0,
+  "total_ready_ms": 2.8
+ },
+ {
+  "tid": 1740,
+  "pid": 1608,
+  "proc": "lsass.exe",
+  "switch_ins_per_s": 18.1,
+  "prio": {
+   "9": 1160,
+   "13": 48,
+   "15": 16
+  },
+  "ready_to_run_us_p50": 1.5,
+  "p99": 5.3,
+  "max": 532.7,
+  "over_1ms": 0,
+  "total_ready_ms": 2.6
+ },
+ {
+  "tid": 22264,
+  "pid": 1572,
+  "proc": "services.exe",
+  "switch_ins_per_s": 39.1,
+  "prio": {
+   "9": 2498,
+   "11": 30,
+   "10": 18
+  },
+  "ready_to_run_us_p50": 0.7,
+  "p99": 2.8,
+  "max": 47.7,
+  "over_1ms": 0,
+  "total_ready_ms": 2.5
+ },
+ {
+  "tid": 12084,
+  "pid": 1572,
+  "proc": "services.exe",
+  "switch_ins_per_s": 16.7,
+  "prio": {
+   "9": 1043,
+   "14": 3,
+   "15": 2
+  },
+  "ready_to_run_us_p50": 0.7,
+  "p99": 4.1,
+  "max": 14.1,
+  "over_1ms": 0,
+  "total_ready_ms": 1.0
+ },
+ {
+  "tid": 1356,
+  "pid": 4,
+  "proc": "System",
+  "switch_ins_per_s": 335.8,
+  "prio": {
+   "4": 5350,
+   "18": 121
+  },
+  "ready_to_run_us_p50": 3.1,
+  "p99": 5.4,
+  "max": 6.8,
+  "over_1ms": 0,
+  "total_ready_ms": 0.1
+ },
+ {
+  "tid": 0,
+  "pid": 0,
+  "proc": "Idle",
+  "switch_ins_per_s": 1246.2,
+  "prio": {
+   "0": 85317
+  },
+  "ready_to_run_us_p50": null,
+  "p99": null,
+  "max": null,
+  "over_1ms": 0,
+  "total_ready_ms": 0.0
+ }
+]

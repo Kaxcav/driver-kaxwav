@@ -1,0 +1,153 @@
+{
+ "run_id": "2026-11-01-wpr-readier",
+ "date": "2026-11-01T20:22:27",
+ "commit": "7e6f2ef",
+ "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+ "dll_md5": "FC3920D109A0ED243C3F81884FBBE977",
+ "note": "diagnostico (DiagCounters=1); nao e baseline de desempenho",
+ "runs": [
+  {
+   "case": "load:256",
+   "load": "12 busy-loops",
+   "buffer": 256,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "callbacks": 5629,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 32372,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5529,
+    "budget_us": 5333.3,
+    "block_us_p50": 40.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 380.7,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 6187.8,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 7.7,
+    "recent_gap_us_p99": 6020.2
+   },
+   "diag": null,
+   "driver_log": [
+    "[20:21:19.258] Render Exclusive Initialize: 0x00000000",
+    "[20:21:19.258] Render Exclusive Real Buffer Size: 256 frames",
+    "[20:21:19.308] Capture Exclusive Initialize (Stereo): 0x00000000",
+    "[20:21:19.309] Capture Exclusive Real Buffer Size: 256 frames (channels=2)",
+    "[20:21:19.309] createBuffers completado: Mode=ExclusivePro, DAW=256 smp, Hardware=256 smp"
+   ],
+   "mode_requested": "ExclusivePro",
+   "probe_pid": 32372,
+   "threads": [
+    {
+     "tid": 16212,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 51,
+     "current_base": {
+      "25/17": 51
+     }
+    },
+    {
+     "tid": 29392,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 51,
+     "current_base": {
+      "25/17": 51
+     }
+    },
+    {
+     "tid": 34100,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 51,
+     "current_base": {
+      "26/18": 51
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[20:21:19.346] MMCSS \"Pro Audio\" OK (taskIndex=2095, tid=34100) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "punctuality": {
+    "callbacks_per_min": 11258.0,
+    "expected_per_min": 11250.0,
+    "ratio": 1.0007,
+    "max_gap_us": 6187.8,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  },
+  {
+   "case": "load:256:sf",
+   "load": "12 busy-loops",
+   "buffer": 256,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "SharedFlex",
+   "pdc_in": 992,
+   "pdc_out": 992,
+   "callbacks": 5625,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 21668,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5532,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 374.2,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 10893.8,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 7.7,
+    "recent_gap_us_p99": 10562.3
+   },
+   "diag": null,
+   "driver_log": [
+    "[20:21:55.149] IAudioClient3 InitializeSharedAudioStream: SUCESSO (targetPeriod=480 frames)",
+    "[20:21:55.151] Render Shared Buffer Total: 1056 frames",
+    "[20:21:55.170] Capture Shared Initialize: 0x00000000",
+    "[20:21:55.172] createBuffers completado: Mode=SharedFlex, DAW=256 smp, Hardware=256 smp"
+   ],
+   "mode_requested": "SharedFlex",
+   "probe_pid": 21668,
+   "threads": [
+    {
+     "tid": 36980,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 51,
+     "current_base": {
+      "26/18": 51
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[20:21:55.209] MMCSS \"Pro Audio\" OK (taskIndex=2101, tid=36980) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "punctuality": {
+    "callbacks_per_min": 11250.0,
+    "expected_per_min": 11250.0,
+    "ratio": 1.0,
+    "max_gap_us": 10893.8,
+    "cadence_us": 10000.0,
+    "gap_limit_us": 20000.0,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  }
+ ]
+}

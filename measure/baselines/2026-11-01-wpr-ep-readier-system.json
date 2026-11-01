@@ -1,0 +1,110 @@
+{
+ "kernel_records": 5535132,
+ "host_pid": 4,
+ "host_name": "System",
+ "targets": {
+  "sys1364": {
+   "tid": 1364,
+   "pid": 4,
+   "readies": 7751,
+   "switch_ins": 8008,
+   "priority_at_switch_in": {
+    "8": 8008
+   },
+   "ready_to_run_us": {
+    "p50": 1658.2,
+    "p99": 34962.0,
+    "p999": 49652.2,
+    "max": 74430.2,
+    "over_1ms": 4091,
+    "total_ready_ms": 55987.4
+   },
+   "readied_by": {
+    "DPC:nvlddmkm.sys": 7750,
+    "thread:python.exe": 1
+   }
+  },
+  "sys736": {
+   "tid": 736,
+   "pid": 4,
+   "readies": 5097,
+   "switch_ins": 5167,
+   "priority_at_switch_in": {
+    "8": 5167
+   },
+   "ready_to_run_us": {
+    "p50": 5.4,
+    "p99": 34120.5,
+    "p999": 46606.0,
+    "max": 66041.1,
+    "over_1ms": 2028,
+    "total_ready_ms": 25643.7
+   },
+   "readied_by": {
+    "thread:host_tid19468": 840,
+    "thread:host_tid35764": 691,
+    "thread:host_tid33832": 659,
+    "thread:host_tid696": 406,
+    "thread:host_tid33964": 396,
+    "thread:host_tid3676": 265,
+    "thread:host_tid32472": 257,
+    "thread:host_tid36920": 251,
+    "thread:host_tid5688": 250,
+    "thread:host_tid9872": 201
+   }
+  },
+  "kse_render": {
+   "tid": 13764,
+   "pid": 12972,
+   "readies": 12005,
+   "switch_ins": 12081,
+   "priority_at_switch_in": {
+    "25": 12078,
+    "8": 3
+   },
+   "ready_to_run_us": {
+    "p50": 4.2,
+    "p99": 31.8,
+    "p999": 125.9,
+    "max": 30221.0,
+    "over_1ms": 2,
+    "total_ready_ms": 106.7
+   },
+   "readied_by": {
+    "thread:um2_asio_probe.exe": 6003,
+    "DPC:Wdf01000.sys": 6001,
+    "thread:conhost.exe": 1
+   }
+  },
+  "kse_capture": {
+   "tid": 36456,
+   "pid": 12972,
+   "readies": 22497,
+   "switch_ins": 22498,
+   "priority_at_switch_in": {
+    "25": 22495,
+    "8": 3
+   },
+   "ready_to_run_us": {
+    "p50": 3.6,
+    "p99": 8.2,
+    "p999": 16.9,
+    "max": 12303.3,
+    "over_1ms": 1,
+    "total_ready_ms": 99.6
+   },
+   "readied_by": {
+    "thread:um2_asio_probe.exe": 11243,
+    "thread:host_tid36920": 1416,
+    "thread:host_tid32472": 1259,
+    "thread:host_tid5688": 1123,
+    "thread:host_tid33832": 987,
+    "thread:host_tid32260": 916,
+    "thread:host_tid19468": 908,
+    "thread:host_tid696": 834,
+    "thread:host_tid9872": 799,
+    "thread:host_tid35224": 674
+   }
+  }
+ }
+}

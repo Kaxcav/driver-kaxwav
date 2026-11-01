@@ -1,0 +1,815 @@
+{
+ "run_id": "2026-11-01-carga-prioridade",
+ "date": "2026-11-01T20:20:55",
+ "commit": "7e6f2ef",
+ "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+ "dll_md5": "FC3920D109A0ED243C3F81884FBBE977",
+ "load": "12 busy-loops por classe de prioridade",
+ "order": "intercalado",
+ "runs": [
+  {
+   "load_class": "normal",
+   "buffer": 256,
+   "rep": 1,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 2999,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 26860,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 2999,
+    "budget_us": 5333.3,
+    "block_us_p50": 40.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 61.5,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 10389.3,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 2999,
+    "recent_daw_callback_us_max": 4.4,
+    "recent_gap_us_p99": 10107.6
+   },
+   "threads": [
+    {
+     "tid": 34780,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 50,
+     "current_base": {
+      "25/17": 50
+     }
+    },
+    {
+     "tid": 33820,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 50,
+     "current_base": {
+      "25/17": 50
+     }
+    },
+    {
+     "tid": 36116,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 50,
+     "current_base": {
+      "26/18": 50
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 5998.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.5332,
+    "max_gap_us": 10389.3,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": false,
+    "pass_gap": true,
+    "pass": false
+   }
+  },
+  {
+   "load_class": "normal",
+   "buffer": 144,
+   "rep": 1,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 3753,
+   "pdc_in": 288,
+   "pdc_out": 288,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 34216,
+    "buffer": 144,
+    "sample_rate": 48000,
+    "blocks": 3731,
+    "budget_us": 3000.0,
+    "block_us_p50": 25.0,
+    "block_us_p99": 30.0,
+    "block_us_max": 38.3,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 8395.4,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 3731,
+    "recent_daw_callback_us_max": 2.3,
+    "recent_gap_us_p99": 8094.4
+   },
+   "threads": [
+    {
+     "tid": 3296,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 50,
+     "current_base": {
+      "25/17": 50
+     }
+    },
+    {
+     "tid": 33580,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 50,
+     "current_base": {
+      "25/17": 50
+     }
+    },
+    {
+     "tid": 8204,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 50,
+     "current_base": {
+      "26/18": 50
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 7506.0,
+    "expected_per_min": 20000.0,
+    "ratio": 0.3753,
+    "max_gap_us": 8395.4,
+    "cadence_us": 3000.0,
+    "gap_limit_us": 6000.0,
+    "pass_ratio": false,
+    "pass_gap": false,
+    "pass": false
+   }
+  },
+  {
+   "load_class": "belownormal",
+   "buffer": 256,
+   "rep": 1,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 5627,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 34052,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5537,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 85.0,
+    "block_us_max": 233.4,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 6220.3,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 16.6,
+    "recent_gap_us_p99": 6037.4
+   },
+   "threads": [
+    {
+     "tid": 32812,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 34216,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 10644,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 53,
+     "current_base": {
+      "26/18": 53
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 11254.0,
+    "expected_per_min": 11250.0,
+    "ratio": 1.0004,
+    "max_gap_us": 6220.3,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  },
+  {
+   "load_class": "belownormal",
+   "buffer": 144,
+   "rep": 1,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 10001,
+   "pdc_in": 288,
+   "pdc_out": 288,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 32852,
+    "buffer": 144,
+    "sample_rate": 48000,
+    "blocks": 9991,
+    "budget_us": 3000.0,
+    "block_us_p50": 20.0,
+    "block_us_p99": 25.0,
+    "block_us_max": 463.8,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 3741.6,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 29.1,
+    "recent_gap_us_p99": 3072.0
+   },
+   "threads": [
+    {
+     "tid": 17532,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 6356,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 36220,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 53,
+     "current_base": {
+      "26/18": 53
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 20002.0,
+    "expected_per_min": 20000.0,
+    "ratio": 1.0001,
+    "max_gap_us": 3741.6,
+    "cadence_us": 3000.0,
+    "gap_limit_us": 6000.0,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  },
+  {
+   "load_class": "idle",
+   "buffer": 256,
+   "rep": 1,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 5626,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 32852,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5619,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 40.0,
+    "block_us_max": 196.1,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 6469.1,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 3.9,
+    "recent_gap_us_p99": 6025.3
+   },
+   "threads": [
+    {
+     "tid": 32792,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 54,
+     "current_base": {
+      "25/17": 54
+     }
+    },
+    {
+     "tid": 31772,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 54,
+     "current_base": {
+      "25/17": 54
+     }
+    },
+    {
+     "tid": 30104,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 53,
+     "current_base": {
+      "26/18": 53
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 11252.0,
+    "expected_per_min": 11250.0,
+    "ratio": 1.0002,
+    "max_gap_us": 6469.1,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  },
+  {
+   "load_class": "idle",
+   "buffer": 144,
+   "rep": 1,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 10003,
+   "pdc_in": 288,
+   "pdc_out": 288,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 29560,
+    "buffer": 144,
+    "sample_rate": 48000,
+    "blocks": 10003,
+    "budget_us": 3000.0,
+    "block_us_p50": 20.0,
+    "block_us_p99": 25.0,
+    "block_us_max": 40.4,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 3399.6,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 6.6,
+    "recent_gap_us_p99": 3049.2
+   },
+   "threads": [
+    {
+     "tid": 22676,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 16412,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 37344,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 53,
+     "current_base": {
+      "26/18": 53
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 20006.0,
+    "expected_per_min": 20000.0,
+    "ratio": 1.0003,
+    "max_gap_us": 3399.6,
+    "cadence_us": 3000.0,
+    "gap_limit_us": 6000.0,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  },
+  {
+   "load_class": "normal",
+   "buffer": 256,
+   "rep": 2,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 2999,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 6616,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 2984,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 40.0,
+    "block_us_max": 45.3,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 10389.3,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 2984,
+    "recent_daw_callback_us_max": 3.5,
+    "recent_gap_us_p99": 10067.8
+   },
+   "threads": [
+    {
+     "tid": 29324,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 52,
+     "current_base": {
+      "25/17": 52
+     }
+    },
+    {
+     "tid": 36296,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 52,
+     "current_base": {
+      "25/17": 52
+     }
+    },
+    {
+     "tid": 35996,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 52,
+     "current_base": {
+      "26/18": 52
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 5998.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.5332,
+    "max_gap_us": 10389.3,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": false,
+    "pass_gap": true,
+    "pass": false
+   }
+  },
+  {
+   "load_class": "normal",
+   "buffer": 144,
+   "rep": 2,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 3751,
+   "pdc_in": 288,
+   "pdc_out": 288,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 24828,
+    "buffer": 144,
+    "sample_rate": 48000,
+    "blocks": 3713,
+    "budget_us": 3000.0,
+    "block_us_p50": 25.0,
+    "block_us_p99": 30.0,
+    "block_us_max": 33.3,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 8510.0,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 3713,
+    "recent_daw_callback_us_max": 4.7,
+    "recent_gap_us_p99": 8074.9
+   },
+   "threads": [
+    {
+     "tid": 29912,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 51,
+     "current_base": {
+      "25/17": 51
+     }
+    },
+    {
+     "tid": 19428,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 51,
+     "current_base": {
+      "25/17": 51
+     }
+    },
+    {
+     "tid": 11956,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 51,
+     "current_base": {
+      "26/18": 51
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 7502.0,
+    "expected_per_min": 20000.0,
+    "ratio": 0.3751,
+    "max_gap_us": 8510.0,
+    "cadence_us": 3000.0,
+    "gap_limit_us": 6000.0,
+    "pass_ratio": false,
+    "pass_gap": false,
+    "pass": false
+   }
+  },
+  {
+   "load_class": "belownormal",
+   "buffer": 256,
+   "rep": 2,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 5627,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 11480,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5625,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 40.0,
+    "block_us_max": 129.5,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 6968.7,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 18.4,
+    "recent_gap_us_p99": 6022.3
+   },
+   "threads": [
+    {
+     "tid": 14132,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 8204,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 37032,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 53,
+     "current_base": {
+      "26/18": 53
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 11254.0,
+    "expected_per_min": 11250.0,
+    "ratio": 1.0004,
+    "max_gap_us": 6968.7,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  },
+  {
+   "load_class": "belownormal",
+   "buffer": 144,
+   "rep": 2,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 10001,
+   "pdc_in": 288,
+   "pdc_out": 288,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 35404,
+    "buffer": 144,
+    "sample_rate": 48000,
+    "blocks": 9997,
+    "budget_us": 3000.0,
+    "block_us_p50": 20.0,
+    "block_us_p99": 25.0,
+    "block_us_max": 81.8,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 7386.2,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 4.6,
+    "recent_gap_us_p99": 3042.6
+   },
+   "threads": [
+    {
+     "tid": 32396,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 7976,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 22300,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 53,
+     "current_base": {
+      "26/18": 53
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 20002.0,
+    "expected_per_min": 20000.0,
+    "ratio": 1.0001,
+    "max_gap_us": 7386.2,
+    "cadence_us": 3000.0,
+    "gap_limit_us": 6000.0,
+    "pass_ratio": true,
+    "pass_gap": false,
+    "pass": false
+   }
+  },
+  {
+   "load_class": "idle",
+   "buffer": 256,
+   "rep": 2,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 5626,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 5324,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5625,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 40.0,
+    "block_us_max": 191.5,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 6534.6,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 35.3,
+    "recent_gap_us_p99": 6017.0
+   },
+   "threads": [
+    {
+     "tid": 33580,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 37652,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 53,
+     "current_base": {
+      "25/17": 53
+     }
+    },
+    {
+     "tid": 33732,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 53,
+     "current_base": {
+      "26/18": 53
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 11252.0,
+    "expected_per_min": 11250.0,
+    "ratio": 1.0002,
+    "max_gap_us": 6534.6,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  },
+  {
+   "load_class": "idle",
+   "buffer": 144,
+   "rep": 2,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 10003,
+   "pdc_in": 288,
+   "pdc_out": 288,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 34876,
+    "buffer": 144,
+    "sample_rate": 48000,
+    "blocks": 9989,
+    "budget_us": 3000.0,
+    "block_us_p50": 20.0,
+    "block_us_p99": 25.0,
+    "block_us_max": 71.8,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 3547.6,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 6.6,
+    "recent_gap_us_p99": 3052.0
+   },
+   "threads": [
+    {
+     "tid": 33116,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 54,
+     "current_base": {
+      "25/17": 54
+     }
+    },
+    {
+     "tid": 4188,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 54,
+     "current_base": {
+      "25/17": 54
+     }
+    },
+    {
+     "tid": 37632,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 53,
+     "current_base": {
+      "26/18": 53
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 20006.0,
+    "expected_per_min": 20000.0,
+    "ratio": 1.0003,
+    "max_gap_us": 3547.6,
+    "cadence_us": 3000.0,
+    "gap_limit_us": 6000.0,
+    "pass_ratio": true,
+    "pass_gap": true,
+    "pass": true
+   }
+  }
+ ]
+}

@@ -1,0 +1,303 @@
+{
+ "kernel_records": 5535132,
+ "host_pid": 12972,
+ "host_name": "um2_asio_probe.exe",
+ "targets": {
+  "audio": {
+   "tid": 3656,
+   "pid": 12972,
+   "readies": 22875,
+   "switch_ins": 22939,
+   "priority_at_switch_in": {
+    "15": 22935,
+    "8": 4
+   },
+   "ready_to_run_us": {
+    "p50": 3.7,
+    "p99": 6.6,
+    "p999": 27.8,
+    "max": 27493.6,
+    "over_1ms": 2,
+    "total_ready_ms": 122.8
+   },
+   "readied_by": {
+    "thread:kse_capture": 16873,
+    "thread:kse_render": 5999,
+    "thread:host_tid36088": 2,
+    "thread:conhost.exe": 1
+   },
+   "readies_issued": [
+    {
+     "tid": 36456,
+     "proc": "um2_asio_probe.exe",
+     "label": "kse_capture",
+     "count": 11241,
+     "prio": {
+      "25": 22495,
+      "8": 3
+     },
+     "ready_to_run_us_p50": 3.5,
+     "p99": 7.3
+    },
+    {
+     "tid": 13764,
+     "proc": "um2_asio_probe.exe",
+     "label": "kse_render",
+     "count": 6000,
+     "prio": {
+      "25": 12078,
+      "8": 3
+     },
+     "ready_to_run_us_p50": 4.6,
+     "p99": 47.7
+    },
+    {
+     "tid": 30116,
+     "proc": "System",
+     "label": null,
+     "count": 25,
+     "prio": {
+      "15": 202,
+      "8": 1
+     },
+     "ready_to_run_us_p50": 4.9,
+     "p99": 5.9
+    },
+    {
+     "tid": 3520,
+     "proc": "conhost.exe",
+     "label": null,
+     "count": 1,
+     "prio": {
+      "11": 109,
+      "10": 98,
+      "12": 1
+     },
+     "ready_to_run_us_p50": 4.5,
+     "p99": 4.5
+    },
+    {
+     "tid": 492,
+     "proc": "System",
+     "label": null,
+     "count": 1,
+     "prio": {
+      "8": 16
+     },
+     "ready_to_run_us_p50": 6785.4,
+     "p99": 6785.4
+    },
+    {
+     "tid": 1448,
+     "proc": "csrss.exe",
+     "label": null,
+     "count": 1,
+     "prio": {
+      "14": 240,
+      "13": 18
+     },
+     "ready_to_run_us_p50": 1.7,
+     "p99": 1.7
+    }
+   ]
+  },
+  "kse_render": {
+   "tid": 13764,
+   "pid": 12972,
+   "readies": 12005,
+   "switch_ins": 12081,
+   "priority_at_switch_in": {
+    "25": 12078,
+    "8": 3
+   },
+   "ready_to_run_us": {
+    "p50": 4.2,
+    "p99": 31.8,
+    "p999": 125.9,
+    "max": 30221.0,
+    "over_1ms": 2,
+    "total_ready_ms": 106.7
+   },
+   "readied_by": {
+    "DPC:Wdf01000.sys": 6001,
+    "thread:audio": 6000,
+    "thread:host_tid36088": 3,
+    "thread:conhost.exe": 1
+   },
+   "readies_issued": [
+    {
+     "tid": 3656,
+     "proc": "um2_asio_probe.exe",
+     "label": "audio",
+     "count": 5999,
+     "prio": {
+      "15": 22935,
+      "8": 4
+     },
+     "ready_to_run_us_p50": 4.1,
+     "p99": 6.8
+    },
+    {
+     "tid": 2344,
+     "proc": "parsecd.exe",
+     "label": null,
+     "count": 126,
+     "prio": {
+      "13": 47062
+     },
+     "ready_to_run_us_p50": 4.9,
+     "p99": 19.7
+    },
+    {
+     "tid": 3956,
+     "proc": "parsecd.exe",
+     "label": null,
+     "count": 126,
+     "prio": {
+      "15": 33116,
+      "14": 15677
+     },
+     "ready_to_run_us_p50": 4.5,
+     "p99": 8.7
+    },
+    {
+     "tid": 20748,
+     "proc": "parsecd.exe",
+     "label": null,
+     "count": 16,
+     "prio": {
+      "13": 3316
+     },
+     "ready_to_run_us_p50": 5.2,
+     "p99": 8.8
+    },
+    {
+     "tid": 22744,
+     "proc": "parsecd.exe",
+     "label": null,
+     "count": 15,
+     "prio": {
+      "13": 6566
+     },
+     "ready_to_run_us_p50": 4.7,
+     "p99": 9.2
+    },
+    {
+     "tid": 18324,
+     "proc": "parsecd.exe",
+     "label": null,
+     "count": 14,
+     "prio": {
+      "13": 6559,
+      "14": 106
+     },
+     "ready_to_run_us_p50": 4.2,
+     "p99": 6.7
+    }
+   ]
+  },
+  "kse_capture": {
+   "tid": 36456,
+   "pid": 12972,
+   "readies": 22497,
+   "switch_ins": 22498,
+   "priority_at_switch_in": {
+    "25": 22495,
+    "8": 3
+   },
+   "ready_to_run_us": {
+    "p50": 3.6,
+    "p99": 8.2,
+    "p999": 16.9,
+    "max": 12303.3,
+    "over_1ms": 1,
+    "total_ready_ms": 99.6
+   },
+   "readied_by": {
+    "thread:System": 11253,
+    "thread:audio": 11241,
+    "thread:host_tid36088": 2,
+    "thread:conhost.exe": 1
+   },
+   "readies_issued": [
+    {
+     "tid": 3656,
+     "proc": "um2_asio_probe.exe",
+     "label": "audio",
+     "count": 16873,
+     "prio": {
+      "15": 22935,
+      "8": 4
+     },
+     "ready_to_run_us_p50": 3.6,
+     "p99": 6.5
+    },
+    {
+     "tid": 32556,
+     "proc": "System",
+     "label": null,
+     "count": 2013,
+     "prio": {
+      "12": 11666,
+      "13": 4881,
+      "15": 2929
+     },
+     "ready_to_run_us_p50": 2.7,
+     "p99": 5.2
+    },
+    {
+     "tid": 33572,
+     "proc": "System",
+     "label": null,
+     "count": 1471,
+     "prio": {
+      "12": 8380,
+      "13": 3432,
+      "15": 2127
+     },
+     "ready_to_run_us_p50": 3.0,
+     "p99": 10.3
+    },
+    {
+     "tid": 35384,
+     "proc": "System",
+     "label": null,
+     "count": 1288,
+     "prio": {
+      "12": 8538,
+      "13": 3231,
+      "15": 2117
+     },
+     "ready_to_run_us_p50": 3.4,
+     "p99": 22.0
+    },
+    {
+     "tid": 37760,
+     "proc": "System",
+     "label": null,
+     "count": 355,
+     "prio": {
+      "12": 2271,
+      "13": 929,
+      "15": 605
+     },
+     "ready_to_run_us_p50": 2.9,
+     "p99": 5.4
+    },
+    {
+     "tid": 34880,
+     "proc": "System",
+     "label": null,
+     "count": 122,
+     "prio": {
+      "12": 1848,
+      "13": 522,
+      "15": 476
+     },
+     "ready_to_run_us_p50": 3.6,
+     "p99": 13.2
+    }
+   ]
+  }
+ }
+}

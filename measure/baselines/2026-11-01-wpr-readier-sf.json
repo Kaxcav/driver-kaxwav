@@ -1,0 +1,31 @@
+{
+ "kernel_records": 6255083,
+ "host_pid": 21668,
+ "host_name": "um2_asio_probe.exe",
+ "targets": {
+  "audio": {
+   "tid": 36980,
+   "pid": 21668,
+   "readies": 6004,
+   "switch_ins": 6012,
+   "priority_at_switch_in": {
+    "26": 6001,
+    "8": 11
+   },
+   "ready_to_run_us": {
+    "p50": 3.2,
+    "p99": 5.5,
+    "p999": 12.0,
+    "max": 2389.5,
+    "over_1ms": 3,
+    "total_ready_ms": 25.6
+   },
+   "readied_by": {
+    "thread:audiodg.exe": 6000,
+    "thread:host_tid36472": 2,
+    "thread:System": 1,
+    "thread:conhost.exe": 1
+   }
+  }
+ }
+}

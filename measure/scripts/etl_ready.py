@@ -185,6 +185,35 @@ def main():
                                 "total_ready_ms": round(sum(lat) / 1000, 1)},
             "readied_by": dict(ctx.most_common(10)),
         }
+    # inverse view: which threads each target readies (ReadyThread logged on a CPU while the target runs there,
+    # outside DPC/ISR), with the readied thread's priority and its own ready->run latency
+    issued = defaultdict(Counter)
+    issued_lat = defaultdict(lambda: defaultdict(list))
+    for ts, cpu, rtid in readies:
+        if cpu not in cpu_order:
+            continue
+        if cpu in dpc_starts:
+            i = bisect.bisect_right(dpc_starts[cpu], ts) - 1
+            if any(dpc[cpu][j][0] <= ts <= dpc[cpu][j][1] for j in range(i, max(-1, i - 4), -1)):
+                continue
+        tss, tids = cpu_order[cpu]
+        k = bisect.bisect_right(tss, ts) - 1
+        if k < 0 or tids[k] not in targets or tids[k] == rtid:
+            continue
+        issued[tids[k]][rtid] += 1
+        s = sw_ts.get(rtid, [])
+        m = bisect.bisect_left(s, ts)
+        if m < len(s):
+            issued_lat[tids[k]][rtid].append((s[m] - ts) * us)
+    for tid, label in targets.items():
+        out = []
+        for rtid, c in issued[tid].most_common(6):
+            rp = tid_pid.get(rtid)
+            lat = issued_lat[tid][rtid]
+            pr = Counter(p for _, p in switch_in.get(rtid, []))
+            out.append({"tid": rtid, "proc": pid_name.get(rp, f"pid{rp}"), "label": targets.get(rtid), "count": c,
+                        "prio": dict(pr.most_common(3)), "ready_to_run_us_p50": pct(lat, .5), "p99": pct(lat, .99)})
+        res["targets"][label]["readies_issued"] = out
     print(json.dumps(res, indent=1))
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fo:

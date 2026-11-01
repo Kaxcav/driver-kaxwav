@@ -64,11 +64,30 @@ Número de dossiê de pesquisa automatizada não conta como fonte.
     60 s, KS Endpoint Glitch **STREN Device Starved 12.000**, **IOMGR No Outstanding Packets 11.626**,
     BASE Input Buffer Index Mismatch 11.250 e STCAP Device Starved 5.625. **Ociosa: 0** desses
     (só 1 "STREN EXCL PULL Invalid Buffer Count" no início).
-  - Hipótese (**NÃO VERIFICADA**): sob carga, a notificação de render do caminho exclusive por pacotes
-    (KS/IOMGR do AudioSes sobre o `usbaudio.sys` UAC1) chega atrasada ou agrupada. Como o loop dá
-    exatamente um pacote de render por evento e amarra o ASIO a esse evento, ele nunca recupera. O
-    porquê do lado do render (o que atrasa a conclusão dos pacotes) ainda não está provado: falta
-    olhar DPC/ISR e as conclusões de IRP no mesmo trace.
+  - **Atualização de 01/11 à noite — é uma armadilha na partida, não fome contínua.**
+    - Carga por classe de prioridade, intercalado, 30 s (`2026-11-01-carga-prioridade.json`): carga em
+      **Normal** → 5.998/min @256 e 7.502–7.506/min @144 (fome); **BelowNormal** e **Idle** → 11.252–11.254 e
+      20.002–20.006/min (sem fome), nas 2 repetições.
+    - Trocando a carga no meio da corrida (`2026-11-01-metaestavel-*.json`): partida **ociosa** e carga
+      depois → nunca entra em fome (3/3). Partida **sob carga** → às vezes entra (1/4 nesta série; quase
+      sempre nas medições anteriores) e, quando entra, **continua em 10 ms com a fila de render vazia depois
+      que a carga é removida**. O estado se mantém sozinho.
+    - Trace (`2026-11-01-wpr-*-ready*.json`): no regime ruim, a cadeia do render é toda rápida — a thread
+      de render do `audiokse.dll` (prioridade 25) é acordada pelo DPC do `Wdf01000.sys` e acorda a nossa thread
+      em µs. A diferença é só a cadência do DPC: 100/s em vez de 187,5/s. A captura passa por worker threads
+      do kernel (12–15) e não é afetada. No SharedFlex quem acorda a nossa thread é o `audiodg.exe`.
+    - Leitura do código (`start()`): `Start()` do render com **1 buffer** de pré-roll, e só depois, ainda
+      na thread do host (prioridade normal), cabo virtual, telemetria e só então a thread de áudio é criada.
+      Do pré-roll à primeira execução da thread: 10–26 ms medidos no log (o pré-roll dura 5,33 ms).
+    - Hipótese (**NÃO VERIFICADA**, mas consistente com tudo acima): se o device esvazia na partida, o
+      pipeline exclusive por pacotes fica com **um** pacote em voo. Como o modo evento só deixa escrever um
+      período por evento, ele nunca volta a ter dois. Cada pacote passa a custar o período + ~4,7–5 ms
+      (10,0 − 5,33 @256; 8,0 − 3,0 @144), o que parece latência de reinício isócrono no USB. A carga em
+      prioridade normal atrasa a partida, porque `start()` roda na thread do host, e decide se cai na
+      armadilha. No FL isso quer dizer: o motor iniciado com a CPU ocupada pode ficar picotando até ser
+      reiniciado.
+    - Observação isolada, não reproduzida: com o host **elevado e o WPR gravando**, uma partida sob carga
+      não caiu na armadilha. A matriz para separar os dois fatores não rodou (UAC expirou).
   - A hipótese anterior (throttle do MMCSS via `SystemResponsiveness` = 20) foi descartada. Registro do
     sistema não alterado.
 - **`pdcOffsetSamples` (painel) não tem como estar calibrado antes do M1.** Um offset manual muda a latência de entrada informada ao host (`getLatencies` → alinhamento da gravação) sem medição que o sustente. Em 01/11 o painel novo aplicou −256 vindo do `um2_config.json` (não ajustado de propósito); voltou para 0 no painel, no `um2_config.json` e no registro (`PdcOffsetSamples`). Só mexer nisso com o RTL do M1 medido.

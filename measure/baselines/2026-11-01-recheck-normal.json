@@ -1,0 +1,78 @@
+{
+ "run_id": "2026-11-01-recheck-normal",
+ "date": "2026-11-01T20:23:54",
+ "commit": "7e6f2ef",
+ "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+ "dll_md5": "FC3920D109A0ED243C3F81884FBBE977",
+ "load": "12 busy-loops por classe de prioridade",
+ "order": "intercalado",
+ "runs": [
+  {
+   "load_class": "normal",
+   "buffer": 256,
+   "rep": 1,
+   "seconds": 30,
+   "ok": true,
+   "mode_active": "ExclusivePro",
+   "callbacks": 3000,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 12088,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 2981,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 40.0,
+    "block_us_max": 41.2,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 10394.6,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 2981,
+    "recent_daw_callback_us_max": 6.5,
+    "recent_gap_us_p99": 10084.7
+   },
+   "threads": [
+    {
+     "tid": 20908,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 52,
+     "current_base": {
+      "25/17": 52
+     }
+    },
+    {
+     "tid": 35780,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 52,
+     "current_base": {
+      "25/17": 52
+     }
+    },
+    {
+     "tid": 23560,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 52,
+     "current_base": {
+      "26/18": 52
+     }
+    }
+   ],
+   "punctuality": {
+    "callbacks_per_min": 6000.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.5333,
+    "max_gap_us": 10394.6,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": false,
+    "pass_gap": true,
+    "pass": false
+   }
+  }
+ ]
+}

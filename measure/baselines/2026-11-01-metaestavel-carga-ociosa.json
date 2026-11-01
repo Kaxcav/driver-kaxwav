@@ -1,0 +1,66 @@
+{
+ "run_id": "2026-11-01-metaestavel-carga-ociosa",
+ "date": "2026-11-01T20:52:51",
+ "pattern": "load-idle",
+ "switch_at_s": 15.0,
+ "buffer": 256,
+ "dll": "build\\ab\\C_diag_BehringerUM2ASIODriver.dll",
+ "snapshots": [
+  {
+   "t_s": 5.0,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 883,
+   "bufferSwitches": 883
+  },
+  {
+   "t_s": 10.0,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 1823,
+   "bufferSwitches": 1823
+  },
+  {
+   "t_s": 15.0,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 2763,
+   "bufferSwitches": 2763
+  },
+  {
+   "t_s": 20.0,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 3702,
+   "bufferSwitches": 3702
+  },
+  {
+   "t_s": 25.1,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 4641,
+   "bufferSwitches": 4641
+  },
+  {
+   "t_s": 30.1,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 5579,
+   "bufferSwitches": 5579
+  },
+  {
+   "t_s": 35.1,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 6518,
+   "bufferSwitches": 6518
+  },
+  {
+   "t_s": 40.1,
+   "render_interval_ms_mean": 5.33,
+   "padding0_frac": 0.0,
+   "renderServiced": 7458,
+   "bufferSwitches": 7458
+  }
+ ]
+}
