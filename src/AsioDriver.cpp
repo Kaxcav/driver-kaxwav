@@ -144,6 +144,7 @@ BehringerUM2AsioDriver::~BehringerUM2AsioDriver() {
     m_processLoopback.Shutdown();
     ReleaseEndpoints();
     CloseTelemetry();
+    CloseDiag();
     CloseSharedMemory();
     CoUninitialize();
 }
@@ -402,6 +403,42 @@ void BehringerUM2AsioDriver::OpenTelemetry() {
     m_pTelemetry->histBins = UM2_TIMING_HIST_BINS;
     std::atomic_thread_fence(std::memory_order_release);
     m_pTelemetry->magic = UM2_TELEMETRY_MAGIC;
+}
+
+// Diagnostics: called from start() before the audio thread exists. Off unless DiagCounters=1.
+void BehringerUM2AsioDriver::OpenDiag() {
+    DWORD v = 0, cb = sizeof(DWORD);
+    if (RegGetValueW(HKEY_CURRENT_USER, L"Software\\BehringerUM2\\ASIO", L"DiagCounters", RRF_RT_REG_DWORD, nullptr, &v, &cb) != ERROR_SUCCESS) v = 0;
+    m_diagEnabled = (v != 0);
+    if (!m_diagEnabled) return;
+    if (!m_pDiag) {
+        m_hDiag = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, static_cast<DWORD>(sizeof(UM2Diag)), UM2_DIAG_NAME);
+        if (m_hDiag) m_pDiag = static_cast<UM2Diag*>(MapViewOfFile(m_hDiag, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(UM2Diag)));
+        if (!m_pDiag) {
+            LogAsio("Diagnostico indisponivel: mapeamento falhou (%lu)", GetLastError());
+            if (m_hDiag) { CloseHandle(m_hDiag); m_hDiag = nullptr; }
+            m_diagEnabled = false;
+            return;
+        }
+    }
+    std::memset(m_pDiag, 0, sizeof(UM2Diag));
+    m_pDiag->version = UM2_DIAG_VERSION;
+    m_pDiag->ownerPid = GetCurrentProcessId();
+    m_pDiag->mode = (m_driverMode == DriverEngineMode::SharedFlex) ? 1u : 0u;
+    m_pDiag->bufferSize = static_cast<uint32_t>(m_bufferSize);
+    const bool shared = (m_driverMode == DriverEngineMode::SharedFlex);
+    m_pDiag->renderPeriodFrames = shared ? m_enginePeriodFrames : m_exclusiveRenderFrames;
+    m_pDiag->capturePeriodFrames = shared ? m_enginePeriodFrames : m_exclusiveCaptureFrames;
+    m_pDiag->qpcFrequency = m_qpcFreq.QuadPart;
+    std::atomic_thread_fence(std::memory_order_release);
+    m_pDiag->magic = UM2_DIAG_MAGIC;
+    LogAsio("Diagnostico do loop ATIVO (DiagCounters=1): render=%u capture=%u frames por periodo",
+            m_pDiag->renderPeriodFrames, m_pDiag->capturePeriodFrames);
+}
+
+void BehringerUM2AsioDriver::CloseDiag() {
+    if (m_pDiag) { UnmapViewOfFile(m_pDiag); m_pDiag = nullptr; }
+    if (m_hDiag) { CloseHandle(m_hDiag); m_hDiag = nullptr; }
 }
 
 void BehringerUM2AsioDriver::CloseTelemetry() {
@@ -1567,6 +1604,7 @@ ASIOError BehringerUM2AsioDriver::start() {
 
     InitCableEndpoint();
     OpenTelemetry();
+    OpenDiag();
     m_audioThread = std::thread(&BehringerUM2AsioDriver::AudioThreadLoop, this);
     m_active = true;
     LogAsio("start() executado com SUCESSO");
@@ -1623,6 +1661,11 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
                 GetLastError());
     }
 
+    // Diagnostics (UM2Diag.h): null unless DiagCounters=1 at start(); every use below is behind "if (dg)".
+    UM2Diag* const dg = m_diagEnabled ? m_pDiag : nullptr;
+    const int64_t qf = m_qpcFreq.QuadPart;
+    if (dg) dg->audioThreadId = GetCurrentThreadId();
+
     uint32_t currentBufferHalf = 0;
 
     const size_t outLeftIdx   = NUM_INPUTS + 0;
@@ -1661,6 +1704,11 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
     };
 
     auto pushCapturePacket = [&](BYTE* pCapData, UINT32 numFrames, DWORD flags, bool isDriverMuted) {
+        if (dg) {
+            dg->capFramesIn += numFrames;
+            if (flags & AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY) dg->capDiscontinuity++;
+            if (flags & AUDCLNT_BUFFERFLAGS_SILENT) dg->capSilentFlag++;
+        }
         if (flags & AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY) {
             if (m_pSharedState) m_pSharedState->xruns++;
         }
@@ -1671,7 +1719,7 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
                 capFifo[capHead * 2 + 0] = 0.0f;
                 capFifo[capHead * 2 + 1] = 0.0f;
                 capHead = (capHead + 1) % FIFO_CAP;
-                if (capHead == capTail) capTail = (capTail + 1) % FIFO_CAP;
+                if (capHead == capTail) { capTail = (capTail + 1) % FIFO_CAP; if (dg) dg->capDropFrames++; }
             }
         } else if (m_captureChannels == 1) {
             const auto* pFloats = reinterpret_cast<const float*>(pCapData);
@@ -1681,7 +1729,7 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
                 capFifo[capHead * 2 + 0] = sample;
                 capFifo[capHead * 2 + 1] = 0.0f;
                 capHead = (capHead + 1) % FIFO_CAP;
-                if (capHead == capTail) capTail = (capTail + 1) % FIFO_CAP;
+                if (capHead == capTail) { capTail = (capTail + 1) % FIFO_CAP; if (dg) dg->capDropFrames++; }
             }
         } else {
             const auto* pFloats = reinterpret_cast<const float*>(pCapData);
@@ -1692,7 +1740,7 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
                 capFifo[capHead * 2 + 0] = s0;
                 capFifo[capHead * 2 + 1] = s1;
                 capHead = (capHead + 1) % FIFO_CAP;
-                if (capHead == capTail) capTail = (capTail + 1) % FIFO_CAP;
+                if (capHead == capTail) { capTail = (capTail + 1) % FIFO_CAP; if (dg) dg->capDropFrames++; }
             }
         }
     };
@@ -1749,6 +1797,7 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
             UINT32 oppFrames = 0;
             DWORD oppFlags = 0;
             while (SUCCEEDED(m_pCaptureService->GetBuffer(&pOppCap, &oppFrames, &oppFlags, nullptr, nullptr)) && oppFrames > 0) {
+                if (dg) dg->capPacketsOpportunistic++;
                 pushCapturePacket(pOppCap, oppFrames, oppFlags, isDriverMuted);
                 m_pCaptureService->ReleaseBuffer(oppFrames);
             }
@@ -1756,6 +1805,15 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
 
         int16_t* pIn0 = &m_channelMemory[0][currentBufferHalf * m_bufferSize];
         int16_t* pIn1 = &m_channelMemory[1][currentBufferHalf * m_bufferSize];
+
+        if (dg) {
+            dg->bufferSwitches++;
+            const size_t have = capFifoAvail();
+            if (have < static_cast<size_t>(m_bufferSize)) {
+                dg->capUnderflowBlocks++;
+                dg->capUnderflowFrames += static_cast<uint64_t>(m_bufferSize) - have;
+            }
+        }
 
         for (long s = 0; s < m_bufferSize; ++s) {
             float in0Val = 0.0f, in1Val = 0.0f;
@@ -2210,6 +2268,61 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
                 renderReady = true;
             }
 
+            // Diagnostics only (dg == nullptr unless DiagCounters=1): wake cadence and what was pending.
+            LARGE_INTEGER qWake{};
+            uint64_t dBlocks0 = 0;
+            uint32_t dCapPend = 0, dRenPad = 0;
+            uint16_t dFlags = 0;
+            if (dg) {
+                QueryPerformanceCounter(&qWake);
+                dg->wakes++;
+                if (renderReady) dFlags |= UM2_WAKE_RENDER;
+                if (captureReady) dFlags |= UM2_WAKE_CAPTURE;
+                if (renderReady && captureReady) dg->wakeBoth++;
+                else if (renderReady) dg->wakeRenderOnly++;
+                else if (captureReady) dg->wakeCaptureOnly++;
+                else { dFlags |= UM2_WAKE_TIMEOUT; dg->waitTimeouts++; }
+                if (dg->lastWakeQpc) {
+                    const int64_t gap = qWake.QuadPart - dg->lastWakeQpc;
+                    dg->wakeIntervalHist[UM2DiagTBin(gap, qf)]++;
+                    if (gap > dg->maxWakeIntervalTicks) dg->maxWakeIntervalTicks = gap;
+                }
+                dg->lastWakeQpc = qWake.QuadPart;
+                dBlocks0 = dg->bufferSwitches;
+                if (captureReady && m_pCaptureClient) {
+                    dg->captureServiced++;
+                    if (SUCCEEDED(m_pCaptureClient->GetCurrentPadding(&dCapPend)))
+                        dg->capPendingHist[UM2DiagPBin(dCapPend, dg->capturePeriodFrames)]++;
+                }
+                if (renderReady && m_pRenderClient) {
+                    dg->renderServiced++;
+                    if (SUCCEEDED(m_pRenderClient->GetCurrentPadding(&dRenPad)))
+                        dg->renPaddingHist[UM2DiagPBin(dRenPad, dg->renderPeriodFrames)]++;
+                    else
+                        dg->renPaddingFail++;
+                    if (dg->lastRenderQpc) {
+                        const int64_t gap = qWake.QuadPart - dg->lastRenderQpc;
+                        dg->renderIntervalHist[UM2DiagTBin(gap, qf)]++;
+                        if (gap > dg->maxRenderIntervalTicks) dg->maxRenderIntervalTicks = gap;
+                    }
+                    dg->lastRenderQpc = qWake.QuadPart;
+                }
+            }
+            // Capture packet age = wake time - device timestamp of its first frame (both in 100 ns).
+            auto diagCapturePacket = [&](HRESULT hr, UINT64 qpcPos, DWORD pktFlags) {
+                if (hr == AUDCLNT_S_BUFFER_EMPTY) { dg->capEmptyOnEvent++; return; }
+                if (FAILED(hr)) { dg->capGetBufferFail++; dg->lastCapHr = static_cast<uint32_t>(hr); return; }
+                dg->capPacketsMain++;
+                if (pktFlags & AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY) dFlags |= UM2_WAKE_CAP_DISC;
+                if (qpcPos && qf > 0) {
+                    const int64_t now100 = (qWake.QuadPart / qf) * 10000000LL + ((qWake.QuadPart % qf) * 10000000LL) / qf;
+                    const int64_t age100 = now100 - static_cast<int64_t>(qpcPos);
+                    const int64_t ageTicks = (age100 > 0) ? (age100 * qf) / 10000000LL : 0;
+                    dg->capAgeHist[UM2DiagTBin(ageTicks, qf)]++;
+                    if (ageTicks > dg->maxCapAgeTicks) dg->maxCapAgeTicks = ageTicks;
+                }
+            };
+
             bool isDriverMuted = (m_pSharedState && m_pSharedState->softwareMute != 0);
 
             // 1. Drena captura para dentro do capFifo quando sinalizada
@@ -2217,18 +2330,22 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
                 BYTE* pCapData = nullptr;
                 UINT32 numFrames = 0;
                 DWORD flags = 0;
+                UINT64 capQpcPos = 0;
                 HRESULT hrCap = S_OK;
                 if (!m_captureIsFloat) {
-                    hrCap = m_pCaptureService->GetBuffer(&pCapData, &numFrames, &flags, nullptr, nullptr);
+                    hrCap = m_pCaptureService->GetBuffer(&pCapData, &numFrames, &flags, nullptr, dg ? &capQpcPos : nullptr);
+                    if (dg) diagCapturePacket(hrCap, capQpcPos, flags);
                     if (SUCCEEDED(hrCap)) {
                         pushCapturePacket(pCapData, numFrames, flags, isDriverMuted);
                         m_pCaptureService->ReleaseBuffer(numFrames);
                     }
                 } else {
-                    while (SUCCEEDED(hrCap = m_pCaptureService->GetBuffer(&pCapData, &numFrames, &flags, nullptr, nullptr)) && numFrames > 0) {
+                    while (SUCCEEDED(hrCap = m_pCaptureService->GetBuffer(&pCapData, &numFrames, &flags, nullptr, dg ? &capQpcPos : nullptr)) && numFrames > 0) {
+                        if (dg) diagCapturePacket(hrCap, capQpcPos, flags);
                         pushCapturePacket(pCapData, numFrames, flags, isDriverMuted);
                         m_pCaptureService->ReleaseBuffer(numFrames);
                     }
+                    if (dg && FAILED(hrCap)) diagCapturePacket(hrCap, 0, 0);
                 }
 
                 if (hrCap == AUDCLNT_E_DEVICE_INVALIDATED) {
@@ -2247,6 +2364,10 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
                 if (renFifoAvail() >= targetFrames) {
                     BYTE* pRenData = nullptr;
                     HRESULT hrRen = m_pRenderService->GetBuffer(targetFrames, &pRenData);
+                    if (dg) {
+                        if (FAILED(hrRen)) { dg->renGetBufferFail++; dg->lastRenHr = static_cast<uint32_t>(hrRen); }
+                        else { dg->renWrites++; dFlags |= UM2_WAKE_REN_WRITE; }
+                    }
                     if (hrRen == AUDCLNT_E_DEVICE_INVALIDATED) {
                         handleDeviceInvalidated();
                         break;
@@ -2262,7 +2383,15 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
                         }
                         m_pRenderService->ReleaseBuffer(targetFrames, 0);
                     }
+                } else if (dg) {
+                    dg->renSkipNoData++;
                 }
+            }
+
+            if (dg) {
+                const uint64_t blocks = dg->bufferSwitches - dBlocks0;
+                dg->blocksPerWakeHist[blocks >= 7 ? 7 : blocks]++;
+                UM2DiagPushWake(dg, qWake.QuadPart, dFlags, dCapPend, dRenPad, static_cast<uint32_t>(blocks));
             }
         }
     }

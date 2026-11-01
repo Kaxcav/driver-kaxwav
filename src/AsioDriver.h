@@ -16,6 +16,7 @@
 #include "UM2Dsp.h"
 #include "UM2Loopback.h"
 #include "UM2Telemetry.h"
+#include "UM2Diag.h"
 
 #pragma comment(lib, "avrt.lib")
 #pragma comment(lib, "ole32.lib")
@@ -139,6 +140,13 @@ private:
     UM2Telemetry* m_pTelemetry{ nullptr };
     void OpenTelemetry();
     void CloseTelemetry();
+
+    // Engine-loop diagnostics (UM2Diag.h): off unless DiagCounters=1, decided in start()
+    HANDLE m_hDiag{ nullptr };
+    UM2Diag* m_pDiag{ nullptr };
+    bool m_diagEnabled{ false };
+    void OpenDiag();
+    void CloseDiag();
     void InitSharedMemory();
     void CloseSharedMemory();
 
