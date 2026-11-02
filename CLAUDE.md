@@ -68,6 +68,12 @@ Host ASIO em **userland** sobre **WASAPI Exclusive + RAW + event-driven**.
     (`generate_license.py`, `Gerar_Chave_Cliente_UM2.bat`) é ferramenta do vendedor e não vive
     neste repo. `donate_config.json` (chave PIX) idem. O CI barra os três.
 
+12. **Os streams exclusive são iniciados pela thread de áudio** (já em MMCSS), logo antes do loop de
+    espera, e a vigia do render fica ligada. Mover o `Start()` de volta para `start()` (thread do host)
+    reabre a armadilha do render: com CPU ocupada, 12/12 partidas presas em ~53% dos callbacks.
+    Mecanismo e números em `docs/FATOS-VERIFICADOS.md` ("Armadilha do render no ExclusivePro").
+    Toda mudança na partida do stream passa também pelo `measure/scripts/trap_rate.py`.
+
 ## Repo e migração
 - Repo **privado**, escopo só UM2/UMC22. Código de origem: `C:\driver xd\behringer-um2`.
 - A importação segue `MIGRATION.md` à risca (3 commits, passos 🔒 antes do primeiro push).
