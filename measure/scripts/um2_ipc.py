@@ -130,7 +130,7 @@ def summarize_telemetry(t):
         "blocks": t.blocks, "budget_us": round(budget_us, 1),
         "block_us_p50": pct(0.50), "block_us_p99": pct(0.99), "block_us_max": round(t.maxTicks / f * 1e6, 1),
         "deadline_misses": t.misses, "miss_rate": t.misses / t.blocks,
-        "max_gap_between_blocks_us": round(t.maxIntervalTicks / f * 1e6, 1),
+        "max_gap_between_blocks_us": round(t.maxIntervalTicks / f * 1e6, 1),  # start-up interval excluded (driver)
         "hist_bin_us": bin_us, "overflow_bin_count": hist[-1],
         "recent_window_blocks": n,
         "recent_daw_callback_us_max": round(max(daw), 1) if daw else None,

@@ -253,6 +253,7 @@ def punctuality(r, j):
     cb = r.get("callbacks") or 0
     expected = secs * 48000 / buf
     tel = r.get("telemetry") or {}
+    # whole run except the start-up interval (block 0 -> 1), which the driver telemetry no longer counts
     gap = tel.get("max_gap_between_blocks_us")
     # pdc_out, not pdc_in: the panel's pdcOffsetSamples shifts only the input latency (UpdateLatencyTelemetry)
     if r.get("mode_active") == "SharedFlex" and r.get("pdc_out"):

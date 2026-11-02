@@ -52,7 +52,9 @@ static_assert(sizeof(UM2Telemetry) == 147552, "layout mirrored in measure/script
 // No allocation, no lock, no log, no system call.
 inline void UM2RecordBlockTiming(UM2Telemetry* t, int64_t qpcStart, int64_t qpcDawStart, int64_t qpcDawEnd, int64_t qpcEnd) {
     const int64_t dur = qpcEnd - qpcStart;
-    if (t->blocks > 0) {
+    // Gap statistics start at block 1 -> 2: the block 0 -> 1 interval is the device start-up (the audio thread
+    // services the first event right after Start(); the second one waits for the USB stream, ~19 ms on the UM2).
+    if (t->blocks > 1) {
         const int64_t gap = qpcStart - t->lastStart;
         if (gap > t->maxIntervalTicks) t->maxIntervalTicks = gap;
     }
