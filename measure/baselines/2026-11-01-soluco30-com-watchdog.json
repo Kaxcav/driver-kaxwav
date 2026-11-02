@@ -1,0 +1,92 @@
+{
+ "run_id": "2026-11-01-soluco30-com-watchdog",
+ "date": "2026-11-01T21:30:13",
+ "commit": "9c05c8a",
+ "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\F_watchdog.dll",
+ "dll_md5": "58217118143CE52D4CD78AE417E6DB0C",
+ "buffer": 256,
+ "start": "load",
+ "cpu_load": 12,
+ "inject_ms": 30.0,
+ "trapped": 0,
+ "trials": [
+  {
+   "trial": 1,
+   "tail_rate_per_min": 11251.2,
+   "expected_per_min": 11250.0,
+   "blocks": 2223,
+   "injected": {
+    "tid": 39152,
+    "ms": 30.0,
+    "ok": true,
+    "rate_before_per_min": 11248.0
+   },
+   "trapped": false
+  },
+  {
+   "trial": 2,
+   "tail_rate_per_min": 11251.1,
+   "expected_per_min": 11250.0,
+   "blocks": 2224,
+   "injected": {
+    "tid": 37960,
+    "ms": 30.0,
+    "ok": true,
+    "rate_before_per_min": 11253.7
+   },
+   "trapped": false
+  },
+  {
+   "trial": 3,
+   "tail_rate_per_min": 11251.1,
+   "expected_per_min": 11250.0,
+   "blocks": 2232,
+   "injected": {
+    "tid": 39884,
+    "ms": 30.0,
+    "ok": true,
+    "rate_before_per_min": 11248.0
+   },
+   "trapped": false
+  },
+  {
+   "trial": 4,
+   "tail_rate_per_min": 11251.2,
+   "expected_per_min": 11250.0,
+   "blocks": 2228,
+   "injected": {
+    "tid": 38404,
+    "ms": 30.0,
+    "ok": true,
+    "rate_before_per_min": 11253.7
+   },
+   "trapped": false
+  },
+  {
+   "trial": 5,
+   "tail_rate_per_min": 11251.1,
+   "expected_per_min": 11250.0,
+   "blocks": 2230,
+   "injected": {
+    "tid": 35216,
+    "ms": 30.0,
+    "ok": true,
+    "rate_before_per_min": 11248.1
+   },
+   "trapped": false
+  },
+  {
+   "trial": 6,
+   "tail_rate_per_min": 11247.4,
+   "expected_per_min": 11250.0,
+   "blocks": 2236,
+   "injected": {
+    "tid": 38824,
+    "ms": 30.0,
+    "ok": true,
+    "rate_before_per_min": 11248.0
+   },
+   "trapped": false
+  }
+ ]
+}

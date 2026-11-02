@@ -307,6 +307,11 @@ void BehringerUM2AsioDriver::IpcWatcherLoop() {
             );
             UpdateLatencyTelemetry();
         }
+        const uint32_t reprimes = m_renderReprimes.load(std::memory_order_relaxed);
+        if (reprimes != m_renderReprimesLogged) {
+            LogAsio("ExclusivePro: render re-preparado (fila vazia em eventos seguidos) - total %u", reprimes);
+            m_renderReprimesLogged = reprimes;
+        }
         if (licCounter % 14 == 0) ReadDawDspFlags();  // painel liga/desliga DSP na DAW sem reiniciar o stream
         if (++licCounter >= 60) {
             licCounter = 0;
@@ -2211,6 +2216,10 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
         // ====================================================================
         const UINT32 targetFrames = (m_exclusiveRenderFrames > 0) ? m_exclusiveRenderFrames : static_cast<UINT32>(m_bufferSize);
         const UINT32 capCushion = (std::max)(targetFrames, m_exclusiveCaptureFrames) + static_cast<UINT32>(m_bufferSize);
+        constexpr uint32_t kTrapEvents = 8;  // ~43 ms @256 healthy cadence, ~80 ms trapped
+        uint32_t renderDryEvents = 0;
+        int64_t lastReprimeQpc = 0;
+
         for (size_t i = 0; i < static_cast<size_t>(capCushion); ++i) {
             capFifo[capHead * 2 + 0] = 0.0f;
             capFifo[capHead * 2 + 1] = 0.0f;
@@ -2267,6 +2276,30 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
 
             // 2. Produção da DAW para renFifo e alimentação do Render Exclusivo
             if (renderReady && m_pRenderClient && m_pRenderService) {
+                // Render-trap watchdog. Healthy: one period still queued when the event fires. Trapped: the queue
+                // is empty at every event and only one packet is ever in flight (exclusive event mode lets us
+                // write one period per event, so it never refills). After kTrapEvents empty events in a row,
+                // re-prime exactly like the start: Stop, Reset, one period of silence, Start. Exceptional path
+                // (a few WASAPI calls, at most once per second); nothing is logged here.
+                UINT32 renPadNow = 0;
+                if (SUCCEEDED(m_pRenderClient->GetCurrentPadding(&renPadNow)) && renPadNow == 0) {
+                    LARGE_INTEGER now{};
+                    QueryPerformanceCounter(&now);
+                    if (++renderDryEvents >= kTrapEvents && now.QuadPart - lastReprimeQpc >= m_qpcFreq.QuadPart) {
+                        m_pRenderClient->Stop();
+                        m_pRenderClient->Reset();
+                        BYTE* pPre = nullptr;
+                        if (SUCCEEDED(m_pRenderService->GetBuffer(targetFrames, &pPre)) && pPre)
+                            m_pRenderService->ReleaseBuffer(targetFrames, AUDCLNT_BUFFERFLAGS_SILENT);
+                        m_pRenderClient->Start();
+                        lastReprimeQpc = now.QuadPart;
+                        renderDryEvents = 0;
+                        m_renderReprimes.fetch_add(1, std::memory_order_relaxed);
+                        continue;
+                    }
+                } else {
+                    renderDryEvents = 0;
+                }
                 while (renFifoAvail() < targetFrames && !m_stopThread.load(std::memory_order_relaxed)) {
                     processOneAsioBlock(isDriverMuted);
                 }

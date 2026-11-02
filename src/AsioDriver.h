@@ -107,6 +107,9 @@ private:
     // start() handshake: the audio thread itself starts the WASAPI streams (already under MMCSS) and reports here.
     HANDLE m_hStreamsStarted{ nullptr };
     std::atomic<HRESULT> m_streamStartHr{ S_OK };
+    // ExclusivePro render-trap watchdog: re-primes done by the audio thread (logged by the IPC thread).
+    std::atomic<uint32_t> m_renderReprimes{ 0 };
+    uint32_t m_renderReprimesLogged{ 0 };
     HANDLE m_hRenderEvent{ nullptr };
     HANDLE m_hCaptureEvent{ nullptr };
     int64_t m_samplePosition{ 0 };
