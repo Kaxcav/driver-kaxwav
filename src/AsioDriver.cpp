@@ -144,6 +144,7 @@ BehringerUM2AsioDriver::~BehringerUM2AsioDriver() {
     m_processLoopback.Shutdown();
     ReleaseEndpoints();
     CloseTelemetry();
+    if (m_hStreamsStarted) { CloseHandle(m_hStreamsStarted); m_hStreamsStarted = nullptr; }
     CloseSharedMemory();
     CoUninitialize();
 }
@@ -1533,19 +1534,6 @@ ASIOError BehringerUM2AsioDriver::start() {
     if (m_active) return ASE_OK;
     if (!m_buffersCreated) return ASE_NotPresent;
 
-    if (m_pCaptureClient) m_pCaptureClient->Start();
-
-    if (m_pRenderClient) {
-        if (!m_isSharedModeActive && m_pRenderService && m_exclusiveRenderFrames > 0) {
-            BYTE* pData = nullptr;
-            if (SUCCEEDED(m_pRenderService->GetBuffer(m_exclusiveRenderFrames, &pData)) && pData) {
-                m_pRenderService->ReleaseBuffer(m_exclusiveRenderFrames, AUDCLNT_BUFFERFLAGS_SILENT);
-                LogAsio("Pre-roll executado no Render Exclusive (%u frames silêncio)", m_exclusiveRenderFrames);
-            }
-        }
-        m_pRenderClient->Start();
-    }
-
     m_stopThread = false;
     m_samplePosition = 0;
 
@@ -1567,7 +1555,27 @@ ASIOError BehringerUM2AsioDriver::start() {
 
     InitCableEndpoint();
     OpenTelemetry();
+    // The audio thread starts the WASAPI streams itself, already under MMCSS, and enters its wait loop right
+    // away: started from here (host thread, normal priority) the exclusive render could run dry before the
+    // first event was serviced and stay with a single packet in flight (render trap, FATOS 2026-11-01).
+    if (!m_hStreamsStarted) m_hStreamsStarted = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    ResetEvent(m_hStreamsStarted);
+    m_streamStartHr.store(E_PENDING);
     m_audioThread = std::thread(&BehringerUM2AsioDriver::AudioThreadLoop, this);
+    const DWORD wr = m_hStreamsStarted ? WaitForSingleObject(m_hStreamsStarted, 2000) : WAIT_FAILED;
+    const HRESULT shr = m_streamStartHr.load();
+    if (wr != WAIT_OBJECT_0 || FAILED(shr)) {
+        LogAsio("ERRO: a thread de audio nao iniciou os streams (wait=%lu hr=0x%08X)", wr, static_cast<unsigned>(shr));
+        m_stopThread = true;
+        if (m_hRenderEvent) SetEvent(m_hRenderEvent);
+        if (m_hCaptureEvent) SetEvent(m_hCaptureEvent);
+        if (m_audioThread.joinable()) m_audioThread.join();
+        if (m_pRenderClient) m_pRenderClient->Stop();
+        if (m_pCaptureClient) m_pCaptureClient->Stop();
+        return ASE_HWMalfunction;
+    }
+    if (!m_isSharedModeActive && m_exclusiveRenderFrames > 0)
+        LogAsio("Streams iniciados pela thread de audio (pre-roll exclusive de %u frames)", m_exclusiveRenderFrames);
     m_active = true;
     LogAsio("start() executado com SUCESSO");
     return ASE_OK;
@@ -1660,6 +1668,24 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
             LogAsio("Disparando asioMessage(kAsioResetRequest) para hot-reconnect na DAW...");
             m_callbacks->asioMessage(kAsioResetRequest, 0, nullptr, nullptr);
         }
+    };
+
+    // Starts capture, then render with one period of silence pre-rolled (exclusive), on this thread, and
+    // releases start() through the handshake. Not logged here: the first event must find this thread waiting.
+    auto startStreams = [&]() -> bool {
+        HRESULT hr = S_OK;
+        if (m_pCaptureClient) hr = m_pCaptureClient->Start();
+        if (SUCCEEDED(hr) && m_pRenderClient) {
+            if (!m_isSharedModeActive && m_pRenderService && m_exclusiveRenderFrames > 0) {
+                BYTE* pData = nullptr;
+                if (SUCCEEDED(m_pRenderService->GetBuffer(m_exclusiveRenderFrames, &pData)) && pData)
+                    m_pRenderService->ReleaseBuffer(m_exclusiveRenderFrames, AUDCLNT_BUFFERFLAGS_SILENT);
+            }
+            hr = m_pRenderClient->Start();
+        }
+        m_streamStartHr.store(hr);
+        if (m_hStreamsStarted) SetEvent(m_hStreamsStarted);
+        return SUCCEEDED(hr);
     };
 
     auto pushCapturePacket = [&](BYTE* pCapData, UINT32 numFrames, DWORD flags, bool isDriverMuted) {
@@ -2096,7 +2122,7 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
             capHead = (capHead + 1) % FIFO_CAP;
         }
 
-        while (!m_stopThread.load(std::memory_order_relaxed)) {
+        if (startStreams()) while (!m_stopThread.load(std::memory_order_relaxed)) {
             bool renderReady = false;
             bool captureReady = false;
 
@@ -2191,7 +2217,7 @@ void BehringerUM2AsioDriver::AudioThreadLoop() {
             capHead = (capHead + 1) % FIFO_CAP;
         }
 
-        while (!m_stopThread.load(std::memory_order_relaxed)) {
+        if (startStreams()) while (!m_stopThread.load(std::memory_order_relaxed)) {
             bool renderReady = false;
             bool captureReady = false;
 

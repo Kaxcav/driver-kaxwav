@@ -104,6 +104,9 @@ private:
 
     std::thread m_audioThread;
     std::atomic<bool> m_stopThread{ false };
+    // start() handshake: the audio thread itself starts the WASAPI streams (already under MMCSS) and reports here.
+    HANDLE m_hStreamsStarted{ nullptr };
+    std::atomic<HRESULT> m_streamStartHr{ S_OK };
     HANDLE m_hRenderEvent{ nullptr };
     HANDLE m_hCaptureEvent{ nullptr };
     int64_t m_samplePosition{ 0 };

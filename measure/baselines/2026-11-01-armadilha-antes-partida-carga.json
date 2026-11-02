@@ -1,0 +1,110 @@
+{
+ "run_id": "2026-11-01-armadilha-antes-partida-carga",
+ "date": "2026-11-01T21:07:07",
+ "commit": "d3a6bed",
+ "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+ "dll_md5": "FC3920D109A0ED243C3F81884FBBE977",
+ "buffer": 256,
+ "start": "load",
+ "cpu_load": 12,
+ "inject_ms": 0,
+ "trapped": 12,
+ "trials": [
+  {
+   "trial": 1,
+   "tail_rate_per_min": 6000.0,
+   "expected_per_min": 11250.0,
+   "blocks": 1195,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 2,
+   "tail_rate_per_min": 5999.9,
+   "expected_per_min": 11250.0,
+   "blocks": 1205,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 3,
+   "tail_rate_per_min": 6000.0,
+   "expected_per_min": 11250.0,
+   "blocks": 1197,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 4,
+   "tail_rate_per_min": 6000.0,
+   "expected_per_min": 11250.0,
+   "blocks": 1199,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 5,
+   "tail_rate_per_min": 5999.9,
+   "expected_per_min": 11250.0,
+   "blocks": 1201,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 6,
+   "tail_rate_per_min": 5999.9,
+   "expected_per_min": 11250.0,
+   "blocks": 1198,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 7,
+   "tail_rate_per_min": 5999.9,
+   "expected_per_min": 11250.0,
+   "blocks": 1197,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 8,
+   "tail_rate_per_min": 6000.0,
+   "expected_per_min": 11250.0,
+   "blocks": 1199,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 9,
+   "tail_rate_per_min": 6000.0,
+   "expected_per_min": 11250.0,
+   "blocks": 1203,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 10,
+   "tail_rate_per_min": 5999.9,
+   "expected_per_min": 11250.0,
+   "blocks": 1199,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 11,
+   "tail_rate_per_min": 5999.9,
+   "expected_per_min": 11250.0,
+   "blocks": 1199,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 12,
+   "tail_rate_per_min": 6000.0,
+   "expected_per_min": 11250.0,
+   "blocks": 1201,
+   "injected": null,
+   "trapped": true
+  }
+ ]
+}

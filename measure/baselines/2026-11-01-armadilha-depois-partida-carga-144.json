@@ -1,0 +1,62 @@
+{
+ "run_id": "2026-11-01-armadilha-depois-partida-carga-144",
+ "date": "2026-11-01T21:14:29",
+ "commit": "d3a6bed",
+ "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\E_start_thread.dll",
+ "dll_md5": "DF262393AB68DA9C680F1833FD1FDF9B",
+ "buffer": 144,
+ "start": "load",
+ "cpu_load": 12,
+ "inject_ms": 0,
+ "trapped": 0,
+ "trials": [
+  {
+   "trial": 1,
+   "tail_rate_per_min": 19999.8,
+   "expected_per_min": 20000.0,
+   "blocks": 4001,
+   "injected": null,
+   "trapped": false
+  },
+  {
+   "trial": 2,
+   "tail_rate_per_min": 19999.8,
+   "expected_per_min": 20000.0,
+   "blocks": 4003,
+   "injected": null,
+   "trapped": false
+  },
+  {
+   "trial": 3,
+   "tail_rate_per_min": 19999.9,
+   "expected_per_min": 20000.0,
+   "blocks": 4001,
+   "injected": null,
+   "trapped": false
+  },
+  {
+   "trial": 4,
+   "tail_rate_per_min": 19999.8,
+   "expected_per_min": 20000.0,
+   "blocks": 3965,
+   "injected": null,
+   "trapped": false
+  },
+  {
+   "trial": 5,
+   "tail_rate_per_min": 19999.8,
+   "expected_per_min": 20000.0,
+   "blocks": 3958,
+   "injected": null,
+   "trapped": false
+  },
+  {
+   "trial": 6,
+   "tail_rate_per_min": 19999.9,
+   "expected_per_min": 20000.0,
+   "blocks": 3999,
+   "injected": null,
+   "trapped": false
+  }
+ ]
+}

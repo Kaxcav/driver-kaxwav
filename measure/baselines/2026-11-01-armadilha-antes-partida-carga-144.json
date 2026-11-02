@@ -1,0 +1,62 @@
+{
+ "run_id": "2026-11-01-armadilha-antes-partida-carga-144",
+ "date": "2026-11-01T21:12:59",
+ "commit": "d3a6bed",
+ "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+ "dll_md5": "FC3920D109A0ED243C3F81884FBBE977",
+ "buffer": 144,
+ "start": "load",
+ "cpu_load": 12,
+ "inject_ms": 0,
+ "trapped": 6,
+ "trials": [
+  {
+   "trial": 1,
+   "tail_rate_per_min": 7499.9,
+   "expected_per_min": 20000.0,
+   "blocks": 1499,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 2,
+   "tail_rate_per_min": 7499.9,
+   "expected_per_min": 20000.0,
+   "blocks": 1505,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 3,
+   "tail_rate_per_min": 7499.6,
+   "expected_per_min": 20000.0,
+   "blocks": 1498,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 4,
+   "tail_rate_per_min": 7499.9,
+   "expected_per_min": 20000.0,
+   "blocks": 1498,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 5,
+   "tail_rate_per_min": 7499.9,
+   "expected_per_min": 20000.0,
+   "blocks": 1482,
+   "injected": null,
+   "trapped": true
+  },
+  {
+   "trial": 6,
+   "tail_rate_per_min": 7499.9,
+   "expected_per_min": 20000.0,
+   "blocks": 1495,
+   "injected": null,
+   "trapped": true
+  }
+ ]
+}

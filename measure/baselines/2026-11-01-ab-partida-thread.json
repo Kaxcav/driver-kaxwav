@@ -1,0 +1,639 @@
+{
+ "run_id": "2026-11-01-ab-partida-thread",
+ "date": "2026-11-01T21:23:07",
+ "commit": "d3a6bed",
+ "load": "12 processos em busy-loop (prioridade normal)",
+ "order": "intercalado A,B,A,B,...",
+ "variants": {
+  "A_7e6f2ef": {
+   "dll": "build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+   "md5": "FC3920D109A0ED243C3F81884FBBE977",
+   "com": false
+  },
+  "B_partida_na_thread": {
+   "dll": "build\\ab\\E_start_thread.dll",
+   "md5": "DF262393AB68DA9C680F1833FD1FDF9B",
+   "com": false
+  }
+ },
+ "runs": [
+  {
+   "variant": "A_7e6f2ef",
+   "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+   "load": "path",
+   "loaded_path": "",
+   "driver_version": 300,
+   "mode_requested": "ExclusivePro",
+   "mode_active": "ExclusivePro",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "callbacks": 5999,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 27476,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5969,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 49.8,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 10392.2,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 5.9,
+    "recent_gap_us_p99": 10092.8
+   },
+   "diag": null,
+   "threads": [
+    {
+     "tid": 14352,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 103,
+     "current_base": {
+      "8/0": 88,
+      "12/0": 15
+     }
+    },
+    {
+     "tid": 37760,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 103,
+     "current_base": {
+      "25/17": 103
+     }
+    },
+    {
+     "tid": 35156,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 103,
+     "current_base": {
+      "25/17": 103
+     }
+    },
+    {
+     "tid": 2780,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 103,
+     "current_base": {
+      "26/18": 103
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[21:15:00.672] MMCSS \"Pro Audio\" OK (taskIndex=2527, tid=2780) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "mmcss_log": [],
+   "punctuality": {
+    "callbacks_per_min": 5999.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.5332,
+    "max_gap_us": 10392.2,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": false,
+    "pass_gap": true,
+    "pass": false
+   }
+  },
+  {
+   "variant": "B_partida_na_thread",
+   "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\E_start_thread.dll",
+   "load": "path",
+   "loaded_path": "",
+   "driver_version": 300,
+   "mode_requested": "ExclusivePro",
+   "mode_active": "ExclusivePro",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "callbacks": 11249,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 15364,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 11249,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 184.4,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 18948.4,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 5.8,
+    "recent_gap_us_p99": 6023.1
+   },
+   "diag": null,
+   "threads": [
+    {
+     "tid": 37704,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 102,
+     "current_base": {
+      "25/17": 102
+     }
+    },
+    {
+     "tid": 9232,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 102,
+     "current_base": {
+      "25/17": 102
+     }
+    },
+    {
+     "tid": 34476,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 102,
+     "current_base": {
+      "26/18": 102
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[21:16:01.442] MMCSS \"Pro Audio\" OK (taskIndex=2531, tid=34476) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "mmcss_log": [],
+   "punctuality": {
+    "callbacks_per_min": 11249.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.9999,
+    "max_gap_us": 18948.4,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": false,
+    "pass": false
+   }
+  },
+  {
+   "variant": "A_7e6f2ef",
+   "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+   "load": "path",
+   "loaded_path": "",
+   "driver_version": 300,
+   "mode_requested": "ExclusivePro",
+   "mode_active": "ExclusivePro",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "callbacks": 5997,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 36880,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5951,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 109.8,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 27002.8,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 2.3,
+    "recent_gap_us_p99": 10071.9
+   },
+   "diag": null,
+   "threads": [
+    {
+     "tid": 30228,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 101,
+     "current_base": {
+      "25/17": 101
+     }
+    },
+    {
+     "tid": 36856,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 101,
+     "current_base": {
+      "25/17": 101
+     }
+    },
+    {
+     "tid": 33848,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 101,
+     "current_base": {
+      "26/18": 101
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[21:17:02.993] MMCSS \"Pro Audio\" OK (taskIndex=2539, tid=33848) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "mmcss_log": [],
+   "punctuality": {
+    "callbacks_per_min": 5997.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.5331,
+    "max_gap_us": 27002.8,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": false,
+    "pass_gap": false,
+    "pass": false
+   }
+  },
+  {
+   "variant": "B_partida_na_thread",
+   "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\E_start_thread.dll",
+   "load": "path",
+   "loaded_path": "",
+   "driver_version": 300,
+   "mode_requested": "ExclusivePro",
+   "mode_active": "ExclusivePro",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "callbacks": 11252,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 38680,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 11235,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 119.2,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 19212.1,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 7.3,
+    "recent_gap_us_p99": 6017.0
+   },
+   "diag": null,
+   "threads": [
+    {
+     "tid": 38768,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 101,
+     "current_base": {
+      "25/17": 101
+     }
+    },
+    {
+     "tid": 27752,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 101,
+     "current_base": {
+      "25/17": 101
+     }
+    },
+    {
+     "tid": 38776,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 101,
+     "current_base": {
+      "26/18": 100,
+      "8/0": 1
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[21:18:03.775] MMCSS \"Pro Audio\" OK (taskIndex=2543, tid=38776) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "mmcss_log": [],
+   "punctuality": {
+    "callbacks_per_min": 11252.0,
+    "expected_per_min": 11250.0,
+    "ratio": 1.0002,
+    "max_gap_us": 19212.1,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": false,
+    "pass": false
+   }
+  },
+  {
+   "variant": "A_7e6f2ef",
+   "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+   "load": "path",
+   "loaded_path": "",
+   "driver_version": 300,
+   "mode_requested": "ExclusivePro",
+   "mode_active": "ExclusivePro",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "callbacks": 5999,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 38156,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5952,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 57.5,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 10534.1,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 2.0,
+    "recent_gap_us_p99": 10039.3
+   },
+   "diag": null,
+   "threads": [
+    {
+     "tid": 28712,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 101,
+     "current_base": {
+      "25/17": 101
+     }
+    },
+    {
+     "tid": 14808,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 101,
+     "current_base": {
+      "25/17": 101
+     }
+    },
+    {
+     "tid": 38468,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 101,
+     "current_base": {
+      "26/18": 101
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[21:19:04.865] MMCSS \"Pro Audio\" OK (taskIndex=2550, tid=38468) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "mmcss_log": [],
+   "punctuality": {
+    "callbacks_per_min": 5999.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.5332,
+    "max_gap_us": 10534.1,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": false,
+    "pass_gap": true,
+    "pass": false
+   }
+  },
+  {
+   "variant": "B_partida_na_thread",
+   "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\E_start_thread.dll",
+   "load": "path",
+   "loaded_path": "",
+   "driver_version": 300,
+   "mode_requested": "ExclusivePro",
+   "mode_active": "ExclusivePro",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "callbacks": 11249,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 3940,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 11184,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 40.0,
+    "block_us_max": 114.5,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 18944.4,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 39.5,
+    "recent_gap_us_p99": 6021.1
+   },
+   "diag": null,
+   "threads": [
+    {
+     "tid": 34228,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 102,
+     "current_base": {
+      "25/17": 102
+     }
+    },
+    {
+     "tid": 7020,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 102,
+     "current_base": {
+      "25/17": 102
+     }
+    },
+    {
+     "tid": 14748,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 102,
+     "current_base": {
+      "26/18": 102
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[21:20:05.399] MMCSS \"Pro Audio\" OK (taskIndex=2554, tid=14748) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "mmcss_log": [],
+   "punctuality": {
+    "callbacks_per_min": 11249.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.9999,
+    "max_gap_us": 18944.4,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": false,
+    "pass": false
+   }
+  },
+  {
+   "variant": "A_7e6f2ef",
+   "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\D_avrtcrit_BehringerUM2ASIODriver.dll",
+   "load": "path",
+   "loaded_path": "",
+   "driver_version": 300,
+   "mode_requested": "ExclusivePro",
+   "mode_active": "ExclusivePro",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "callbacks": 5999,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 24376,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 5999,
+    "budget_us": 5333.3,
+    "block_us_p50": 40.0,
+    "block_us_p99": 45.0,
+    "block_us_max": 197.4,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 10996.9,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 10.4,
+    "recent_gap_us_p99": 10032.9
+   },
+   "diag": null,
+   "threads": [
+    {
+     "tid": 38320,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 100,
+     "current_base": {
+      "25/17": 100
+     }
+    },
+    {
+     "tid": 28352,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 100,
+     "current_base": {
+      "25/17": 100
+     }
+    },
+    {
+     "tid": 33004,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 100,
+     "current_base": {
+      "26/18": 100
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[21:21:06.042] MMCSS \"Pro Audio\" OK (taskIndex=2558, tid=33004) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "mmcss_log": [],
+   "punctuality": {
+    "callbacks_per_min": 5999.0,
+    "expected_per_min": 11250.0,
+    "ratio": 0.5332,
+    "max_gap_us": 10996.9,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": false,
+    "pass_gap": false,
+    "pass": false
+   }
+  },
+  {
+   "variant": "B_partida_na_thread",
+   "dll": "D:\\DEV\\driver-kaxwav\\build\\ab\\E_start_thread.dll",
+   "load": "path",
+   "loaded_path": "",
+   "driver_version": 300,
+   "mode_requested": "ExclusivePro",
+   "mode_active": "ExclusivePro",
+   "buffer": 256,
+   "seconds": 60,
+   "ok": true,
+   "pdc_in": 512,
+   "pdc_out": 512,
+   "callbacks": 11250,
+   "telemetry": {
+    "session": 1,
+    "owner_pid": 3024,
+    "buffer": 256,
+    "sample_rate": 48000,
+    "blocks": 11157,
+    "budget_us": 5333.3,
+    "block_us_p50": 35.0,
+    "block_us_p99": 40.0,
+    "block_us_max": 58.5,
+    "deadline_misses": 0,
+    "miss_rate": 0.0,
+    "max_gap_between_blocks_us": 19157.4,
+    "hist_bin_us": 5.0,
+    "overflow_bin_count": 0,
+    "recent_window_blocks": 4096,
+    "recent_daw_callback_us_max": 2.4,
+    "recent_gap_us_p99": 6019.3
+   },
+   "diag": null,
+   "threads": [
+    {
+     "tid": 37484,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 101,
+     "current_base": {
+      "25/17": 101
+     }
+    },
+    {
+     "tid": 37096,
+     "start": "audiokse.dll+0x77B0",
+     "samples": 101,
+     "current_base": {
+      "25/17": 101
+     }
+    },
+    {
+     "tid": 38544,
+     "start": "ucrtbase.dll+0x2CD00",
+     "samples": 101,
+     "current_base": {
+      "26/18": 101
+     }
+    }
+   ],
+   "driver_tid_log": [
+    "[21:22:07.017] MMCSS \"Pro Audio\" OK (taskIndex=2564, tid=38544) + AvSetMmThreadPriority(CRITICAL)"
+   ],
+   "mmcss_log": [],
+   "punctuality": {
+    "callbacks_per_min": 11250.0,
+    "expected_per_min": 11250.0,
+    "ratio": 1.0,
+    "max_gap_us": 19157.4,
+    "cadence_us": 5333.3,
+    "gap_limit_us": 10666.7,
+    "pass_ratio": true,
+    "pass_gap": false,
+    "pass": false
+   }
+  }
+ ]
+}
