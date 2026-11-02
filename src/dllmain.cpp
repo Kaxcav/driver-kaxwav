@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <unknwn.h>
+#include <olectl.h>  // SELFREG_E_CLASS
 #include <string>
 #include "AsioDriver.h"
 
@@ -85,64 +86,61 @@ STDAPI DllCanUnloadNow() {
     return (g_serverLocks == 0) ? S_OK : S_FALSE;
 }
 
+// Registration: per-user (HKCU, works without elevation) AND machine-wide (HKLM, needs admin). Hosts started
+// "as administrator" ignore per-user class registrations (HKCU\Software\Classes), so without the HKLM copy an
+// elevated FL Studio lists the driver (HKLM\SOFTWARE\ASIO) but CoCreateInstance fails with REGDB_E_CLASSNOTREG.
+// Writing through HKEY_CLASSES_ROOT is NOT used: when the HKCU key exists, an HKCR write lands in HKCU again.
+static LONG SetStr(HKEY k, const wchar_t* name, const wchar_t* value) {
+    return RegSetValueExW(k, name, 0, REG_SZ, reinterpret_cast<const BYTE*>(value),
+                          static_cast<DWORD>((wcslen(value) + 1) * sizeof(wchar_t)));
+}
+
+static LONG RegisterUnder(HKEY root, const wchar_t* modulePath) {
+    const std::wstring clsidKey = std::wstring(L"Software\\Classes\\CLSID\\") + CLSID_STRING;
+    HKEY hKey = nullptr;
+    LONG r = RegCreateKeyExW(root, clsidKey.c_str(), 0, nullptr, 0, KEY_WRITE | KEY_WOW64_64KEY, nullptr, &hKey, nullptr);
+    if (r != ERROR_SUCCESS) return r;
+    SetStr(hKey, nullptr, DRIVER_DESC);
+    HKEY hInproc = nullptr;
+    r = RegCreateKeyExW(hKey, L"InprocServer32", 0, nullptr, 0, KEY_WRITE | KEY_WOW64_64KEY, nullptr, &hInproc, nullptr);
+    if (r == ERROR_SUCCESS) {
+        r = SetStr(hInproc, nullptr, modulePath);
+        if (r == ERROR_SUCCESS) r = SetStr(hInproc, L"ThreadingModel", L"Both");
+        RegCloseKey(hInproc);
+    }
+    RegCloseKey(hKey);
+    if (r != ERROR_SUCCESS) return r;
+    for (const wchar_t* name : { DRIVER_NAME, DRIVER_NAME_LEGACY }) {  // modern + legacy names, same CLSID
+        HKEY hAsio = nullptr;
+        const std::wstring asioKey = std::wstring(L"Software\\ASIO\\") + name;
+        r = RegCreateKeyExW(root, asioKey.c_str(), 0, nullptr, 0, KEY_WRITE | KEY_WOW64_64KEY, nullptr, &hAsio, nullptr);
+        if (r != ERROR_SUCCESS) return r;
+        SetStr(hAsio, L"CLSID", CLSID_STRING);
+        SetStr(hAsio, L"Description", DRIVER_DESC);
+        RegCloseKey(hAsio);
+    }
+    return ERROR_SUCCESS;
+}
+
 STDAPI DllRegisterServer() {
     wchar_t modulePath[MAX_PATH]{};
-    GetModuleFileNameW(g_hInstance, modulePath, MAX_PATH);
-
-    auto registerUnderRoot = [&](HKEY root) {
-        // Registra CLSID
-        std::wstring clsidKey = std::wstring(root == HKEY_CLASSES_ROOT ? L"CLSID\\" : L"Software\\Classes\\CLSID\\") + CLSID_STRING;
-        HKEY hKey = nullptr;
-        if (RegCreateKeyExW(root, clsidKey.c_str(), 0, nullptr, 0, KEY_WRITE, nullptr, &hKey, nullptr) == ERROR_SUCCESS) {
-            RegSetValueExW(hKey, nullptr, 0, REG_SZ, reinterpret_cast<const BYTE*>(DRIVER_DESC), static_cast<DWORD>((wcslen(DRIVER_DESC) + 1) * sizeof(wchar_t)));
-            
-            HKEY hInprocKey = nullptr;
-            if (RegCreateKeyExW(hKey, L"InprocServer32", 0, nullptr, 0, KEY_WRITE, nullptr, &hInprocKey, nullptr) == ERROR_SUCCESS) {
-                RegSetValueExW(hInprocKey, nullptr, 0, REG_SZ, reinterpret_cast<const BYTE*>(modulePath), static_cast<DWORD>((wcslen(modulePath) + 1) * sizeof(wchar_t)));
-                const wchar_t* threading = L"Both";
-                RegSetValueExW(hInprocKey, L"ThreadingModel", 0, REG_SZ, reinterpret_cast<const BYTE*>(threading), static_cast<DWORD>((wcslen(threading) + 1) * sizeof(wchar_t)));
-                RegCloseKey(hInprocKey);
-            }
-            RegCloseKey(hKey);
-        }
-
-        // Registra ASIO entry (Moderno U-Phoria e Legado UM2)
-        auto registerAsioKey = [&](const wchar_t* name) {
-            std::wstring asioKey = std::wstring(L"Software\\ASIO\\") + name;
-            HKEY hAsioKey = nullptr;
-            if (RegCreateKeyExW(root == HKEY_CLASSES_ROOT ? HKEY_LOCAL_MACHINE : root, asioKey.c_str(), 0, nullptr, 0, KEY_WRITE, nullptr, &hAsioKey, nullptr) == ERROR_SUCCESS) {
-                RegSetValueExW(hAsioKey, L"CLSID", 0, REG_SZ, reinterpret_cast<const BYTE*>(CLSID_STRING), static_cast<DWORD>((wcslen(CLSID_STRING) + 1) * sizeof(wchar_t)));
-                RegSetValueExW(hAsioKey, L"Description", 0, REG_SZ, reinterpret_cast<const BYTE*>(DRIVER_DESC), static_cast<DWORD>((wcslen(DRIVER_DESC) + 1) * sizeof(wchar_t)));
-                RegCloseKey(hAsioKey);
-            }
-        };
-
-        registerAsioKey(DRIVER_NAME);
-        registerAsioKey(DRIVER_NAME_LEGACY);
-    };
-
-    registerUnderRoot(HKEY_CURRENT_USER);
-    registerUnderRoot(HKEY_CLASSES_ROOT);
-
-    return S_OK;
+    if (!GetModuleFileNameW(g_hInstance, modulePath, MAX_PATH)) return SELFREG_E_CLASS;
+    if (RegisterUnder(HKEY_CURRENT_USER, modulePath) != ERROR_SUCCESS) return SELFREG_E_CLASS;
+    // Machine-wide copy: only possible elevated (the installer runs regsvr32 elevated). Not elevated -> access
+    // denied, and the per-user registration above still serves non-elevated hosts.
+    const LONG m = RegisterUnder(HKEY_LOCAL_MACHINE, modulePath);
+    return (m == ERROR_SUCCESS || m == ERROR_ACCESS_DENIED) ? S_OK : SELFREG_E_CLASS;
 }
 
 STDAPI DllUnregisterServer() {
-    auto unregisterAsioKey = [&](HKEY root, const wchar_t* name) {
-        std::wstring asioKey = std::wstring(L"Software\\ASIO\\") + name;
-        RegDeleteKeyW(root, asioKey.c_str());
-    };
-
-    unregisterAsioKey(HKEY_LOCAL_MACHINE, DRIVER_NAME);
-    unregisterAsioKey(HKEY_LOCAL_MACHINE, DRIVER_NAME_LEGACY);
-    unregisterAsioKey(HKEY_CURRENT_USER, DRIVER_NAME);
-    unregisterAsioKey(HKEY_CURRENT_USER, DRIVER_NAME_LEGACY);
-
-    std::wstring clsidInproc = std::wstring(L"CLSID\\") + CLSID_STRING + L"\\InprocServer32";
-    RegDeleteKeyW(HKEY_CLASSES_ROOT, clsidInproc.c_str());
-
-    std::wstring clsidKey = std::wstring(L"CLSID\\") + CLSID_STRING;
-    RegDeleteKeyW(HKEY_CLASSES_ROOT, clsidKey.c_str());
-
+    const std::wstring clsidKey = std::wstring(L"Software\\Classes\\CLSID\\") + CLSID_STRING;
+    for (HKEY root : { HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE }) {
+        RegDeleteTreeW(root, clsidKey.c_str());
+        RegDeleteKeyExW(root, clsidKey.c_str(), KEY_WOW64_64KEY, 0);
+        for (const wchar_t* name : { DRIVER_NAME, DRIVER_NAME_LEGACY }) {
+            const std::wstring asioKey = std::wstring(L"Software\\ASIO\\") + name;
+            RegDeleteKeyExW(root, asioKey.c_str(), KEY_WOW64_64KEY, 0);
+        }
+    }
     return S_OK;
 }

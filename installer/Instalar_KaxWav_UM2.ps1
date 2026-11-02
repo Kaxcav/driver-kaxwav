@@ -116,9 +116,12 @@ foreach ($k in $Sources.Keys) {
 }
 foreach ($root in 'HKCU:\Software\Classes', 'HKLM:\SOFTWARE\Classes') {
     $p = (Get-ItemProperty "$root\CLSID\$Clsid\InprocServer32" -ErrorAction SilentlyContinue).'(default)'
-    Say "InprocServer32 ($root): $p"; if ($p -and ($p -ne $dll)) { $ok = $false }
+    Say "InprocServer32 ($root): $p"
+    if ($p -ne $dll) { $ok = $false; Say "  diverge da DLL instalada ($dll)" }   # both views must point to it
 }
-# The COM load check (test_com_reg) is NOT done here: an elevated process ignores per-user COM
-# registrations (HKCU\Software\Classes), which is where the driver registers - it would always report
-# REGDB_E_CLASSNOTREG. Instalar_KaxWav_UM2.bat runs it un-elevated, the way FL Studio loads the driver.
-if ($ok) { Say 'ARQUIVOS E REGISTRO OK (o .bat confere o COM sem elevacao)' } else { Say 'VERIFICACAO FALHOU - rode Rollback_KaxWav_UM2.ps1'; exit 2 }
+# COM load as an ELEVATED host (FL "as administrator"): elevated processes ignore HKCU\Software\Classes, so this
+# exercises the HKLM registration. The .bat repeats the check un-elevated (HKCU wins there).
+$out = (Invoke-Native $ComCheck @()).out
+Say ("test_com_reg (elevado): " + ($out -replace "`r?`n", ' | '))
+if ($out -notmatch [regex]::Escape("LOADED_PATH=$dll")) { $ok = $false; Say 'COM elevado NAO carregou a DLL instalada' }
+if ($ok) { Say 'ARQUIVOS, REGISTRO E COM ELEVADO OK (o .bat confere o COM sem elevacao)' } else { Say 'VERIFICACAO FALHOU - rode Rollback_KaxWav_UM2.ps1'; exit 2 }

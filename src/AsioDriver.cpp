@@ -1,5 +1,6 @@
 #include "AsioDriver.h"
 #include "UM2Ipc.h"
+#include <sddl.h>
 #include <functiondiscoverykeys_devpkey.h>
 #include <shellapi.h>
 #include <cstring>
@@ -233,12 +234,39 @@ void BehringerUM2AsioDriver::SaveCurrentSettings() {
     UpdateLatencyTelemetry();
 }
 
+// Security for the driver's named sections ("Local\BehringerUM2*"). Default DACL of an elevated host would lock out
+// the non-elevated panel (High integrity, Administrators-only). Built once, outside the audio thread.
+static SECURITY_ATTRIBUTES* SharedSectionSecurity() {
+    static SECURITY_ATTRIBUTES sa{};
+    static PSECURITY_DESCRIPTOR sd = nullptr;
+    static bool tried = false;
+    if (tried) return sd ? &sa : nullptr;
+    tried = true;
+    HANDLE tok = nullptr;
+    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &tok)) return nullptr;
+    BYTE buf[256]{};
+    DWORD len = 0;
+    LPWSTR sidStr = nullptr;
+    if (GetTokenInformation(tok, TokenUser, buf, sizeof(buf), &len) &&
+        ConvertSidToStringSidW(reinterpret_cast<TOKEN_USER*>(buf)->User.Sid, &sidStr)) {
+        const std::wstring sddl = std::wstring(L"D:(A;;GA;;;") + sidStr + L")(A;;GA;;;SY)(A;;GA;;;BA)S:(ML;;NW;;;ME)";
+        if (ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl.c_str(), SDDL_REVISION_1, &sd, nullptr)) {
+            sa.nLength = sizeof(sa);
+            sa.lpSecurityDescriptor = sd;
+            sa.bInheritHandle = FALSE;
+        }
+        LocalFree(sidStr);
+    }
+    CloseHandle(tok);
+    return sd ? &sa : nullptr;
+}
+
 void BehringerUM2AsioDriver::InitSharedMemory() {
     if (m_pSharedState) return;
 
     m_hSharedMem = CreateFileMappingW(
         INVALID_HANDLE_VALUE,
-        nullptr,
+        SharedSectionSecurity(),
         PAGE_READWRITE,
         0,
         sizeof(UM2SharedState),
@@ -379,7 +407,7 @@ void BehringerUM2AsioDriver::CloseSharedMemory() {
 // M5: called from start() before the audio thread exists (never from the audio thread).
 void BehringerUM2AsioDriver::OpenTelemetry() {
     if (!m_pTelemetry) {
-        m_hTelemetry = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0,
+        m_hTelemetry = CreateFileMappingW(INVALID_HANDLE_VALUE, SharedSectionSecurity(), PAGE_READWRITE, 0,
                                           static_cast<DWORD>(sizeof(UM2Telemetry)), UM2_TELEMETRY_NAME);
         if (!m_hTelemetry) {
             LogAsio("Telemetria M5 indisponivel: CreateFileMappingW falhou (%lu)", GetLastError());
