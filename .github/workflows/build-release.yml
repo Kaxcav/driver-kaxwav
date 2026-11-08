@@ -1,0 +1,120 @@
+name: Build KaxWav UM2 Installer
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Versao da Release (ex: v2.0.0)'
+        required: false
+        default: 'v2.0.0'
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build & Package KaxWav UM2 Setup
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Inno Setup
+        shell: powershell
+        run: |
+          choco install innosetup --no-progress
+          "C:\Program Files (x86)\Inno Setup 6" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Install Python build tools & dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install fastapi uvicorn pydantic pyinstaller
+
+      - name: Download Steinberg ASIO SDK 2.3.3
+        shell: powershell
+        run: |
+          Invoke-WebRequest -Uri "https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip" -OutFile asiosdk.zip
+          Expand-Archive -Path asiosdk.zip -DestinationPath asiosdk_unpacked
+          $commonDir = (Get-ChildItem -Path asiosdk_unpacked -Filter "common" -Recurse -Directory | Select-Object -First 1).FullName
+          Write-Host "ASIO SDK common: $commonDir"
+          "ASIO_COMMON=$commonDir" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Prepare build headers & config
+        shell: powershell
+        run: |
+          if (-not (Test-Path "src/UM2LicenseSecret.h")) {
+            Copy-Item "src/UM2LicenseSecret.example.h" "src/UM2LicenseSecret.h"
+          }
+          if (-not (Test-Path "panel/um2_license_secret.py")) {
+            Copy-Item "panel/um2_license_secret.example.py" "panel/um2_license_secret.py"
+          }
+          if (-not (Test-Path "panel/donate_config.json")) {
+            Copy-Item "panel/donate_config.example.json" "panel/donate_config.json"
+          }
+
+      - name: Configure CMake
+        shell: powershell
+        run: |
+          cmake -S . -B build -A x64 -DASIO_SDK_DIR="$env:ASIO_COMMON"
+
+      - name: Build C++ Binaries (Release x64)
+        shell: powershell
+        run: |
+          cmake --build build --config Release --target BehringerUM2ASIODriver BehringerUM2Bridge test_com_reg
+
+      - name: Build Panel Executable (PyInstaller)
+        shell: powershell
+        run: |
+          cd panel
+          python -m PyInstaller BehringerUM2Panel.spec
+          cd ..
+
+      - name: Assemble Files for Inno Setup
+        shell: powershell
+        run: |
+          Copy-Item "build\Release\BehringerUM2ASIODriver.dll" "installer\"
+          Copy-Item "build\Release\BehringerUM2Bridge.dll"     "installer\"
+          Copy-Item "build\Release\test_com_reg.exe"           "installer\"
+          Copy-Item "panel\dist\BehringerUM2Panel.exe"         "installer\"
+
+      - name: Compile Inno Setup Installer (.exe)
+        shell: powershell
+        run: |
+          iscc.exe "installer\KaxWav_UM2_Setup.iss"
+
+      - name: Upload Setup.exe Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KaxWav_UM2_Setup
+          path: dist_release/KaxWav_UM2_Setup.exe
+
+      - name: Publish GitHub Release
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = "${{ inputs.version_tag }}"
+          if (-not $tag -or $tag -eq "") {
+            $tag = $env:GITHUB_REF_NAME
+          }
+          if (-not $tag -or $tag -eq "") {
+            $tag = "v2.0.0"
+          }
+          
+          $notes = "Instalador Oficial KaxWav UM2 ASIO Pro para Behringer U-PHORIA UM2.`n`nBasta baixar o arquivo KaxWav_UM2_Setup.exe e executar para instalar em 1 clique."
+          
+          $exists = gh release view $tag 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag "dist_release\KaxWav_UM2_Setup.exe" --clobber
+          } else {
+            gh release create $tag "dist_release\KaxWav_UM2_Setup.exe" --title "KaxWav UM2 Pro $tag" --notes $notes
+          }

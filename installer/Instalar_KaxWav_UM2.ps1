@@ -11,6 +11,8 @@
      entradas HKLM/HKCU\SOFTWARE\ASIO). Remove a entrada WOW6432Node (a DLL e x64).
   6. Verifica: MD5 instalado == build; InprocServer32 aponta para Program Files;
      test_com_reg.exe instancia pelo COM e mostra o caminho carregado.
+  Dois layouts: repo (build\Release + panel\dist) ou pacote de release (artefatos na mesma
+  pasta do script, gerado por tools\pack_release.ps1). O pacote e detectado sozinho.
   Uso: Instalar_KaxWav_UM2.ps1 [-RepoRoot D:\DEV\driver-kaxwav] [-DryRun]
 #>
 param(
@@ -20,11 +22,14 @@ param(
 $ErrorActionPreference = 'Stop'
 $Clsid   = '{77DBBCCD-91C6-4856-A900-FC8D007D161C}'
 $Dest    = Join-Path $env:ProgramFiles 'KaxWav\Behringer UM2 ASIO'
-$Build   = Join-Path $RepoRoot 'build\Release'
+# Release package: artifacts sit next to this script (tools\pack_release.ps1).
+$Package = Test-Path (Join-Path $PSScriptRoot 'BehringerUM2ASIODriver.dll')
+if ($Package) { $RepoRoot = $PSScriptRoot; $Build = $PSScriptRoot; $PanelDir = $PSScriptRoot }
+else          { $Build = Join-Path $RepoRoot 'build\Release'; $PanelDir = Join-Path $RepoRoot 'panel\dist' }
 $Sources = [ordered]@{
     'BehringerUM2ASIODriver.dll' = Join-Path $Build 'BehringerUM2ASIODriver.dll'
     'BehringerUM2Bridge.dll'     = Join-Path $Build 'BehringerUM2Bridge.dll'
-    'BehringerUM2Panel.exe'      = Join-Path $RepoRoot 'panel\dist\BehringerUM2Panel.exe'
+    'BehringerUM2Panel.exe'      = Join-Path $PanelDir 'BehringerUM2Panel.exe'
 }
 $ComCheck = Join-Path $Build 'test_com_reg.exe'
 $Stamp    = Get-Date -Format 'yyyyMMdd_HHmmss'
@@ -72,7 +77,9 @@ if (-not $id.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
 New-Item -ItemType Directory -Force -Path $Backup | Out-Null
 Say "Backup em $Backup"
 $manifest = [ordered]@{ created = (Get-Date -Format s); dest = $Dest; repo = $RepoRoot
-    repo_commit = (& git -C $RepoRoot rev-parse --short HEAD 2>$null); files = [ordered]@{}; registry = @() }
+    repo_commit = $(if ($Package) { $v = Join-Path $PSScriptRoot 'VERSION.txt'; if (Test-Path $v) { (Get-Content $v -TotalCount 1) } else { 'package' } }
+                    else { (Invoke-Native 'git.exe' @('-C', $RepoRoot, 'rev-parse', '--short', 'HEAD')).out })
+    files = [ordered]@{}; registry = @() }
 if (Test-Path $Dest) {
     New-Item -ItemType Directory -Force -Path (Join-Path $Backup 'files') | Out-Null
     foreach ($k in $Sources.Keys) {

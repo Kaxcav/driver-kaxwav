@@ -1,11 +1,27 @@
 @echo off
-rem Instala o build do repo em Program Files (backup automatico; rollback: Rollback_KaxWav_UM2.bat).
+rem Instala o build do repo (ou o pacote de release) em Program Files (backup automatico; rollback: Rollback_KaxWav_UM2.bat).
 rem O passo elevado roda no PowerShell; a verificacao do COM e o painel rodam SEM elevacao (como o FL).
 setlocal
 set "PS1=%~dp0Instalar_KaxWav_UM2.ps1"
 set "DEST=%ProgramFiles%\KaxWav\Behringer UM2 ASIO"
 set "COMCHECK=%~dp0..\build\Release\test_com_reg.exe"
-powershell -NoProfile -Command "Start-Process powershell -Verb RunAs -Wait -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','\"%PS1%\"'"
+if exist "%~dp0test_com_reg.exe" set "COMCHECK=%~dp0test_com_reg.exe"
+powershell -NoProfile -Command "$p = Start-Process powershell -Verb RunAs -Wait -PassThru -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','\"%PS1%\"'; exit $p.ExitCode"
+if errorlevel 1 (
+    echo.
+    echo [ERRO] A instalacao elevada falhou ou foi cancelada.
+    if exist "%ProgramData%\KaxWav\install_last_error.txt" (
+        type "%ProgramData%\KaxWav\install_last_error.txt"
+    )
+    pause
+    exit /b 1
+)
+if not exist "%COMCHECK%" (
+    echo.
+    echo [ERRO] Binario de verificacao nao encontrado: "%COMCHECK%"
+    pause
+    exit /b 1
+)
 echo.
 echo Verificacao do COM sem elevacao (o que o FL Studio carrega):
 "%COMCHECK%" > "%TEMP%\kaxwav_com_check.txt" 2>&1

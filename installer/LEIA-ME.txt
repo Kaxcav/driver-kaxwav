@@ -1,0 +1,31 @@
+KaxWav UM2 - driver ASIO para Behringer U-PHORIA UM2
+=====================================================
+
+REQUISITOS
+- Windows 11 x64 (Windows 10 x64 deve funcionar, mas nao e testado)
+- Behringer U-PHORIA UM2 conectada via USB (usa o driver USB padrao do Windows, nada de kernel e instalado)
+- Opcional, so para mandar a voz tratada pro Discord: VB-CABLE (https://vb-audio.com/Cable/), em 48 kHz
+
+INSTALAR
+1. Feche FL Studio / qualquer DAW.
+2. Extraia o zip inteiro numa pasta (nao rode de dentro do zip).
+3. Clique duas vezes em Instalar_KaxWav_UM2.bat e aceite o UAC.
+   Se o Windows mostrar "O Windows protegeu o computador": Mais informacoes -> Executar assim mesmo.
+   (Os arquivos nao sao assinados digitalmente. Confira os hashes em SHA256SUMS.txt se quiser.)
+4. No fim deve aparecer "INSTALACAO VERIFICADA" e o painel abre.
+5. No FL Studio: Options -> Audio settings -> Device: "Behringer UM2 ASIO".
+
+LICENCA
+Sem chave o driver roda em modo DEMO (2 s de silencio a cada 2 min).
+Abra o painel, copie o HWID mostrado e mande pro Kaxcav. Cole a chave recebida no painel e ative.
+A chave vale so para aquele PC.
+
+VOLTAR AO ESTADO ANTERIOR
+Rode Rollback_KaxWav_UM2.bat (aceite o UAC). Restaura os arquivos e o registro do backup automatico
+feito na instalacao (%ProgramData%\KaxWav\backups\).
+
+DEU ERRO?
+Mande pro Kaxcav o arquivo %ProgramData%\KaxWav\install_last_error.txt e o install.log da pasta
+de backup mais recente.
+
+"ASIO" e marca registrada da Steinberg Media Technologies GmbH.
