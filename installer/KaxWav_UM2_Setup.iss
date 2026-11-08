@@ -6,7 +6,7 @@
 #define MyAppPublisher "Kaxcav Audio Engineering"
 #define MyAppURL "https://github.com/Kaxcav/driver-kaxwav"
 #define MyAppExeName "BehringerUM2Panel.exe"
-#define DriverCLSID "{77DBBCCD-91C6-4856-A900-FC8D007D161C}"
+#define DriverCLSID "{{77DBBCCD-91C6-4856-A900-FC8D007D161C}"
 
 [Setup]
 AppId={{E68A1B52-3F1C-4B7E-97C5-6A93F40E7D2B}
