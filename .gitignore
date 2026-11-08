@@ -27,6 +27,7 @@ third_party/asio-sdk/
 third_party/**/*.zip
 
 # --- Artefatos de release e backups ---
+dist_release/
 release_package/
 _backup_*/
 _rollback_build/
